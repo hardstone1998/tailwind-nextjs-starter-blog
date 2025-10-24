@@ -1,27 +1,27 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Next.js Starter Blog',
-  author: 'Tails Azimuth',
-  headerTitle: 'TailwindBlog',
-  description: 'A blog created with Next.js and Tailwind.css',
-  language: 'en-us',
+  title: 'NLP Journey',
+  author: 'qiaoshilei',
+  headerTitle: 'NLP Journey',
+  description: 'NLP 算法工程师，专注于大模型微调、RAG 构建、多模态智能等方向。💻 热衷将复杂的 AI 技术转化为可落地的产品，记录自己的成长轨迹与每一次迭代。',
+  language: 'zh',
   theme: 'system', // system, dark or light
   siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
   siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
-  mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'address@yoursite.com',
-  github: 'https://github.com',
-  x: 'https://twitter.com/x',
+  // mastodon: 'https://mastodon.social/@mastodonuser',
+  email: '1395291968@qq.com',
+  github: 'https://github.com/hardstone1998',
+  // x: 'https://twitter.com/x',
   // twitter: 'https://twitter.com/Twitter',
-  facebook: 'https://facebook.com',
-  youtube: 'https://youtube.com',
-  linkedin: 'https://www.linkedin.com',
-  threads: 'https://www.threads.net',
-  instagram: 'https://www.instagram.com',
-  medium: 'https://medium.com',
-  bluesky: 'https://bsky.app/',
+  // facebook: 'https://facebook.com',
+  // youtube: 'https://youtube.com',
+  // linkedin: 'https://www.linkedin.com',
+  // threads: 'https://www.threads.net',
+  // instagram: 'https://www.instagram.com',
+  // medium: 'https://medium.com',
+  // bluesky: 'https://bsky.app/',
   locale: 'en-US',
   // set to true if you want a navbar fixed to the top
   stickyNav: false,
@@ -98,6 +98,14 @@ const siteMetadata = {
     //   indexName: 'docsearch',
     // },
   },
+  individual_ability_data: [
+  { subject: '模型理解与微调能力', score: 72, url: '/skills/code' },
+  { subject: '系统工程与部署能力', score: 71.5, url: '/skills/model' },
+  { subject: '跨模态与多任务融合', score: 68.5, url: '/skills/deploy' },
+  { subject: '快速学习与技术更新能力', score: 72, url: '/skills/engineering' },
+  { subject: '产品导向与场景思维', score: 73, url: '/skills/nlp' },
+  { subject: '技术影响力与表达力', score: 57.5, url: '/skills/open-source' },
+]
 }
 
 module.exports = siteMetadata
