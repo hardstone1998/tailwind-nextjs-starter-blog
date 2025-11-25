@@ -1,33 +1,39 @@
-'use client';
+'use client'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
 import NewsletterForm from 'pliny/ui/NewsletterForm'
 import {
-  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,Tooltip,
-} from 'recharts';
-type TickItem = number | string | { value: number | string; coordinate: number };
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from 'recharts'
+type TickItem = number | string | { value: number | string; coordinate: number }
 
 type CustomTickProps = {
-  x?: number | string;
-  y?: number | string;
+  x?: number | string
+  y?: number | string
   payload?: {
-    value: string | number;
-  };
-};
+    value: string | number
+  }
+}
 
 const MAX_DISPLAY = 5
 // 自定义轴标签渲染器
 const renderAngleAxis = (props: CustomTickProps) => {
-  const { x, y, payload } = props;
+  const { x, y, payload } = props
 
   if (typeof x !== 'number' || typeof y !== 'number' || !payload) {
-    return <text />;
+    return <text />
   }
 
-  const value = String(payload.value);
-  const url = siteMetadata.individual_ability_data.find((d) => d.subject === value)?.url ?? '#';
+  const value = String(payload.value)
+  const url = siteMetadata.individual_ability_data.find((d) => d.subject === value)?.url ?? '#'
 
   return (
     <text
@@ -41,9 +47,8 @@ const renderAngleAxis = (props: CustomTickProps) => {
     >
       {value}
     </text>
-  );
-};
-
+  )
+}
 
 export default function Home({ posts }) {
   return (
@@ -67,12 +72,17 @@ export default function Home({ posts }) {
             </RadarChart>
           </ResponsiveContainer>
         </div> */}
-        <div className="w-full h-96">
+        <div className="h-96 w-full">
           <ResponsiveContainer>
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={siteMetadata.individual_ability_data}>
+            <RadarChart
+              cx="50%"
+              cy="50%"
+              outerRadius="80%"
+              data={siteMetadata.individual_ability_data}
+            >
               <PolarGrid />
               <PolarAngleAxis dataKey="subject" tick={renderAngleAxis} />
-              <PolarRadiusAxis angle={30} domain={[0, 100]}  ticks={[0, 20, 40, 60, 80, 100]}/>
+              <PolarRadiusAxis angle={30} domain={[0, 100]} tickCount={6} />
               <Radar
                 name="技能得分"
                 dataKey="score"

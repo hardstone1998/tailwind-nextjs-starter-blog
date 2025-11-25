@@ -6,7 +6,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
 import { genPageMetadata } from 'app/seo'
 
-export const metadata = genPageMetadata({ title: '模型理解与微调能力' })
+export const metadata = genPageMetadata({ title: '系统工程与部署能力' })
 
 // 根据技能关键词过滤相关博客
 function getRelatedPosts(skillName: string) {
@@ -21,29 +21,11 @@ function getRelatedPosts(skillName: string) {
       'ci/cd',
       'infrastructure',
     ],
-    模型理解与微调能力: ['微调', '模型', 'fine-tuning', '训练', '模型理解', '训练', 'pretrain'],
-    跨模态与多任务融合: [
-      '跨模态',
-      '多模态',
-      'multimodal',
-      '多任务',
-      'fusion',
-      '视觉',
-      '语言',
-      '图像',
-    ],
-    快速学习与技术更新能力: ['学习', '技术', '更新', '新技术', '学习能力', '快速', '适应'],
-    产品导向与场景思维: ['产品', '场景', '应用', '落地', 'nlp', '自然语言处理', '产品思维', '业务'],
-    技术影响力与表达力: [
-      '开源',
-      '分享',
-      '技术',
-      '影响力',
-      '表达',
-      'open source',
-      '技术分享',
-      '社区',
-    ],
+    模型理解与微调能力: ['微调', '模型', 'fine-tuning', '训练', '模型理解'],
+    跨模态与多任务融合: ['跨模态', '多模态', 'multimodal', '多任务', 'fusion'],
+    快速学习与技术更新能力: ['学习', '技术', '更新', '新技术', '学习能力'],
+    产品导向与场景思维: ['产品', '场景', '应用', '落地', 'nlp', '自然语言处理'],
+    技术影响力与表达力: ['开源', '分享', '技术', '影响力', '表达', 'open source'],
   }
 
   const skillKeywords = keywords[skillName] || []
@@ -60,7 +42,7 @@ function getRelatedPosts(skillName: string) {
 }
 
 export default function SkillPage() {
-  const skillName = '模型理解与微调能力'
+  const skillName = '系统工程与部署能力'
   const skillData = siteMetadata.individual_ability_data.find((d) => d.subject === skillName)
   const relatedPosts = getRelatedPosts(skillName)
 
@@ -84,14 +66,14 @@ export default function SkillPage() {
         <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">个人介绍</h2>
         <div className="prose max-w-none text-gray-600 dark:text-gray-300">
           <p>
-            在模型理解与微调能力方面，我深入理解Transformer架构、注意力机制等核心原理，
-            能够从底层理解大模型的工作机制。我具备丰富的模型微调实践经验，
-            熟悉LoRA、QLoRA、Adapter等参数高效微调方法。
+            在系统工程与部署能力方面，我专注于将AI模型和算法转化为可生产部署的系统。
+            我具备丰富的DevOps实践经验，熟悉Docker容器化、Kubernetes编排、CI/CD流程设计等。
+            能够从零到一构建完整的AI服务基础设施，确保系统的可扩展性、稳定性和高性能。
           </p>
           <p>
-            我擅长根据具体任务需求选择合适的预训练模型，设计微调策略，优化训练流程。
-            在模型理解方面，我能够分析模型的内部表示、注意力模式，理解模型的行为机制。
-            我具备从零开始训练模型的能力，也擅长基于预训练模型进行领域适配和任务微调。
+            我擅长设计微服务架构，优化模型推理性能，处理高并发场景。
+            在部署过程中，我注重监控、日志、容错机制等运维最佳实践，
+            确保AI系统能够稳定运行并持续迭代优化。
           </p>
         </div>
       </section>
@@ -160,12 +142,12 @@ export default function SkillPage() {
           <div className="prose max-w-none text-gray-700 dark:text-gray-300">
             <p className="mb-2 font-semibold">评分标准：</p>
             <ul className="list-disc space-y-2 pl-6">
-              <li>模型架构理解：对Transformer、BERT、GPT等模型架构的深入理解</li>
-              <li>微调技术：LoRA、QLoRA、Adapter等参数高效微调方法的应用</li>
-              <li>训练优化：训练策略设计、超参数调优、训练稳定性控制</li>
-              <li>模型分析：模型内部机制分析、注意力可视化、表示学习理解</li>
-              <li>实践项目：实际微调项目的复杂度和效果</li>
-              <li>理论基础：对深度学习、自然语言处理理论的掌握</li>
+              <li>系统架构设计能力：能否设计可扩展、高可用的系统架构</li>
+              <li>容器化与编排：Docker、Kubernetes等容器技术的掌握程度</li>
+              <li>CI/CD流程：自动化部署流程的设计与实施能力</li>
+              <li>性能优化：系统性能调优、资源管理能力</li>
+              <li>监控与运维：日志、监控、告警等运维实践</li>
+              <li>故障处理：问题定位、容错机制设计能力</li>
             </ul>
             <p className="mt-4 font-semibold">评分范围：0-100分</p>
             <p className="mt-2">当前得分：{skillData?.score || 'N/A'}</p>

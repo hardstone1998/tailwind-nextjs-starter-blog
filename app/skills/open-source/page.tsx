@@ -6,7 +6,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
 import { genPageMetadata } from 'app/seo'
 
-export const metadata = genPageMetadata({ title: '模型理解与微调能力' })
+export const metadata = genPageMetadata({ title: '技术影响力与表达力' })
 
 // 根据技能关键词过滤相关博客
 function getRelatedPosts(skillName: string) {
@@ -21,7 +21,7 @@ function getRelatedPosts(skillName: string) {
       'ci/cd',
       'infrastructure',
     ],
-    模型理解与微调能力: ['微调', '模型', 'fine-tuning', '训练', '模型理解', '训练', 'pretrain'],
+    模型理解与微调能力: ['微调', '模型', 'fine-tuning', '训练', '模型理解'],
     跨模态与多任务融合: [
       '跨模态',
       '多模态',
@@ -60,7 +60,7 @@ function getRelatedPosts(skillName: string) {
 }
 
 export default function SkillPage() {
-  const skillName = '模型理解与微调能力'
+  const skillName = '技术影响力与表达力'
   const skillData = siteMetadata.individual_ability_data.find((d) => d.subject === skillName)
   const relatedPosts = getRelatedPosts(skillName)
 
@@ -84,14 +84,14 @@ export default function SkillPage() {
         <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">个人介绍</h2>
         <div className="prose max-w-none text-gray-600 dark:text-gray-300">
           <p>
-            在模型理解与微调能力方面，我深入理解Transformer架构、注意力机制等核心原理，
-            能够从底层理解大模型的工作机制。我具备丰富的模型微调实践经验，
-            熟悉LoRA、QLoRA、Adapter等参数高效微调方法。
+            在技术影响力与表达力方面，我致力于通过技术分享、开源贡献、博客写作等方式
+            传播技术知识，与社区共同成长。我具备将复杂技术概念清晰表达的能力，
+            能够通过文字、代码、演示等多种形式分享技术见解。
           </p>
           <p>
-            我擅长根据具体任务需求选择合适的预训练模型，设计微调策略，优化训练流程。
-            在模型理解方面，我能够分析模型的内部表示、注意力模式，理解模型的行为机制。
-            我具备从零开始训练模型的能力，也擅长基于预训练模型进行领域适配和任务微调。
+            我积极参与开源社区，贡献代码、文档和技术方案。通过技术博客记录学习过程和实践经验，
+            帮助他人少走弯路。我注重技术表达的准确性和可理解性，能够将深奥的技术原理
+            转化为易于理解的内容，提升技术影响力。
           </p>
         </div>
       </section>
@@ -160,12 +160,12 @@ export default function SkillPage() {
           <div className="prose max-w-none text-gray-700 dark:text-gray-300">
             <p className="mb-2 font-semibold">评分标准：</p>
             <ul className="list-disc space-y-2 pl-6">
-              <li>模型架构理解：对Transformer、BERT、GPT等模型架构的深入理解</li>
-              <li>微调技术：LoRA、QLoRA、Adapter等参数高效微调方法的应用</li>
-              <li>训练优化：训练策略设计、超参数调优、训练稳定性控制</li>
-              <li>模型分析：模型内部机制分析、注意力可视化、表示学习理解</li>
-              <li>实践项目：实际微调项目的复杂度和效果</li>
-              <li>理论基础：对深度学习、自然语言处理理论的掌握</li>
+              <li>技术写作：技术博客、文档的质量和数量</li>
+              <li>开源贡献：GitHub等平台的开源项目贡献</li>
+              <li>技术分享：技术会议、社区分享的参与度</li>
+              <li>表达能力：将复杂技术清晰表达的能力</li>
+              <li>社区影响：在技术社区的影响力和认可度</li>
+              <li>知识传播：帮助他人学习和成长的能力</li>
             </ul>
             <p className="mt-4 font-semibold">评分范围：0-100分</p>
             <p className="mt-2">当前得分：{skillData?.score || 'N/A'}</p>

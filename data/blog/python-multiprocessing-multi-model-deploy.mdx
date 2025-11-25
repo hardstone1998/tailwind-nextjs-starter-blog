@@ -1,0 +1,446 @@
+---
+title: '单 Python 文件搞定多模型部署：一次 multiprocessing 实战记录'
+date: '2025-11-25'
+lastmod: '2025-11-25'
+tags: ['Python', 'multiprocessing', '多进程', '模型部署', 'ASR']
+draft: false
+summary: '在一个 Python 文件中，通过 multiprocessing 同时跑多个模型实例，实现多 GPU 绑定与并发任务调度的完整实战记录。'
+authors: ['default']
+layout: PostLayout
+---
+
+# 单 Python 文件搞定多模型部署：一次 multiprocessing 实战记录
+
+## 1. 背景与目标
+
+在业务中使用小模型服务时（例如 ASR、TTS、VITS、图像识别等等），经常会遇到这样的情况：
+
+* 模型不算大
+* 模型实例数量不多（几个到十几个）
+* 业务流程比较复杂（例如流式 ASR、带上下文管理、和其它服务高度耦合）
+
+这时候如果上 Triton、KServe 或整套 K8s：
+
+* 性能和功能肯定都很好（批处理、并发、显卡调度都有），
+* 但部署配置复杂、接入成本高，而且业务逻辑很难完全放进“纯模型服务”里。
+
+我这次要解决的问题很具体：
+
+> **在一个 Python 文件里，同时跑多个模型实例（可以分配到不同 GPU），既能兼顾并发性能，又能和复杂业务紧密结合。**
+
+考虑到 Python 的 GIL，如果所有模型都在单进程里串行执行，会浪费 GPU；
+而每个模型单独起一套 Web 服务（FastAPI + uvicorn），服务数量又会爆炸，不好维护。
+
+所以最终方案是：
+
+> **单文件 + `multiprocessing` 多进程**：
+> 主进程负责业务逻辑与任务分发，多个子进程各自加载模型，通过队列通信。
+
+---
+
+## 2. 需求与约束分析
+
+这套方案主要面向这样的场景：
+
+* 有一定并发要求（例如实时语音识别），但达不到“必须上 Triton/K8s”的量级
+* 模型数量有限（比如 2 张 L20，每张卡 2 个模型实例，共 4 个）
+* 希望业务逻辑和模型部署放在同一项目中，方便开发和排查问题
+* 希望可以灵活地把不同模型/实例绑定到不同的 GPU 上
+
+约束则包括：
+
+* 不想引入太多复杂的外部组件，只用 Python 标准库 + 模型库
+* 能维持较简单的部署方式：**一条命令启动整个服务**
+
+---
+
+## 3. 方案选型：为什么是 multiprocessing？
+
+### 方案一：单进程单模型（同步调用）
+
+* **优点**：开发最简单，直接在业务代码里 `model(xxx)` 即可，快速上线。
+* **缺点**：
+
+  * 并发能力有限（一个请求一个请求排队）
+  * 多模型场景下只能串行调用，GPU 资源利用不充分
+
+适合 demo 和离线脚本，不太适合实时语音服务。
+
+---
+
+### 方案二：多服务 + FastAPI / uvicorn
+
+典型做法：为每个模型起一个独立服务（FastAPI + uvicorn），再用 `--workers` 起多个进程提高吞吐。
+
+* **优点**：
+
+  * 架构模式大家都熟悉
+  * 每个模型是一个独立服务，扩缩容清晰
+
+* **缺点**：
+
+  * 模型一多，服务数量就上来，运维和监控成本升高
+  * 复杂业务逻辑需要在服务之间来回调用，调试比较麻烦
+  * 不同 GPU/实例的管理需要额外的运维脚本或编排
+
+---
+
+### 方案三：单文件 + `multiprocessing` 多进程（本文方案）
+
+* **做法**：
+
+  * 一个 Python 服务进程（例如 FastAPI 应用）
+  * 在其中用 `multiprocessing` 起多个 **worker 子进程**，每个子进程加载一个模型实例
+  * 主进程通过 `multiprocessing.Queue` 向 worker 派发任务、收集结果
+
+* **优点**：
+
+  * 模型和业务逻辑在一个项目 / 一个服务里，开发调试友好
+  * 可以在代码层面精确控制每个模型实例绑定到哪块 GPU
+  * 不依赖额外的模型服务框架和调度系统
+
+* **缺点**：
+
+  * 比方案一稍微复杂，需要管理子进程的生命周期和异常
+
+---
+
+### 方案四：Triton 等官方部署工具
+
+* **优点**：
+
+  * 功能强大：批处理、并发控制、显卡策略、监控等
+* **缺点**：
+
+  * 部署与接入成本较高
+  * 对于“业务流程复杂 + 模型不多”的场景，会显得有点“重”
+
+---
+
+对我这次的需求来说：
+
+> **“模型数量不多，有一定并发，但不需要大量模型实例和统一编排”**，
+> 用 **单文件 + `multiprocessing`** 是一个非常舒适的折中方案。
+
+下面就用简化版本的代码，说明我是怎么做的。
+
+---
+
+## 4. 整体设计思路
+
+整体架构可以画成这样一条链：
+
+> **业务代码 → ASR 工厂（进程池） → 多个 worker 子进程（每个进程内一个模型实例）**
+
+* **主进程**：
+
+  * 负责 HTTP / gRPC 接口或直接内部调用
+  * 把“识别文件”的任务封装成 `(task_id, wav_path)` 等形式丢进任务队列
+  * 异步等待对应结果返回，和业务逻辑整合在一起
+
+* **子进程（worker）**：
+
+  * 启动时加载一个 ASR 模型实例（可以指定不同 `device`，如 `"cuda:0"`、`"cuda:1"`）
+  * 循环从任务队列取任务 → 调用模型 → 把结果写到结果队列
+
+* **工厂（Factory）**：
+
+  * 管理 worker 进程的启动和关闭
+  * 维护 `task_id -> asyncio.Future` 映射
+  * 后台协程不断从结果队列取结果，完成 Future
+
+---
+
+## 5. 关键实现细节（精简代码）
+
+> ⚠️ 下面是“博客展示用”的精简版代码，只保留对理解架构有帮助的部分。
+> 实际项目中你可以再加上日志、完整配置、原始结果返回等功能。
+
+### 5.1 模型封装 & worker 进程函数
+
+```python
+import asyncio
+import multiprocessing as mp
+from typing import Dict, List, Optional
+
+from funasr import AutoModel  # 也可以替换成你自己的模型库
+
+
+# ---------- Worker 进程里的模型封装 ----------
+
+class ASRModel:
+    def __init__(self, model_name: str, device: str = "cpu"):
+        # 实际项目中可以加 revision、vad/punc 等参数
+        self.model = AutoModel(model=model_name, device=device)
+
+    def recognize_file(self, wav_path: str) -> str:
+        result = self.model.generate(input=wav_path)
+        texts = []
+        for item in result:
+            if isinstance(item, dict) and "text" in item:
+                texts.append(str(item["text"]))
+        return "\n".join(texts) if texts else ""
+
+
+# ---------- Worker 进程函数 ----------
+
+def asr_worker(
+    task_q: mp.Queue,
+    result_q: mp.Queue,
+    worker_id: int,
+    model_name: str,
+    device: str,
+):
+    """
+    每个 worker 进程：
+    - 启动时加载一个模型实例
+    - 循环从队列里取任务，识别后把结果放回结果队列
+    """
+    model = ASRModel(model_name=model_name, device=device)
+    print(f"[worker-{worker_id}] started on device={device}")
+
+    while True:
+        task = task_q.get()
+        if task is None:  # 收到退出信号
+            break
+
+        task_id, wav_path = task
+        try:
+            text = model.recognize_file(wav_path)
+            result_q.put((task_id, text, None))
+        except Exception as e:
+            result_q.put((task_id, None, str(e)))
+
+    print(f"[worker-{worker_id}] exit")
+```
+
+---
+
+### 5.2 工厂：进程池管理 + 异步接口
+
+```python
+class ASRFactory:
+    """
+    - 管理多个 worker 进程
+    - 提供异步接口 transcribe_file(wav_path) -> str
+    """
+
+    def __init__(self, model_name: str, devices: List[str]):
+        self.model_name = model_name
+        self.devices = devices
+
+        self._task_q: mp.Queue = mp.Queue()
+        self._result_q: mp.Queue = mp.Queue()
+        self._processes: List[mp.Process] = []
+
+        self._next_task_id = 0
+        self._pending: Dict[int, asyncio.Future] = {}
+        self._result_task: Optional[asyncio.Task] = None
+
+    async def start(self) -> None:
+        # 启动多个 worker 进程，每个绑定到一个 device
+        for i, device in enumerate(self.devices):
+            p = mp.Process(
+                target=asr_worker,
+                args=(self._task_q, self._result_q, i, self.model_name, device),
+                daemon=True,
+            )
+            p.start()
+            self._processes.append(p)
+            print(f"[factory] worker-{i} pid={p.pid}, device={device}")
+
+        # 启动后台协程，负责从结果队列读取结果
+        self._result_task = asyncio.create_task(self._loop_results())
+
+    async def close(self) -> None:
+        # 向所有 worker 发送退出信号
+        for _ in self._processes:
+            self._task_q.put(None)
+
+        # 等待进程退出
+        for p in self._processes:
+            p.join(timeout=5)
+
+        # 关闭结果处理协程
+        if self._result_task:
+            self._result_task.cancel()
+            try:
+                await self._result_task
+            except asyncio.CancelledError:
+                pass
+
+    async def _loop_results(self) -> None:
+        """
+        后台协程：从结果队列取结果，填充对应的 Future
+        """
+        loop = asyncio.get_running_loop()
+        while True:
+            try:
+                task_id, text, err = await loop.run_in_executor(
+                    None, self._result_q.get
+                )
+            except asyncio.CancelledError:
+                break
+
+            fut = self._pending.pop(task_id, None)
+            if not fut:
+                continue
+
+            if err:
+                fut.set_exception(RuntimeError(err))
+            else:
+                fut.set_result(text)
+
+    async def transcribe_file(self, wav_path: str) -> str:
+        """
+        对外暴露的异步接口：
+        - 生成 task_id 和 Future
+        - 把任务放入队列
+        - 等待 Future 完成
+        """
+        loop = asyncio.get_running_loop()
+
+        self._next_task_id += 1
+        task_id = self._next_task_id
+
+        fut: asyncio.Future = loop.create_future()
+        self._pending[task_id] = fut
+
+        # 把任务放到队列中交给某个空闲 worker 处理
+        await loop.run_in_executor(
+            None, self._task_q.put, (task_id, wav_path)
+        )
+
+        # 等待结果
+        return await fut
+```
+
+---
+
+### 5.3 应用启动 / 关闭中的使用
+
+在实际 Web 服务（比如 FastAPI）中，可以在应用启动和关闭时创建 / 释放工厂：
+
+```python
+factory: Optional[ASRFactory] = None
+
+async def on_startup():
+    global factory
+    factory = ASRFactory(
+        model_name="iic/speech_seaco_paraformer_large_asr_nat-zh-cn-16k-common-vocab8404-pytorch",
+        devices=["cuda:0", "cuda:1"],  # 例如两张 L20
+    )
+    await factory.start()
+    print("ASR factory started")
+
+async def on_shutdown():
+    global factory
+    if factory:
+        await factory.close()
+        factory = None
+        print("ASR factory closed")
+
+# 实际业务处理时：
+# text = await factory.transcribe_file("some_audio.wav")
+```
+
+**注意入口文件：**
+
+在使用 `multiprocessing` 时，入口文件需要加上：
+
+```python
+if __name__ == "__main__":
+    mp.set_start_method("spawn", force=True)
+    # 这里启动 Web 服务或者测试代码
+```
+
+这点非常重要，下面会单独说。
+
+---
+
+## 6. 踩坑合集与解决方案
+
+### 坑 1：没有 `if __name__ == "__main__"` 导致进程递归 / 启动失败
+
+在 Windows 上，如果不加这句，`multiprocessing` 会不断复制主进程，导致递归创建子进程，程序直接崩掉。
+在 Linux 上虽然默认方式不同，但也强烈建议**统一加上**。
+
+**解决**：入口文件这样写：
+
+```python
+if __name__ == "__main__":
+    mp.set_start_method("spawn", force=True)
+    # 你的应用启动代码
+```
+
+---
+
+### 坑 2：`fork` 导致 CUDA / 大模型异常（推荐统一用 `spawn`）
+
+Linux 默认的启动方式是 `fork`，对于使用 CUDA 的大模型，有可能出现：
+
+* 显存重复占用
+* 子进程 CUDA 初始化失败
+* 一些库在 `fork` 后内部状态不一致
+
+**解决**：统一显式设置 `spawn`：
+
+```python
+mp.set_start_method("spawn", force=True)
+```
+
+* Windows 上本来就需要 `spawn`；
+* Linux 上这么设置能避免很多和 CUDA / 大模型相关的诡异问题。
+
+---
+
+### 坑 3：模型重复加载和显存爆掉
+
+每个 worker 进程都会各自加载一份模型，如果同一块卡上起太多 worker，很容易显存不够。
+
+**经验**：
+
+* 对于像 Seaco Paraformer 这种模型，一张 L20 上一般 **1–2 个实例** 会比较稳妥
+* 太多实例时，显存不一定够，性能也未必继续线性提升
+
+---
+
+### 坑 4：子进程退出不干净
+
+如果关闭时不向 worker 发送退出信号，或者不 `join()` 等待退出，有可能出现僵尸进程，影响下次部署。
+
+**解决**：
+
+* 像上面的 `ASRFactory.close()` 那样：
+
+  * 先往队列里放 `None` 作为退出信号
+  * 然后 `join()` 等待所有进程结束
+  * 再清理队列与后台协程
+
+---
+
+## 7. 性能与效果对比（简单结论）
+
+在我的测试环境中（**2 张 L20，每张 2 个模型实例，共 4 个 worker 进程**）：
+
+* 使用 funasr 中的 Paraformer 模型
+* 单独部署一个模型实例时，处理速度大约是 **每秒 ~240 个请求**
+* 在两张 L20 上共部署 4 个实例后，总体处理能力提升到 **每秒 ~700 多个请求**
+
+这里的数字是我在特定环境下的简单测试，只说明一个趋势：
+
+> 对于模型不算特别大、多块 GPU、并发适中的场景，
+> **用 `multiprocessing` 在一个 Python 文件里起多进程进程池，是一种既简单又有效的方案。**
+
+---
+
+## 总结
+
+这篇文章主要想分享的不是“我写了多厉害的代码”，而是：
+
+* 在**真实业务需求**下，我是如何权衡和选择方案的
+* 如何用 **单文件 + `multiprocessing`** 在一个服务里管理多模型、多实例
+* 实践中遇到的几个典型坑和对应的解决思路
+
+如果你也有类似场景（模型不太多，但业务流程复杂、需要一定并发），
+不妨也尝试一下这种“轻量级多进程进程池”的方式，然后再根据自己的项目慢慢演进。

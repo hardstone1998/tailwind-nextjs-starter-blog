@@ -6,7 +6,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
 import { genPageMetadata } from 'app/seo'
 
-export const metadata = genPageMetadata({ title: '模型理解与微调能力' })
+export const metadata = genPageMetadata({ title: '跨模态与多任务融合' })
 
 // 根据技能关键词过滤相关博客
 function getRelatedPosts(skillName: string) {
@@ -21,7 +21,7 @@ function getRelatedPosts(skillName: string) {
       'ci/cd',
       'infrastructure',
     ],
-    模型理解与微调能力: ['微调', '模型', 'fine-tuning', '训练', '模型理解', '训练', 'pretrain'],
+    模型理解与微调能力: ['微调', '模型', 'fine-tuning', '训练', '模型理解'],
     跨模态与多任务融合: [
       '跨模态',
       '多模态',
@@ -32,18 +32,9 @@ function getRelatedPosts(skillName: string) {
       '语言',
       '图像',
     ],
-    快速学习与技术更新能力: ['学习', '技术', '更新', '新技术', '学习能力', '快速', '适应'],
-    产品导向与场景思维: ['产品', '场景', '应用', '落地', 'nlp', '自然语言处理', '产品思维', '业务'],
-    技术影响力与表达力: [
-      '开源',
-      '分享',
-      '技术',
-      '影响力',
-      '表达',
-      'open source',
-      '技术分享',
-      '社区',
-    ],
+    快速学习与技术更新能力: ['学习', '技术', '更新', '新技术', '学习能力'],
+    产品导向与场景思维: ['产品', '场景', '应用', '落地', 'nlp', '自然语言处理'],
+    技术影响力与表达力: ['开源', '分享', '技术', '影响力', '表达', 'open source'],
   }
 
   const skillKeywords = keywords[skillName] || []
@@ -60,7 +51,7 @@ function getRelatedPosts(skillName: string) {
 }
 
 export default function SkillPage() {
-  const skillName = '模型理解与微调能力'
+  const skillName = '跨模态与多任务融合'
   const skillData = siteMetadata.individual_ability_data.find((d) => d.subject === skillName)
   const relatedPosts = getRelatedPosts(skillName)
 
@@ -84,14 +75,14 @@ export default function SkillPage() {
         <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">个人介绍</h2>
         <div className="prose max-w-none text-gray-600 dark:text-gray-300">
           <p>
-            在模型理解与微调能力方面，我深入理解Transformer架构、注意力机制等核心原理，
-            能够从底层理解大模型的工作机制。我具备丰富的模型微调实践经验，
-            熟悉LoRA、QLoRA、Adapter等参数高效微调方法。
+            在跨模态与多任务融合方面，我专注于将不同模态（文本、图像、语音等）的信息进行有效融合，
+            并设计能够同时处理多个相关任务的统一模型架构。我深入研究视觉-语言理解、多模态预训练、
+            跨模态检索等前沿技术。
           </p>
           <p>
-            我擅长根据具体任务需求选择合适的预训练模型，设计微调策略，优化训练流程。
-            在模型理解方面，我能够分析模型的内部表示、注意力模式，理解模型的行为机制。
-            我具备从零开始训练模型的能力，也擅长基于预训练模型进行领域适配和任务微调。
+            我具备设计和实现多任务学习框架的能力，能够通过共享表示学习提升模型效率。
+            在跨模态融合方面，我熟悉注意力机制、特征对齐、模态转换等关键技术，
+            能够构建端到端的跨模态理解系统。
           </p>
         </div>
       </section>
@@ -160,12 +151,12 @@ export default function SkillPage() {
           <div className="prose max-w-none text-gray-700 dark:text-gray-300">
             <p className="mb-2 font-semibold">评分标准：</p>
             <ul className="list-disc space-y-2 pl-6">
-              <li>模型架构理解：对Transformer、BERT、GPT等模型架构的深入理解</li>
-              <li>微调技术：LoRA、QLoRA、Adapter等参数高效微调方法的应用</li>
-              <li>训练优化：训练策略设计、超参数调优、训练稳定性控制</li>
-              <li>模型分析：模型内部机制分析、注意力可视化、表示学习理解</li>
-              <li>实践项目：实际微调项目的复杂度和效果</li>
-              <li>理论基础：对深度学习、自然语言处理理论的掌握</li>
+              <li>跨模态理解能力：文本-图像、文本-语音等跨模态理解技术掌握</li>
+              <li>多任务学习：设计统一架构处理多个相关任务的能力</li>
+              <li>特征融合技术：不同模态特征的融合与对齐方法</li>
+              <li>预训练模型应用：CLIP、ALIGN等跨模态预训练模型的使用</li>
+              <li>实际项目经验：跨模态应用场景的落地实践</li>
+              <li>技术创新：在跨模态融合方面的创新与优化</li>
             </ul>
             <p className="mt-4 font-semibold">评分范围：0-100分</p>
             <p className="mt-2">当前得分：{skillData?.score || 'N/A'}</p>
