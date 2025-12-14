@@ -1,0 +1,202 @@
+---
+title: 'FunASR 极致性能优化：从 Queue 到 SharedMemory 与全链路并发控制'
+date: '2025-12-14'
+lastmod: '2025-12-14'
+tags: ['Python', 'SharedMemory', 'Asyncio', 'FunASR', '性能优化', '并发编程', '系统工程与部署能力']
+draft: false
+summary: '在上一篇多进程部署的基础上，通过引入 SharedMemory 零拷贝、AnyIO 流式管道以及精细的 Asyncio 锁机制，成功将 50 路并发下的 RTF 从 0.61 压至 0.23，实现吞吐量翻倍。'
+authors: ['qsl']
+layout: PostLayout
+---
+
+# FunASR 极致性能优化：从 Queue 到 SharedMemory 与全链路并发控制
+
+## 1. 引言：并发下的隐形杀手
+
+在[上一篇文章](/blog/previous-post)中，通过 `multiprocessing` 实现了多模型实例的并行推理。但在实际压测和流式业务上线后，我发现了新的性能瓶颈：
+
+1.  **IPC 通信开销**：当并发量上来后，主进程与 Worker 进程间通过 `Queue` 传递大量音频数据，序列化（Pickle）占用了大量 CPU，导致 RTF（实时率）波动。
+2.  **IO 阻塞雪崩**：高并发上传文件或下载音频时，任何同步 IO 操作都会阻塞 EventLoop，导致 WebSocket 心跳丢失。
+3.  **资源争抢**：没有精细的限流，瞬间涌入的请求会打爆显存或导致 OOM。
+
+本文将分享我是如何组合使用 `SharedMemory`、`AnyIO` 和 `Asyncio` 全家桶，解决上述问题并将系统性能提升一个量级的。
+
+---
+
+## 2. 核心手术：SharedMemory 替换 Queue
+
+这是本次优化最大的性能收益点。为了消除进程间通信的数据拷贝开销，我将音频传输方式从“管道搬运”改为了“共享内存”。
+
+### 2.1 主进程：写入与指针传递
+
+不再直接把音频数据（Bytes）塞入队列，而是申请一块共享内存，将数据写入 buffer，通过队列仅传递内存块的名称（name）。
+
+```python
+import multiprocessing.shared_memory
+import numpy as np
+
+async def process_chunk(self, audio_array: np.ndarray, is_final: bool) -> str:
+    audio_size = audio_array.nbytes
+
+    # 1. 创建共享内存 (Zero-Copy 基础)
+    shm = multiprocessing.shared_memory.SharedMemory(
+        create=True,
+        size=audio_size,
+        name=f"asr_{task_id}"
+    )
+
+    # 2. 写入数据
+    audio_bytes = audio_array.tobytes()
+    shm.buf[:audio_size] = audio_bytes
+
+    # 3. 引用管理（防止被过早 GC）
+    async with self.factory._shared_memory_lock:
+        self.factory._shared_memory_pool[shm.name] = shm
+
+    # 4. 仅发送“指针”
+    task = {
+        "task_id": task_id,
+        "shm_name": shm.name,
+        "audio_size": audio_size,
+        # ... 其他元数据
+    }
+    self._task_queue.put(task)
+```
+
+### 2.2 Worker 进程：零拷贝读取
+
+Worker 收到任务后，根据 shm_name 直接映射内存区域，读取完毕后立即关闭引用，交由主进程进行 unlink 释放。
+
+```python
+def worker_process():
+    # ... 获取任务 ...
+    if shm_name and audio_size > 0:
+        # 直接连接已存在的共享内存
+        shm = multiprocessing.shared_memory.SharedMemory(name=shm_name)
+        # 从 buffer 重构 numpy 数组，几乎无开销
+        audio_array = np.frombuffer(shm.buf[:audio_size], dtype=np.float32).copy()
+        shm.close()
+    # ... 模型推理 ...
+```
+
+---
+
+## 3. 防线构筑：多级并发控制
+
+有了高效的数据传输通道，还需要红绿灯来控制流量。我在不同层级使用了不同的并发原语。
+
+### 3.1 入口层：Asyncio Semaphore 限流
+
+为了保护服务不被瞬间流量冲垮，在 HTTP 和 WebSocket 入口处均设置了信号量。
+
+**WebSocket 连接控制：**
+
+```python
+# 限制最大并发连接数，超过直接拒绝或等待
+_streaming_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
+
+@router.websocket("/streaming")
+async def transcription(websocket: WebSocket):
+    try:
+        # 快速失败机制：等待超时则拒绝服务
+        await asyncio.wait_for(semaphore.acquire(), timeout=REQUEST_TIMEOUT)
+    except asyncio.TimeoutError:
+        await websocket.close(code=1008, reason="服务繁忙")
+        return
+    # ... 业务逻辑 ...
+```
+
+### 3.2 逻辑层：AnyIO 管道与任务组
+
+在处理流式音频时，我使用了 anyio 库。相比原生的 asyncio.Queue，anyio 的 Memory Object Stream 提供了更现代的生产者-消费者模型，且与 Structured Concurrency（结构化并发）结合得更好。
+
+```python
+import anyio
+
+# 创建有界内存流，防止内存无限增长
+send_stream, receive_stream = anyio.create_memory_object_stream(max_buffer_size=100)
+
+async with anyio.create_task_group() as tg:
+    # 消费者：后台模型处理
+    tg.start_soon(audio_processor_task, receive_stream)
+
+    # 生产者：WebSocket 接收
+    async with send_stream:
+        while True:
+            msg = await websocket.receive()
+            await send_stream.send(audio_message)
+```
+
+### 3.3 数据层：线程安全与连接池
+
+对于 HTTP 下载和文件写入等操作，必须严格隔离 async 和 sync 操作，防止阻塞事件循环。
+
+- **HTTP 并发下载**：使用 httpx.AsyncClient 复用连接池。
+- **文件 IO**：使用 run_in_executor 将磁盘写入扔到线程池。
+
+```python
+# 典型的异步避坑：不要在 async def 里直接写 open()
+def _write_file():
+    with tempfile.NamedTemporaryFile(delete=False) as tmp:
+        tmp.write(content)
+        return tmp.name
+
+tmp_path = await loop.run_in_executor(None, _write_file)
+```
+
+---
+
+## 4. 调度策略：负载均衡
+
+当后端有多个 GPU Worker 时，如何分配任务？我实现了一个简单的负载均衡器，始终将任务派发给"当前待处理任务最少"的 Factory 实例。
+
+```python
+@staticmethod
+def select_from_factories(factories: List["ASRFactory"]) -> "ASRFactory":
+    # 贪心算法：选择积压任务最少的 Worker 组
+    return min(factories, key=lambda f: len(f._pending_tasks))
+```
+
+---
+
+## 5. 效果实战：性能翻倍
+
+为了验证上述优化的效果，我针对流式 ASR 场景进行了梯度压测。
+
+**测试环境：**
+
+- 硬件：双卡 NVIDIA L20
+- 部署：双进程模型实例（每卡1实例）
+- 测试工具：自研 Python 脚本模拟 WebSocket 并发流
+
+### 5.1 优化前 vs 优化后 (50并发)
+
+在 **50 路并发** 的高负载下，优化带来的提升是质变的：
+
+| 指标         | 单卡单实例 (基准) | 双卡双实例 + 优化 (Modified) | 提升幅度        |
+| ------------ | ----------------- | ---------------------------- | --------------- |
+| RTF (实时率) | 0.61              | 0.23                         | 性能提升 2.6 倍 |
+| 总耗时       | 184.4s            | 75.3s                        | 速度提升 2.4 倍 |
+| 平均队列延迟 | 1273ms            | 187ms                        | 延迟降低 85%    |
+
+> 注：RTF (Real Time Factor) 越低越好，0.23 意味着处理 1 秒的音频只需要 0.23 秒。
+
+### 5.2 极致并发下的稳定性
+
+在优化后的架构下，我们测试了从 30 到 50 并发的表现（见下图数据趋势）：
+
+- 30 并发：RTF 1.28 (异常) -> 优化为 RTF 0.24
+- 40 并发：RTF 0.48 (单卡) -> 优化为 RTF 0.23
+- 50 并发：RTF 0.61 (单卡) -> 优化为 RTF 0.23
+
+**结论**：优化后的架构不仅横向扩展能力极强（双卡性能线性叠加），而且在高负载下表现极度稳定。即使在 50 路并发下，RTF 依然死死压在 0.23 左右，这意味着系统完全没有因为通信开销或锁竞争产生内耗。
+
+---
+
+## 6. 总结
+
+本次优化不仅仅是"加机器"这么简单，核心在于消除了软件层面的瓶颈：
+
+- SharedMemory 解决了带宽问题（数据搬运）。
+- Semaphore & Lock 解决了秩序问题（资源竞争）。
+- AnyIO & ThreadPool 解决了阻塞问题（CPU 调度）。
