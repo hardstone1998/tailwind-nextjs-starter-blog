@@ -45,3 +45,17 @@ yarn-error.log*
 
 # Contentlayer
 .contentlayer
+
+# IDE/Editor config
+.idea/
+.vscode/
+.cursor/
+.claude/
+.codex/
+.gemini/
+.kiro/
+.opencode/
+.agents/
+
+# Build artifacts
+tsconfig.tsbuildinfo
