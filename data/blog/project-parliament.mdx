@@ -1,0 +1,87 @@
+---
+title: 'Project Parliament：让多个模型为开源方向辩论'
+date: '2026-04-12'
+lastmod: '2026-08-02'
+tags: ['AI Agents', 'Multi-model', 'Open Source', 'FastAPI', '实验项目']
+summary: '一个用两个周末完成的多模型工作流实验：让 AI 先提出候选开源方向，再通过结构化辩论收敛出真正适合开发者的行动路线。'
+images: ['/static/images/projects/project-parliament-homepage.png']
+authors: ['default']
+layout: PostLayout
+---
+
+# Project Parliament：让多个模型为开源方向辩论
+
+> **Lab #01 · 持续迭代**
+>
+> 我用两个周末完成了这个实验：不是让一个模型马上告诉你“应该做什么开源项目”，而是让多个模型像议会一样，先提出候选、再互相质疑，最后才形成可以执行的主路线与备选路线。
+
+[查看 GitHub 源码](https://github.com/hardstone1998/Project-Parliament)
+
+## 从一个很常见的问题开始
+
+“我该做什么开源项目？”看起来像是一个灵感问题，实际却同时受个人技能、职业方向、投入时间、市场需求和现有工作的边界约束。
+
+如果一开始就让模型给出唯一答案，往往会得到看似合理、却很泛化的建议。Project Parliament 尝试把这个决策过程拆开：先允许不同模型独立发散，再把重叠想法汇总，接着从不同立场辩论，最后才做裁决。
+
+![Project Parliament 首页：输入个人背景、目标与约束](/static/images/projects/project-parliament-homepage.png)
+
+这张截图保留了早期的 **Model Parliament** 名称；项目在开源发布前更名为 **Project Parliament**。
+
+## 七步议会式工作流
+
+项目的关键不是“让更多模型投票”，而是把每一步的职责限制得足够清晰：前面不抢着下结论，最后一步才允许综合判断。
+
+![Project Parliament 的七步工作流](/static/images/projects/project-parliament-workflow.png)
+
+| 步骤 | 角色                | 负责的问题                                           |
+| ---- | ------------------- | ---------------------------------------------------- |
+| 1    | Opportunity Scout   | 基于用户背景，各模型独立提出候选方向。               |
+| 2    | Consolidator        | 合并并去重候选方向，形成可讨论的项目列表。           |
+| 3    | Market Skeptic      | 质疑需求、竞争、切换成本和失败路径。                 |
+| 4    | Builder Fit Judge   | 判断方向是否匹配用户的技能、资源和职业目标。         |
+| 5    | Open-source Curator | 区分哪些适合开源，哪些更适合产品、内容或 demo。      |
+| 6    | Synthesizer         | 在前面讨论完成后，输出主路线、备选路线和下一步行动。 |
+| 7    | Performance Review  | 记录并复盘每个模型在各步骤的输出质量。               |
+
+## 两个周末的推进过程
+
+这不是一次从需求文档到成品的线性开发。提交记录更接近一段不断收紧问题边界的过程。
+
+| 时间       | 推进内容                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| 4 月 6 日  | 从初始原型出发，重构为模块化架构，并把评议流程拆成独立职责。                                              |
+| 4 月 7 日  | 将评估扩展为七步流程，加入负责汇总去重的 Consolidator，避免不同模型重复讨论相同方向。                     |
+| 4 月 12 日 | 调整模型配置、补齐文档和使用截图、修复开源前问题，并把项目从 Model Parliament 更名为 Project Parliament。 |
+
+这条轨迹也决定了当前产品的形态：它没有把所有事情自动化，而是保留了逐步触发、查看各模型输出和对失败结果单独重试的空间。对一个探索性决策工具来说，过程本身和最后的结论同样重要。
+
+## 我做出的几个取舍
+
+### 先发散，再收敛
+
+我没有把“最适合的项目”设计成一个单轮打分题。不同模型先独立给出方向，减少第一个答案锚定后续讨论的风险；随后再通过 Consolidator 建立统一候选集。
+
+### 辩论不等于淘汰赛
+
+市场质疑、个人适配和开源可行性都保留独立视角。一个方向即使市场看起来拥挤，也可能非常符合个人积累；另一个方向即使有需求，也未必适合以开源形态交付。第 6 步才负责综合这些张力。
+
+### 把 Prompt 和会话结果当作可复盘资产
+
+项目使用 FastAPI 提供后端，前端采用原生 HTML、CSS 与 JavaScript；模型请求通过 OpenRouter 接入，所有会话以本地 JSON 保存。每一步的 Prompt 都可编辑，让流程的行为不被隐藏在代码中。
+
+## 当前能力
+
+- 多模型并行讨论，保留共识与分歧。
+- 逐步手动执行工作流，每一步结果可回看。
+- 通过页面或文件编辑 Prompt。
+- 对失败的模型输出单独重试。
+- 为每个模型输出评分，并在报告页集中复盘。
+- 使用本地 JSON 保存会话历史，方便继续实验。
+
+![Project Parliament 的报告页面：集中查看与复盘各模型输出](/static/images/projects/project-parliament-reports.png)
+
+## 现在处于什么阶段
+
+Project Parliament 的首个可运行版本已经完成，并以 [MIT License](https://github.com/hardstone1998/Project-Parliament/blob/main/LICENSE) 开源。它仍然是一个成长中的实验：我希望继续观察不同模型组合、提示词设计和评审标准会如何改变最终建议的质量。
+
+如果你也在寻找一个真正贴合自己背景的开源方向，欢迎查看 [Project Parliament 的源码](https://github.com/hardstone1998/Project-Parliament)，或者把它当作一次关于“如何让 AI 参与复杂决策”的小型实践。
