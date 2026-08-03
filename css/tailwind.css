@@ -7,22 +7,23 @@
 /* Core theme configuration */
 @theme {
   /* Font families */
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+  --font-sans:
+    'PingFang SC', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   /* Colors */
   /* Copied from https://tailwindcss.com/docs/theme#default-theme-variable-reference */
-  --color-primary-50: oklch(0.971 0.014 343.198);
-  --color-primary-100: oklch(0.948 0.028 342.258);
-  --color-primary-200: oklch(0.899 0.061 343.231);
-  --color-primary-300: oklch(0.823 0.12 346.018);
-  --color-primary-400: oklch(0.718 0.202 349.761);
-  --color-primary-500: oklch(0.656 0.241 354.308);
-  --color-primary-600: oklch(0.592 0.249 0.584);
-  --color-primary-700: oklch(0.525 0.223 3.958);
-  --color-primary-800: oklch(0.459 0.187 3.815);
-  --color-primary-900: oklch(0.408 0.153 2.432);
-  --color-primary-950: oklch(0.284 0.109 3.907);
+  --color-primary-50: oklch(0.97 0.014 247);
+  --color-primary-100: oklch(0.94 0.03 247);
+  --color-primary-200: oklch(0.88 0.06 247);
+  --color-primary-300: oklch(0.79 0.11 247);
+  --color-primary-400: oklch(0.68 0.16 247);
+  --color-primary-500: oklch(0.57 0.17 247);
+  --color-primary-600: oklch(0.48 0.15 247);
+  --color-primary-700: oklch(0.4 0.12 247);
+  --color-primary-800: oklch(0.32 0.09 247);
+  --color-primary-900: oklch(0.25 0.06 247);
+  --color-primary-950: oklch(0.17 0.04 247);
 
   --color-gray-50: oklch(0.985 0.002 247.839);
   --color-gray-100: oklch(0.967 0.003 264.542);
@@ -57,6 +58,30 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  :root {
+    --surface: #f7f6f0;
+    --surface-raised: #fffefa;
+    --ink: #18232c;
+    --muted: #5d6974;
+    --rule: #d8ddd8;
+    --accent: #1769aa;
+    --signal: #c0f15a;
+  }
+
+  .dark {
+    --surface: #10171c;
+    --surface-raised: #162127;
+    --ink: #f2f5f0;
+    --muted: #a9b4b6;
+    --rule: #314047;
+    --accent: #75b9ff;
+    --signal: #c0f15a;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--ink);
+  }
   *,
   ::after,
   ::before,
@@ -78,8 +103,37 @@
   }
 }
 
+@layer components {
+  .section-label {
+    color: var(--accent);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .notebook-card {
+    border: 1px solid var(--rule);
+    background: var(--surface-raised);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 0 rgb(24 35 44 / 0.03);
+  }
+
+  .notebook-grid {
+    background-image:
+      linear-gradient(to right, rgb(23 105 170 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(23 105 170 / 0.07) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+  }
+}
+
 @layer utilities {
   .prose {
+    color: var(--muted);
+    font-size: 1.0625rem;
+    line-height: 1.9;
     & a {
       color: var(--color-primary-500);
       &:hover {
@@ -92,9 +146,11 @@
     & :where(h1, h2) {
       font-weight: 700;
       letter-spacing: var(--tracking-tight);
+      color: var(--ink);
     }
     & h3 {
       font-weight: 600;
+      color: var(--ink);
     }
     & :where(code):not(pre code) {
       color: var(--color-indigo-500);

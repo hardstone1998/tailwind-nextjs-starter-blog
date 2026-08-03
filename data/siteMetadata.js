@@ -3,11 +3,12 @@ const siteMetadata = {
   title: 'NLP Journey',
   author: 'qiaoshilei',
   headerTitle: 'NLP Journey',
-  description: 'NLP 算法工程师，专注于大模型微调、RAG 构建、多模态智能等方向。💻 热衷将复杂的 AI 技术转化为可落地的产品，记录自己的成长轨迹与每一次迭代。',
+  description:
+    'AI 算法工程师的公开研究笔记：记录大模型、系统工程与可复现实验，持续把复杂技术转化为可落地的产品。',
   language: 'zh',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
+  siteUrl: 'https://tailwind-nextjs-starter-blog-six-theta.vercel.app',
+  siteRepo: 'https://github.com/hardstone1998/tailwind-nextjs-starter-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
   // mastodon: 'https://mastodon.social/@mastodonuser',
@@ -22,7 +23,7 @@ const siteMetadata = {
   // instagram: 'https://www.instagram.com',
   // medium: 'https://medium.com',
   // bluesky: 'https://bsky.app/',
-  locale: 'en-US',
+  locale: 'zh-CN',
   // set to true if you want a navbar fixed to the top
   stickyNav: false,
   analytics: {
@@ -98,14 +99,6 @@ const siteMetadata = {
     //   indexName: 'docsearch',
     // },
   },
-  individual_ability_data: [
-  { subject: '模型理解与微调能力', score: 72, url: '/skills/code' },
-  { subject: '系统工程与部署能力', score: 71.5, url: '/skills/model' },
-  { subject: '跨模态与多任务融合', score: 68.5, url: '/skills/deploy' },
-  { subject: '快速学习与技术更新能力', score: 72, url: '/skills/engineering' },
-  { subject: '产品导向与场景思维', score: 73, url: '/skills/nlp' },
-  { subject: '技术影响力与表达力', score: 57.5, url: '/skills/open-source' },
-]
 }
 
 module.exports = siteMetadata

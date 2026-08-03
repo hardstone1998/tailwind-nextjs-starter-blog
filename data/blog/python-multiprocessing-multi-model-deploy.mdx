@@ -6,6 +6,11 @@ tags: ['Python', 'multiprocessing', '多进程', '模型部署', 'ASR', '系统�
 draft: false
 summary: '在一个 Python 文件中，通过 multiprocessing 同时跑多个模型实例，实现多 GPU 绑定与并发任务调度的完整实战记录。'
 authors: ['qsl']
+domains: ['systems-engineering']
+lab: '推理服务实践'
+status: 'archived'
+methods: ['multiprocessing', '多 GPU 绑定', '任务调度']
+outcome: '以单文件原型验证多模型实例并行部署方案。'
 layout: PostLayout
 ---
 
@@ -60,7 +65,6 @@ layout: PostLayout
 
 - **优点**：开发最简单，直接在业务代码里 `model(xxx)` 即可，快速上线。
 - **缺点**：
-
   - 并发能力有限（一个请求一个请求排队）
   - 多模型场景下只能串行调用，GPU 资源利用不充分
 
@@ -73,12 +77,10 @@ layout: PostLayout
 典型做法：为每个模型起一个独立服务（FastAPI + uvicorn），再用 `--workers` 起多个进程提高吞吐。
 
 - **优点**：
-
   - 架构模式大家都熟悉
   - 每个模型是一个独立服务，扩缩容清晰
 
 - **缺点**：
-
   - 模型一多，服务数量就上来，运维和监控成本升高
   - 复杂业务逻辑需要在服务之间来回调用，调试比较麻烦
   - 不同 GPU/实例的管理需要额外的运维脚本或编排
@@ -88,19 +90,16 @@ layout: PostLayout
 ### 方案三：单文件 + `multiprocessing` 多进程（本文方案）
 
 - **做法**：
-
   - 一个 Python 服务进程（例如 FastAPI 应用）
   - 在其中用 `multiprocessing` 起多个 **worker 子进程**，每个子进程加载一个模型实例
   - 主进程通过 `multiprocessing.Queue` 向 worker 派发任务、收集结果
 
 - **优点**：
-
   - 模型和业务逻辑在一个项目 / 一个服务里，开发调试友好
   - 可以在代码层面精确控制每个模型实例绑定到哪块 GPU
   - 不依赖额外的模型服务框架和调度系统
 
 - **缺点**：
-
   - 比方案一稍微复杂，需要管理子进程的生命周期和异常
 
 ---
@@ -108,11 +107,9 @@ layout: PostLayout
 ### 方案四：Triton 等官方部署工具
 
 - **优点**：
-
   - 功能强大：批处理、并发控制、显卡策略、监控等
 
 - **缺点**：
-
   - 部署与接入成本较高
   - 对于“业务流程复杂 + 模型不多”的场景，会显得有点“重”
 
@@ -134,18 +131,15 @@ layout: PostLayout
 > **业务代码 → ASR 工厂（进程池） → 多个 worker 子进程（每个进程内一个模型实例）**
 
 - **主进程**：
-
   - 负责 HTTP / gRPC 接口或直接内部调用
   - 把“识别文件”的任务封装成 `(task_id, wav_path)` 等形式丢进任务队列
   - 异步等待对应结果返回，和业务逻辑整合在一起
 
 - **子进程（worker）**：
-
   - 启动时加载一个 ASR 模型实例（可以指定不同 `device`，如 `"cuda:0"`、`"cuda:1"`）
   - 循环从任务队列取任务 → 调用模型 → 把结果写到结果队列
 
 - **工厂（Factory）**：
-
   - 管理 worker 进程的启动和关闭
   - 维护 `task_id -> asyncio.Future` 映射
   - 后台协程不断从结果队列取结果，完成 Future
@@ -413,7 +407,6 @@ mp.set_start_method("spawn", force=True)
 **解决**：
 
 - 像上面的 `ASRFactory.close()` 那样：
-
   - 先往队列里放 `None` 作为退出信号
   - 然后 `join()` 等待所有进程结束
   - 再清理队列与后台协程

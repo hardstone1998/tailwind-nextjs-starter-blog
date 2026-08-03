@@ -1,9 +1,5 @@
-const headerNavLinks = [
-  { href: '/', title: 'Home' },
-  { href: '/blog', title: 'Blog' },
-  { href: '/tags', title: 'Tags' },
-  { href: '/projects', title: 'Projects' },
-  { href: '/about', title: 'About' },
-]
+import { siteNavigation } from './siteConfig'
+
+const headerNavLinks = siteNavigation
 
 export default headerNavLinks

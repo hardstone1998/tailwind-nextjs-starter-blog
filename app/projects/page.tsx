@@ -2,21 +2,22 @@ import projectsData from '@/data/projectsData'
 import Card from '@/components/Card'
 import { genPageMetadata } from 'app/seo'
 
-export const metadata = genPageMetadata({ title: '项目与实验' })
+export const metadata = genPageMetadata({ title: '实验室' })
 
 export default function Projects() {
   return (
     <>
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 pt-6 pb-8 md:space-y-5">
-          <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
-            项目与实验
+      <div className="py-10 sm:py-14">
+        <div className="max-w-3xl">
+          <p className="section-label">Active labs</p>
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl">
+            实验室
           </h1>
-          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            记录可运行的项目，以及仍在持续迭代的实验。
+          <p className="mt-5 text-lg leading-8 text-[var(--muted)]">
+            记录可运行的项目，以及仍在持续迭代的研究实验。
           </p>
         </div>
-        <div className="container py-12">
+        <div className="container py-8">
           <div className="-m-4 flex flex-wrap">
             {projectsData.map((d) => (
               <Card
@@ -25,6 +26,11 @@ export default function Projects() {
                 description={d.description}
                 imgSrc={d.imgSrc}
                 href={d.href}
+                domains={d.domains}
+                lab={d.lab}
+                status={d.status}
+                methods={d.methods}
+                outcome={d.outcome}
               />
             ))}
           </div>
