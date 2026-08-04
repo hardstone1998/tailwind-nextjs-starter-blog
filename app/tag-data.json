@@ -6,6 +6,12 @@
   "性能优化": 1,
   "并发编程": 1,
   "系统工程与部署能力": 2,
+  "llm": 2,
+  "字幕翻译": 1,
+  "多语言": 1,
+  "prompt-工程": 1,
+  "质量评估": 1,
+  "ai-工程": 1,
   "markdown": 1,
   "code": 1,
   "features": 1,
@@ -41,7 +47,6 @@
   "book": 1,
   "reflection": 1,
   "nlp": 1,
-  "llm": 1,
   "ranking": 1,
   "multi-author": 1
 }
