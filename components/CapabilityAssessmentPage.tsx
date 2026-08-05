@@ -3,7 +3,7 @@ import SectionLabel from '@/components/research/SectionLabel'
 import { CapabilityDomain } from '@/data/siteConfig'
 
 export default function CapabilityAssessmentPage({ domain }: { domain: CapabilityDomain }) {
-  const { modelContext } = domain.assessmentDetails
+  const { criteria, modelContext, scoreRange } = domain.assessmentDetails
 
   return (
     <div className="py-10 sm:py-14">
@@ -32,11 +32,9 @@ export default function CapabilityAssessmentPage({ domain }: { domain: Capabilit
       <section className="mt-14 border-t border-[var(--rule)] pt-8">
         <SectionLabel>Scoring rubric</SectionLabel>
         <h2 className="mt-2 text-2xl font-bold text-[var(--ink)]">评分提示词</h2>
-        <p className="mt-4 max-w-3xl leading-7 text-[var(--muted)]">
-          以下维度沿用旧版能力页的评分标准，用于解释分数关注的范围，而非自动评分规则。
-        </p>
+        <p className="mt-4 max-w-3xl leading-7 font-semibold text-[var(--ink)]">评分标准：</p>
         <ol className="mt-6 grid gap-3 md:grid-cols-2">
-          {domain.assessmentDetails.criteria.map((criterion, index) => (
+          {criteria.map((criterion, index) => (
             <li key={criterion} className="notebook-card flex gap-3">
               <span className="font-mono text-sm font-semibold text-[var(--accent)]">
                 {String(index + 1).padStart(2, '0')}
@@ -45,38 +43,39 @@ export default function CapabilityAssessmentPage({ domain }: { domain: Capabilit
             </li>
           ))}
         </ol>
+        <p className="mt-6 font-semibold text-[var(--ink)]">评分范围：{scoreRange}</p>
+        <p className="mt-2 text-[var(--muted)]">当前得分：{domain.score || 'N/A'}</p>
       </section>
 
       <section className="mt-14 border-t border-[var(--rule)] pt-8">
         <SectionLabel>Historical context</SectionLabel>
         <h2 className="mt-2 text-2xl font-bold text-[var(--ink)]">调用模型</h2>
         <div className="notebook-card mt-6 max-w-3xl">
-          <p className="font-semibold text-[var(--ink)]">历史页面记录的辅助模型</p>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {modelContext.models.map((model) => (
-              <li
-                key={model}
-                className="rounded-full border border-[var(--rule)] bg-[var(--surface)] px-3 py-1 font-mono text-sm text-[var(--ink)]"
-              >
-                {model}
-              </li>
-            ))}
+          <p className="leading-7 text-[var(--muted)]">{modelContext.introduction}</p>
+          <ul className="mt-4 list-disc space-y-2 pl-6 leading-7 text-[var(--muted)]">
+            <li>
+              <strong className="text-[var(--ink)]">评估模型：</strong>
+              {modelContext.models}
+            </li>
+            <li>
+              <strong className="text-[var(--ink)]">评估依据：</strong>
+              {modelContext.evidenceBasis}
+            </li>
+            <li>
+              <strong className="text-[var(--ink)]">评估维度：</strong>
+              {modelContext.dimensions}
+            </li>
+            <li>
+              <strong className="text-[var(--ink)]">更新频率：</strong>
+              {modelContext.updateFrequency}
+            </li>
           </ul>
-          <p className="mt-5 leading-7 text-[var(--muted)]">{modelContext.description}</p>
-          <dl className="mt-6 grid gap-5 border-t border-[var(--rule)] pt-5 text-sm leading-6 sm:grid-cols-3">
-            <div>
-              <dt className="font-semibold text-[var(--ink)]">评估依据</dt>
-              <dd className="mt-1 text-[var(--muted)]">{modelContext.evidenceBasis}</dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-[var(--ink)]">综合维度</dt>
-              <dd className="mt-1 text-[var(--muted)]">{modelContext.dimensions}</dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-[var(--ink)]">更新频率</dt>
-              <dd className="mt-1 text-[var(--muted)]">{modelContext.updateFrequency}</dd>
-            </div>
-          </dl>
+          <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              <strong>提示：</strong>
+              {modelContext.notice}
+            </p>
+          </div>
         </div>
       </section>
     </div>
