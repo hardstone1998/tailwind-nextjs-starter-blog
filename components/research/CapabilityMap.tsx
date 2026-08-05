@@ -8,6 +8,7 @@ export default function CapabilityMap() {
         <li key={domain.id}>
           <Link
             href={domain.route}
+            aria-label={`查看${domain.label}能力域详情`}
             className="notebook-card block h-full p-5 transition-transform hover:-translate-y-0.5"
           >
             <span className="font-mono text-xs tracking-[0.16em] text-[var(--muted)]">
@@ -18,6 +19,9 @@ export default function CapabilityMap() {
               <span className="font-mono text-sm text-[var(--accent)]">{domain.score}</span>
             </div>
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{domain.description}</p>
+            <span className="mt-4 block text-sm font-semibold text-[var(--accent)]">
+              查看能力域 →
+            </span>
           </Link>
         </li>
       ))}

@@ -20,6 +20,34 @@ import projectsData from '@/data/projectsData'
 
 const MAX_DISPLAY = 5
 
+type RadarAngleTickProps = {
+  x?: number | string
+  y?: number | string
+  payload?: { value?: number | string }
+}
+
+function renderRadarAngleAxis({ x, y, payload }: RadarAngleTickProps) {
+  const shortLabel = String(payload?.value ?? '')
+  const domain = capabilityDomains.find((item) => item.shortLabel === shortLabel)
+
+  if (!domain || x === undefined || y === undefined) return <text />
+
+  return (
+    <a href={domain.route} aria-label={`查看${domain.label}能力域详情`}>
+      <text
+        x={x}
+        y={y}
+        fill="var(--accent)"
+        fontSize={12}
+        style={{ cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }}
+        textAnchor="middle"
+      >
+        {shortLabel}
+      </text>
+    </a>
+  )
+}
+
 export default function Home({ posts }) {
   const [showRadar, setShowRadar] = useState(false)
   const activeLabs = projectsData.filter(
@@ -113,14 +141,14 @@ export default function Home({ posts }) {
           </div>
           <div
             className="notebook-card hidden h-96 lg:block"
-            role="img"
-            aria-label="六个能力域的能力地图；下方文字卡片提供等价导航。"
+            role="region"
+            aria-label="六个能力域的能力地图；雷达标签与文字卡片均可进入对应详情页。"
           >
             {showRadar && (
               <ResponsiveContainer>
                 <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
                   <PolarGrid stroke="var(--rule)" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--muted)', fontSize: 12 }} />
+                  <PolarAngleAxis dataKey="subject" tick={renderRadarAngleAxis} />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                   <Radar
                     name="能力得分"
