@@ -3,7 +3,7 @@ import Link from '@/components/Link'
 import NotebookCard from '@/components/research/NotebookCard'
 import ResearchMeta from '@/components/research/ResearchMeta'
 import SectionLabel from '@/components/research/SectionLabel'
-import { domainById, DomainId } from '@/data/siteConfig'
+import { domainById, DomainId, getAssessmentRoute } from '@/data/siteConfig'
 import { getRelatedPosts } from '@/lib/research-content'
 
 const evidenceTypeLabels = {
@@ -24,15 +24,34 @@ export default function SkillDomainPage({ domainId }: { domainId: DomainId }) {
           <h1 className="text-4xl font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl">
             {domain.label}
           </h1>
-          <span className="font-mono text-2xl font-semibold text-[var(--accent)]">
-            {domain.score}/100
-          </span>
+          <div className="shrink-0 text-right">
+            <span className="block font-mono text-2xl font-semibold text-[var(--accent)]">
+              {domain.score}/100
+            </span>
+            <Link
+              href={getAssessmentRoute(domain)}
+              aria-label={`查看${domain.label}的评分提示词与调用模型说明`}
+              className="mt-2 inline-block text-sm font-semibold text-[var(--accent)] hover:underline"
+            >
+              查看评估说明 →
+            </Link>
+          </div>
         </div>
         <p className="mt-5 text-lg leading-8 text-[var(--muted)]">{domain.description}</p>
         <div className="mt-6">
           <ResearchMeta domains={[domainId]} compact />
         </div>
       </div>
+
+      <section className="mt-12 border-t border-[var(--rule)] pt-8">
+        <SectionLabel>Profile</SectionLabel>
+        <h2 className="mt-2 text-2xl font-bold text-[var(--ink)]">个人介绍</h2>
+        <div className="mt-4 max-w-3xl space-y-4 text-lg leading-8 text-[var(--muted)]">
+          {domain.introduction.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-14 border-t border-[var(--rule)] pt-8">
         <SectionLabel>Capability claim</SectionLabel>

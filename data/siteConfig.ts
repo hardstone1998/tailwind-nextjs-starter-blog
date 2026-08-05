@@ -29,6 +29,19 @@ interface NextAction {
   description: string
 }
 
+interface AssessmentModelContext {
+  models: string[]
+  description: string
+  evidenceBasis: string
+  dimensions: string
+  updateFrequency: string
+}
+
+interface AssessmentDetails {
+  criteria: string[]
+  modelContext: AssessmentModelContext
+}
+
 export interface CapabilityDomain {
   id: DomainId
   label: string
@@ -42,12 +55,23 @@ export interface CapabilityDomain {
   evidence: CapabilityEvidence[]
   scoreRationale: ScoreRationale
   nextAction: NextAction
+  introduction: string[]
+  assessmentDetails: AssessmentDetails
 }
 
 export const labStatusLabels: Record<LabStatus, string> = {
   active: '进行中',
   iterating: '持续迭代',
   archived: '已归档',
+}
+
+const historicalModelContext: AssessmentModelContext = {
+  models: ['GPT-4', 'Claude-3.5'],
+  description:
+    '旧版能力页曾将这些模型列为评估模型。该记录保留为历史页面上下文，不是可复现的当前评估运行。',
+  evidenceBasis: '项目经验、技术博客、代码仓库与技术分享等公开或可核对材料。',
+  dimensions: '理论深度、实践经验、项目复杂度与技术影响力。',
+  updateFrequency: '根据新增项目、技术输出和公开复盘定期更新。',
 }
 
 export const capabilityDomains: CapabilityDomain[] = [
@@ -84,6 +108,21 @@ export const capabilityDomains: CapabilityDomain[] = [
     nextAction: {
       title: '补充微调与误差分析记录',
       description: '把训练配置、失败实验和误差归因整理为可复现的公开笔记。',
+    },
+    introduction: [
+      '我关注 Transformer、注意力机制与参数高效微调等模型方法，并通过标题本地化和排序问题持续练习模型选择与评估。',
+      '面对具体任务时，我会从预训练模型、训练策略和评估标准一起审视方案，并把方法取舍与后续误差分析沉淀为可复核的记录。',
+    ],
+    assessmentDetails: {
+      criteria: [
+        '模型架构理解：对 Transformer、BERT、GPT 等模型架构的理解。',
+        '微调技术：LoRA、QLoRA、Adapter 等参数高效微调方法的应用。',
+        '训练优化：训练策略设计、超参数调优与训练稳定性控制。',
+        '模型分析：模型内部机制分析、注意力可视化与表示学习理解。',
+        '实践项目：实际微调或排序项目的复杂度与效果。',
+        '理论基础：对深度学习和自然语言处理理论的掌握。',
+      ],
+      modelContext: historicalModelContext,
     },
   },
   {
@@ -133,6 +172,21 @@ export const capabilityDomains: CapabilityDomain[] = [
       title: '补齐端到端部署基线',
       description: '公开服务监控、容量规划和持续部署的最小可复现实验。',
     },
+    introduction: [
+      '我关注把 AI 模型从原型带到可运行服务时的工程问题，尤其是并发、内存、性能和稳定性之间的取舍。',
+      '已有的 FunASR 排障与性能优化记录围绕多进程、共享内存和异步控制展开；后续会继续补齐监控、容量规划与部署基线。',
+    ],
+    assessmentDetails: {
+      criteria: [
+        '系统架构设计：设计可扩展、高可用系统架构的能力。',
+        '容器化与编排：Docker、Kubernetes 等容器技术的掌握程度。',
+        'CI/CD 流程：自动化部署流程的设计与实施能力。',
+        '性能优化：系统性能调优与资源管理能力。',
+        '监控与运维：日志、监控与告警等运维实践。',
+        '故障处理：问题定位与容错机制设计能力。',
+      ],
+      modelContext: historicalModelContext,
+    },
   },
   {
     id: 'multimodal-intelligence',
@@ -156,6 +210,21 @@ export const capabilityDomains: CapabilityDomain[] = [
       title: '发布首个跨模态基准实验',
       description: '以明确任务、数据和评测指标建立可公开复核的多模态实践记录。',
     },
+    introduction: [
+      '我持续学习文本、图像和语音之间的信息连接方式，关注视觉语言理解、多模态预训练与跨模态检索等问题。',
+      '目前这部分的公开实验材料仍在整理中，因此会先以明确任务、数据和评测指标建立基准记录，再逐步补充模型与工程实践。',
+    ],
+    assessmentDetails: {
+      criteria: [
+        '跨模态理解：文本—图像、文本—语音等跨模态理解技术的掌握。',
+        '多任务学习：设计统一架构处理多个相关任务的能力。',
+        '特征融合：不同模态特征的融合与对齐方法。',
+        '预训练模型应用：CLIP、ALIGN 等跨模态预训练模型的使用。',
+        '实际项目经验：跨模态应用场景的落地实践。',
+        '技术创新：在跨模态融合方面的创新与优化。',
+      ],
+      modelContext: historicalModelContext,
+    },
   },
   {
     id: 'learning-practice',
@@ -177,6 +246,21 @@ export const capabilityDomains: CapabilityDomain[] = [
     nextAction: {
       title: '建立学习专题复盘索引',
       description: '把技术调研、试验结论和后续修正串成可追溯的专题记录。',
+    },
+    introduction: [
+      '我把快速变化的技术主题拆成可验证的小问题，通过阅读、实践和复盘逐步形成自己的判断。',
+      '重点不是追逐新概念，而是把新方法转化为项目中的可执行尝试，并在研究记录中保留结论、限制和后续修正。',
+    ],
+    assessmentDetails: {
+      criteria: [
+        '学习速度：快速理解新技术和新概念的能力。',
+        '技术跟踪：对前沿技术的关注与跟踪能力。',
+        '知识更新：知识体系的持续更新频率与深度。',
+        '实践转化：将理论知识快速转化为实践的能力。',
+        '学习系统：是否形成系统化的学习方法。',
+        '适应能力：面对新技术栈的适应速度。',
+      ],
+      modelContext: historicalModelContext,
     },
   },
   {
@@ -224,6 +308,21 @@ export const capabilityDomains: CapabilityDomain[] = [
       title: '补充用户反馈与结果追踪',
       description: '把方案被采用后的反馈、偏差和下一轮决策纳入公开复盘。',
     },
+    introduction: [
+      '我习惯从用户场景和业务约束出发设计 AI 方案，把复杂技术放回真实问题、成本和体验中判断。',
+      '无论是开源方向选择还是标题本地化实验，我都会先定义评价标准，再比较方案，并把最终选择与后续反馈连接起来。',
+    ],
+    assessmentDetails: {
+      criteria: [
+        '场景理解：对业务场景和用户需求的理解深度。',
+        '产品思维：将技术转化为产品功能的能力。',
+        '技术选型：根据场景选择合适技术方案的能力。',
+        '落地实践：技术在实际产品中的落地经验。',
+        '用户体验：考虑用户体验和产品体验的能力。',
+        '业务价值：评估技术方案带来业务价值的能力。',
+      ],
+      modelContext: historicalModelContext,
+    },
   },
   {
     id: 'open-source-writing',
@@ -253,12 +352,35 @@ export const capabilityDomains: CapabilityDomain[] = [
       title: '完善项目复现入口',
       description: '为公开实验补齐运行说明、决策记录和可参与的后续任务。',
     },
+    introduction: [
+      '我希望通过技术写作、项目说明和可复现材料，把复杂的实验过程与技术取舍讲清楚，并与更多人协作。',
+      '现阶段的重点是持续记录项目的学习过程和实践经验，补齐运行说明、决策记录与后续可参与的任务。',
+    ],
+    assessmentDetails: {
+      criteria: [
+        '技术写作：技术博客和文档的质量与数量。',
+        '开源贡献：GitHub 等平台的开源项目贡献。',
+        '技术分享：技术会议和社区分享的参与度。',
+        '表达能力：将复杂技术清晰表达的能力。',
+        '社区影响：在技术社区的影响力和认可度。',
+        '知识传播：帮助他人学习和成长的能力。',
+      ],
+      modelContext: historicalModelContext,
+    },
   },
 ]
 
 export const domainById = Object.fromEntries(
   capabilityDomains.map((domain) => [domain.id, domain])
 ) as Record<DomainId, CapabilityDomain>
+
+export function getAssessmentRoute(domain: CapabilityDomain) {
+  return `${domain.route}/assessment` as `/skills/${string}/assessment`
+}
+
+export function getDomainBySkillPath(skillPath: string) {
+  return capabilityDomains.find((domain) => domain.route === `/skills/${skillPath}`)
+}
 
 export const siteNavigation = [
   { href: '/', title: '首页' },
