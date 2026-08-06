@@ -1,0 +1,474 @@
+---
+title: 'Production LLM Subtitle Translation Is Much More Than a Good Prompt'
+date: '2026-08-06'
+lastmod: '2026-08-06'
+tags:
+  [
+    'LLM',
+    'Subtitle Translation',
+    'Multilingual',
+    'Prompt Engineering',
+    'Quality Evaluation',
+    'AI Engineering',
+  ]
+draft: false
+summary: 'Lessons from three months of building a multilingual subtitle translation workflow across 16 languages: reliable quality requires translation, validation, targeted revision, human review, and a feedback loop.'
+images: ['/static/images/production-llm-subtitle-translation-workflow.png']
+authors: ['qsl']
+domains: ['natural-language-processing']
+lab: 'Subtitle Translation Quality Practice'
+status: 'published'
+methods:
+  ['Prompt engineering', 'Structural validation', 'Targeted revision', 'Regression evaluation']
+outcome: 'A subtitle translation quality system that can be inspected, corrected, evaluated, and continuously improved.'
+language: 'en'
+layout: PostLayout
+---
+
+_Lessons from three months of building a multilingual subtitle translation workflow across 16 languages_
+
+The hardest part of LLM subtitle translation is not getting a good translation once.
+
+It is detecting when the model is wrong, fixing only the affected lines, and measuring whether the overall system actually improved.
+
+Over the past three months, I have worked on LLM-based video subtitle translation from Chinese into multiple target languages, including English, Japanese, Korean, and Spanish, across a total of 16 languages.
+
+Before working on a production use case, I assumed the core problem would be straightforward: choose a capable model and write a sufficiently detailed prompt.
+
+That assumption did not survive contact with production.
+
+A subtitle can be semantically reasonable and still be unusable because it is too long, assigned to the wrong subtitle ID, inconsistent with an established character name, written in the wrong register, or mixed with untranslated source-language text.
+
+A reliable production workflow therefore needs much more than a translation prompt. It requires first-pass translation, deterministic validation, LLM-based review, targeted revision, human review for high-risk cases, and a feedback loop that turns failures into evaluation data.
+
+The examples in this article have been simplified and anonymized. The conclusions come from video subtitle translation and may not apply directly to literary, legal, or other specialized translation tasks.
+
+---
+
+## 1. Subtitle Translation Is a Prioritized Multi-Objective Task
+
+General text translation is usually evaluated around meaning, fluency, and style.
+
+Subtitles add several additional constraints:
+
+- each source subtitle must remain aligned with the correct subtitle ID;
+- the text must be readable within its on-screen duration;
+- character names and project terminology must remain consistent;
+- line breaks and punctuation must follow language-specific conventions;
+- the output must not contain explanations or formatting noise;
+- compression must not remove information that changes the story.
+
+These objectives can conflict with one another.
+
+Reducing CPS, or characters per second, may improve readability but also remove important information. Preserving Chinese line boundaries too mechanically may produce unnatural word order in the target language.
+
+The system therefore needs an explicit priority order.
+
+In my current approach, the priorities are:
+
+> Semantic accuracy and completeness  
+> over subtitle alignment and terminology consistency  
+> over CPS and readability  
+> over stylistic polishing.
+
+The key principle is simple:
+
+> Never fix a lower-priority problem by creating a higher-priority one.
+
+A subtitle that is slightly too long should be revised, but not at the cost of changing a negation, a number, a relationship, or a critical plot event.
+
+---
+
+## 2. First-Pass Translation Sets the Quality Ceiling
+
+The first-pass translation remains the most important semantic generation stage.
+
+If the model misunderstands the speaker’s intent, a relationship between characters, or the scope of a negation, downstream formatting rules cannot reliably recover the original meaning.
+
+Consider a simplified Chinese source sentence expressing uncertainty:
+
+> She wouldn’t have found out that I used the money to buy someone else a house, would she?
+
+A flawed translation might effectively mean:
+
+> She will never know that I used the money to buy a house.
+
+The general event is still recognizable, but several important details have shifted:
+
+- uncertainty becomes certainty;
+- the anxious tone disappears;
+- “buying a house for someone” becomes simply “buying a house”;
+- the relationship between the participants becomes less clear.
+
+This cannot be fixed by removing punctuation or shortening the sentence. The source must be interpreted again, and the affected subtitle line needs a targeted retranslation.
+
+However, saying that the first pass is important does not mean every business rule should be pushed into the first prompt.
+
+A more useful division of responsibilities is:
+
+### The first pass should focus on
+
+- semantic accuracy and completeness;
+- context, coreference, and character relationships;
+- negations, numbers, time, and other critical details;
+- natural expression in the target language;
+- character names and key terminology.
+
+### Deterministic validators should focus on
+
+- missing subtitle IDs;
+- empty outputs;
+- invalid output structures;
+- CPS or length violations;
+- repeated punctuation;
+- clearly invalid scripts, characters, or markup.
+
+This can be summarized as:
+
+> The first pass sets the quality ceiling. Validators protect the quality floor.
+
+The prompt should aim for the correct result, but it should not be responsible for every condition that software can verify deterministically.
+
+---
+
+## 3. Prompt Design Is About Priorities, Not an Endless List of Prohibitions
+
+A common response to translation errors is to keep adding negative instructions:
+
+- do not omit content;
+- do not mistranslate;
+- do not change the number of lines;
+- do not leave source-language text;
+- do not over-expand;
+- do not output explanations;
+- do not exceed the length limit.
+
+These instructions are useful, but a growing list of prohibitions does not tell the model what to do when constraints conflict.
+
+“Be concise” can conflict with “do not omit information.”
+
+“Preserve subtitle boundaries” can conflict with “use natural target-language word order.”
+
+A clearer translation prompt should explicitly organize the task:
+
+```text
+[Task]
+Translate the source subtitles into the target language
+for on-screen video subtitles.
+
+[Priority Order]
+1. Preserve semantic accuracy and completeness.
+2. Preserve subtitle alignment and approved terminology.
+3. Control length without losing meaning.
+4. Improve naturalness and platform-appropriate style.
+
+[Hard Constraints]
+- Every input item must have exactly one output item.
+- Do not omit, merge, or add subtitle IDs.
+- Do not modify approved terminology.
+- Do not output explanations or additional text.
+- Follow the required output structure exactly.
+
+[Soft Constraints]
+- Use natural target-language syntax.
+- Prefer concise, conversational phrasing.
+- Avoid unnecessary repetition.
+- Keep subtitles readable without removing critical meaning.
+
+[Context and Terminology]
+Provide relevant story context, character relationships,
+and approved terminology.
+
+[Output Protocol]
+Return a stable format that can be parsed by software.
+```
+
+The most important function of a prompt is not to enumerate every possible mistake.
+
+It is to tell the model:
+
+> Which requirements are mandatory, which are optimization goals, and how conflicts should be resolved.
+
+Generation parameters also need to be evaluated against the specific model and test set. Subtitle translation usually benefits from relatively conservative generation settings, but there is no universal temperature or sampling configuration that is optimal for every model and every language.
+
+---
+
+## 4. Prompting Cannot Guarantee Structural Correctness
+
+Even when a prompt explicitly requires one-to-one line alignment, an LLM may still:
+
+- merge two or three subtitle lines;
+- omit an item;
+- place one line’s meaning under a neighboring ID;
+- return the correct number of IDs with semantically misaligned content;
+- restructure the subtitles to make the target language sound more natural.
+
+This is an important distinction:
+
+> A generation constraint is not a deterministic guarantee.
+
+Subtitle completeness is better protected with an explicit protocol:
+
+```text
+Input:
+101 | First source subtitle
+102 | Second source subtitle
+103 | Third source subtitle
+
+Output:
+101 | First translated subtitle
+102 | Second translated subtitle
+103 | Third translated subtitle
+```
+
+Software can then verify:
+
+- whether every expected ID is present;
+- whether unexpected IDs were added;
+- whether any output is empty;
+- whether the response can be parsed.
+
+But structural validity is not the same as semantic validity.
+
+A model may return all expected IDs while placing the meaning of subtitle 102 under subtitle 103. The ID set is complete, but the content is still misaligned.
+
+Detecting this type of failure may require a combination of:
+
+- duplicate-content detection;
+- adjacent-line alignment checks;
+- targeted LLM review;
+- human review for high-risk content.
+
+This is why I prefer targeted diagnosis over asking a model to “reflect on the whole translation.”
+
+Instead of asking:
+
+> Review the translation for accuracy, fluency, and style.
+
+Ask concrete questions:
+
+- Is any subtitle line missing?
+- Which line contains source-language leakage?
+- Is an approved term missing from a specific line?
+- Does a subtitle appear to contain content from a neighboring ID?
+- Which line exceeds its readability limit?
+
+A practical workflow looks like this:
+
+```text
+First-pass translation
+  → deterministic validation and LLM-based checks
+  → identify the affected IDs and error types
+  → revise only the problematic lines
+  → validate again
+```
+
+The operating principle is:
+
+> Detect first, route by error type, and modify only what needs to change.
+
+This reduces unnecessary model calls and limits the chance that fixing one line will damage several correct ones.
+
+---
+
+## 5. CPS, Terminology, and Language-Specific Rules Need Dedicated Handling
+
+### CPS compression is not simply deleting words
+
+A short Chinese question such as:
+
+> Who took it?
+
+may expand significantly in another language.
+
+The translation may need to be shortened for subtitle readability, but compression should first answer several questions:
+
+- Is the removed information already clear from the scene or context?
+- Has a negation, number, relationship, or key action been removed?
+- Has the speaker’s tone changed?
+- Has an explicit reference become ambiguous?
+
+A safer CPS revision process is:
+
+1. identify whether the excess length comes from literal translation, repetition, or unnecessary expansion;
+2. remove information that the target language can naturally omit;
+3. preserve critical actions, negations, numbers, and relationships;
+4. recheck meaning and terminology after compression.
+
+CPS should be treated as a detection signal, not as permission to delete text blindly.
+
+### Terminology cannot rely on reminders alone
+
+Names, locations, organizations, and project-specific expressions often drift during multi-stage translation.
+
+The same character may appear as:
+
+- a transliteration in one line and a translation in another;
+- a full name in one stage and an inconsistent abbreviation later;
+- the approved form in the first pass but a modified form after CPS revision.
+
+A prompt that says “keep terminology consistent” may not be sufficient.
+
+More reliable techniques include:
+
+- detecting and replacing approved terms before translation;
+- treating approved terms as protected anchors;
+- carrying the same glossary through translation, review, and revision;
+- validating final terminology usage after all modifications.
+
+This changes the system from:
+
+> hoping the model remembers the terminology
+
+to:
+
+> actively protecting approved terminology.
+
+### Share the framework, specialize the rules
+
+A multilingual system can share:
+
+- subtitle ID protocols;
+- error taxonomies;
+- retry and failure-handling mechanisms;
+- evaluation and regression workflows.
+
+It should not blindly share all language-specific rules.
+
+For example:
+
+- English often requires attention to text expansion, Chinese-influenced word order, cross-line syntax, names, currencies, and forms of address.
+- Japanese requires careful handling of gendered speech, politeness, first-person pronouns, and sentence-final expressions. Because Chinese and Japanese share many characters, treating every CJK character as Chinese leakage creates false positives.
+- Korean requires language-specific handling of honorifics, word order, sentence endings, and script leakage. Natural word-order changes should not automatically be classified as line misalignment.
+- Spanish requires attention to grammatical gender, number agreement, vocative punctuation, and question-mark conventions.
+
+The more scalable design is:
+
+> Use a shared system architecture with language-specific quality controls.
+
+Language-specific configuration may include:
+
+- CPS and length policies;
+- punctuation and spacing;
+- source-language leakage checks;
+- honorifics and grammatical gender;
+- terminology forms;
+- line-breaking conventions;
+- validator allowlists and exceptions.
+
+A detector that works well for one language may become a false-positive generator for another.
+
+---
+
+## 6. Without a Feedback Loop, Improvement Cannot Be Proven
+
+Changing a prompt, adding a validator, or introducing another LLM call does not automatically mean the system improved.
+
+A handful of better examples may be anecdotal. Reducing one error category may create regressions elsewhere.
+
+A useful feedback loop should record:
+
+- the first-pass output;
+- detected issues;
+- the translation before and after revision;
+- the final human-edited version;
+- model and prompt versions;
+- glossary and rule versions;
+- latency and model usage;
+- the type and amount of human editing.
+
+Useful metrics may include:
+
+- severe mistranslation and omission rates;
+- subtitle alignment failures;
+- terminology consistency;
+- CPS violation rates;
+- automatic revision rates;
+- human editing volume;
+- human editing time;
+- first-pass or light-edit acceptance rates;
+- cost and latency per unit of content.
+
+Character edit rate can be a useful proxy for human rework, although it cannot measure quality by itself.
+
+In one stage of the project, the character edit rate between machine output and the final human version changed as follows:
+
+| Target language | Direct translation | Translation agent | Further prompt refinement |
+| --------------- | -----------------: | ----------------: | ------------------------: |
+| Arabic          |                52% |            10.23% |                     0.78% |
+| Hindi           |                44% |             5.23% |                         — |
+| Japanese        |                64% |            27.28% |                     0.10% |
+| Portuguese      |                25% |             5.12% |                         — |
+| Turkish         |                92% |            10.85% |                     6.99% |
+
+Lower values mean fewer characters were changed by human editors.
+
+Across these five languages, introducing the translation-agent workflow substantially reduced character edit rates. In the three languages with an additional prompt-refinement stage, edit rates decreased further.
+
+However, this metric should not be interpreted as a complete measure of translation quality.
+
+Correcting punctuation and fixing a critical negation may involve a similar number of changed characters, but their business risk is completely different.
+
+Character edit rate should therefore be combined with an error taxonomy such as:
+
+- **high risk:** reversed meaning, incorrect identity, or broken character relationships;
+- **medium risk:** omissions, terminology errors, incorrect numbers, or time references;
+- **experience issues:** unnatural phrasing or excessive CPS;
+- **low risk:** punctuation, spacing, and formatting.
+
+A reliable optimization cycle looks like this:
+
+```text
+Collect production failures
+  → classify error type and severity
+  → add representative cases to the regression set
+  → modify prompts, terminology, rules, or routing
+  → run offline regression tests
+  → check for new regressions
+  → validate on limited traffic
+  → decide whether to expand the change
+```
+
+Without regression testing, it is easy to fix the current example without knowing what else became worse.
+
+---
+
+## Conclusion: Production Subtitle Translation Is a Quality System
+
+After three months of working on multilingual subtitle translation, my current conclusions are:
+
+> First-pass translation sets the quality ceiling, but it should not own every responsibility.
+
+> Prompt design is about task priorities, not an infinite list of prohibitions.
+
+> Generation constraints cannot replace deterministic validation.
+
+> Generic self-reflection is not always effective; targeted diagnosis is usually more stable.
+
+> Multilingual systems should share a framework, not every language rule.
+
+> Without feedback and regression evaluation, improvement may only be a local impression.
+
+A production-oriented quality workflow can be summarized as:
+
+```text
+First-pass translation
+  → deterministic validation and LLM-based review
+  → targeted revision
+  → human review for high-risk cases
+  → feedback and evaluation loop
+```
+
+The final goal is not simply to improve an abstract translation score.
+
+What matters in production is whether:
+
+- severe errors decrease;
+- human editing time goes down;
+- first-pass acceptance improves;
+- cost per unit of content decreases;
+- the system remains stable as languages and content volume grow.
+
+The difficult part of LLM subtitle translation is not producing a translation once.
+
+It is turning probabilistic model output into a system that can be inspected, corrected, evaluated, and continuously improved.

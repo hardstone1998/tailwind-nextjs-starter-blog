@@ -10,6 +10,7 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import tagData from 'app/tag-data.json'
 import ResearchMeta from '@/components/research/ResearchMeta'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface PaginationProps {
   totalPages: number
@@ -73,6 +74,7 @@ export default function ListLayoutWithTags({
   initialDisplayPosts = [],
   pagination,
 }: ListLayoutProps) {
+  const { language, t } = useLanguage()
   const pathname = usePathname()
   const tagCounts = tagData as Record<string, number>
   const tagKeys = Object.keys(tagCounts)
@@ -84,22 +86,22 @@ export default function ListLayoutWithTags({
     <>
       <div className="py-10 sm:py-14">
         <div className="pb-8">
-          <p className="section-label">Research archive</p>
+          <p className="section-label">{language === 'zh' ? '研究归档' : 'Research archive'}</p>
           <h1 className="mt-3 text-4xl leading-tight font-extrabold tracking-tight text-[var(--ink)] sm:hidden sm:text-5xl">
-            {title}
+            {t('blogTitle')}
           </h1>
         </div>
         <div className="flex gap-8 lg:gap-16">
           <div className="hidden h-full max-h-screen max-w-[280px] min-w-[220px] flex-wrap overflow-auto rounded-lg border border-[var(--rule)] bg-[var(--surface-raised)] pt-3 sm:flex">
             <div className="px-6 py-4">
               {pathname.startsWith('/blog') ? (
-                <h3 className="font-bold text-[var(--accent)]">全部笔记</h3>
+                <h3 className="font-bold text-[var(--accent)]">{t('allNotes')}</h3>
               ) : (
                 <Link
                   href={`/blog`}
                   className="font-bold text-[var(--ink)] hover:text-[var(--accent)]"
                 >
-                  全部笔记
+                  {t('allNotes')}
                 </Link>
               )}
               <ul>
@@ -129,6 +131,7 @@ export default function ListLayoutWithTags({
             <ul>
               {displayPosts.map((post) => {
                 const { path, date, title, summary, tags } = post
+                const postLanguage = post.language === 'en' ? 'en' : 'zh'
                 return (
                   <li key={path} className="py-3">
                     <article className="notebook-card flex flex-col space-y-3">
@@ -151,6 +154,9 @@ export default function ListLayoutWithTags({
                             </Link>
                           </h2>
                           <div className="mt-3 flex flex-wrap gap-1">
+                            <span className="rounded-full border border-[var(--rule)] px-2 py-0.5 text-xs font-semibold text-[var(--muted)]">
+                              {t('language')}: {postLanguage === 'en' ? 'English' : '中文'}
+                            </span>
                             {tags?.map((tag) => {
                               return <Tag key={tag} text={tag} />
                             })}

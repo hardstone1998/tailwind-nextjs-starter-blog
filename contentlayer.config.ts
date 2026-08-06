@@ -114,6 +114,7 @@ export const Blog = defineDocumentType(() => ({
     status: { type: 'string' },
     methods: { type: 'list', of: { type: 'string' }, default: [] },
     outcome: { type: 'string' },
+    language: { type: 'enum', options: ['zh', 'en'], default: 'zh' },
   },
   computedFields: {
     ...computedFields,

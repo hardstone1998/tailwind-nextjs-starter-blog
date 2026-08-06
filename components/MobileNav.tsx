@@ -5,8 +5,10 @@ import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'bo
 import { Fragment, useState, useEffect, useRef } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
+import { useLanguage } from './LanguageProvider'
 
 const MobileNav = () => {
+  const { language, t } = useLanguage()
   const [navShow, setNavShow] = useState(false)
   const navRef = useRef(null)
 
@@ -29,7 +31,7 @@ const MobileNav = () => {
   return (
     <>
       <button
-        aria-label="打开导航菜单"
+        aria-label={t('openMenu')}
         onClick={onToggleNav}
         className="text-[var(--muted)] sm:hidden"
       >
@@ -78,19 +80,19 @@ const MobileNav = () => {
               >
                 {headerNavLinks.map((link) => (
                   <Link
-                    key={link.title}
+                    key={link.href}
                     href={link.href}
                     className="mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-[var(--ink)] outline outline-0 hover:text-[var(--accent)]"
                     onClick={onToggleNav}
                   >
-                    {link.title}
+                    {link.title[language]}
                   </Link>
                 ))}
               </nav>
 
               <button
                 className="fixed top-7 right-4 z-80 h-16 w-16 p-4 text-[var(--ink)] hover:text-[var(--accent)]"
-                aria-label="关闭导航菜单"
+                aria-label={t('closeMenu')}
                 onClick={onToggleNav}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

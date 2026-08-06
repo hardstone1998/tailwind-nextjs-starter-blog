@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
+import { useLanguage } from './LanguageProvider'
 import {
   Menu,
   MenuButton,
@@ -55,6 +56,7 @@ const Monitor = () => (
 const Blank = () => <svg className="h-6 w-6" />
 
 const ThemeSwitch = () => {
+  const { t } = useLanguage()
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme, resolvedTheme } = useTheme()
 
@@ -65,7 +67,7 @@ const ThemeSwitch = () => {
     <div className="flex items-center">
       <Menu as="div" className="relative inline-block text-left">
         <div className="flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent)]">
-          <MenuButton aria-label="切换主题">
+          <MenuButton aria-label="Theme">
             {mounted ? resolvedTheme === 'dark' ? <Moon /> : <Sun /> : <Blank />}
           </MenuButton>
         </div>
@@ -90,7 +92,7 @@ const ThemeSwitch = () => {
                         <div className="mr-2">
                           <Sun />
                         </div>
-                        浅色
+                        {t('light')}
                       </button>
                     )}
                   </MenuItem>
@@ -106,7 +108,7 @@ const ThemeSwitch = () => {
                         <div className="mr-2">
                           <Moon />
                         </div>
-                        深色
+                        {t('dark')}
                       </button>
                     )}
                   </MenuItem>
@@ -122,7 +124,7 @@ const ThemeSwitch = () => {
                         <div className="mr-2">
                           <Monitor />
                         </div>
-                        跟随系统
+                        {t('system')}
                       </button>
                     )}
                   </MenuItem>

@@ -17,6 +17,7 @@ import NotebookCard from '@/components/research/NotebookCard'
 import SectionLabel from '@/components/research/SectionLabel'
 import { capabilityDomains } from '@/data/siteConfig'
 import projectsData from '@/data/projectsData'
+import { useLanguage } from '@/components/LanguageProvider'
 
 const MAX_DISPLAY = 5
 
@@ -33,7 +34,10 @@ function renderRadarAngleAxis({ x, y, payload }: RadarAngleTickProps) {
   if (!domain || x === undefined || y === undefined) return <text />
 
   return (
-    <a href={domain.route} aria-label={`查看${domain.label}能力域详情`}>
+    <a
+      href={domain.route}
+      aria-label={`查看 ${domain.label} 能力域详情 / View ${domain.label} details`}
+    >
       <text
         x={x}
         y={y}
@@ -49,6 +53,7 @@ function renderRadarAngleAxis({ x, y, payload }: RadarAngleTickProps) {
 }
 
 export default function Home({ posts }) {
+  const { t } = useLanguage()
   const [showRadar, setShowRadar] = useState(false)
   const activeLabs = projectsData.filter(
     (project) => project.status === 'active' || project.status === 'iterating'
@@ -72,24 +77,22 @@ export default function Home({ posts }) {
         <SectionLabel>Public research notebook · NLP Journey</SectionLabel>
         <div className="mt-5 max-w-4xl">
           <h1 className="text-4xl font-extrabold tracking-tight text-[var(--ink)] sm:text-6xl">
-            把模型、系统与实验，变成可复现的成果。
+            {t('homeHero')}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--muted)]">
-            这里记录 NLP、LLM 与 AI 系统工程中的问题、方法、结果和下一步，而不只是结论。
-          </p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--muted)]">{t('homeIntro')}</p>
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/projects"
             className="rounded-md bg-[var(--ink)] px-4 py-2.5 text-sm font-semibold text-[var(--surface)] transition-opacity hover:opacity-85"
           >
-            查看活跃实验室
+            {t('activeLabs')}
           </Link>
           <Link
             href="/blog"
             className="rounded-md border border-[var(--rule)] bg-[var(--surface-raised)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] hover:border-[var(--accent)]"
           >
-            阅读研究笔记
+            {t('readNotes')}
           </Link>
         </div>
       </section>
@@ -97,12 +100,14 @@ export default function Home({ posts }) {
       <section className="py-12 sm:py-16">
         <SectionLabel>Active labs</SectionLabel>
         <div className="mt-3 flex items-end justify-between gap-4">
-          <h2 className="text-3xl font-bold tracking-tight text-[var(--ink)]">正在推进的实验</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-[var(--ink)]">
+            {t('currentLabs')}
+          </h2>
           <Link
             href="/projects"
             className="text-sm font-semibold text-[var(--accent)] hover:underline"
           >
-            全部实验室 →
+            {t('allLabs')}
           </Link>
         </div>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -130,11 +135,9 @@ export default function Home({ posts }) {
           <div>
             <SectionLabel>Capability map</SectionLabel>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-[var(--ink)]">
-              从能力域进入研究现场
+              {t('capabilityTitle')}
             </h2>
-            <p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">
-              每个能力域都连接到说明页面、相关笔记与正在进行的工作。
-            </p>
+            <p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">{t('capabilityIntro')}</p>
             <div className="mt-7">
               <CapabilityMap />
             </div>
@@ -142,7 +145,7 @@ export default function Home({ posts }) {
           <div
             className="notebook-card hidden h-96 lg:block"
             role="region"
-            aria-label="六个能力域的能力地图；雷达标签与文字卡片均可进入对应详情页。"
+            aria-label="Capability map with six domains; radar labels and cards link to their details."
           >
             {showRadar && (
               <ResponsiveContainer>
@@ -151,13 +154,13 @@ export default function Home({ posts }) {
                   <PolarAngleAxis dataKey="subject" tick={renderRadarAngleAxis} />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                   <Radar
-                    name="能力得分"
+                    name={t('capabilityScore')}
                     dataKey="score"
                     stroke="var(--accent)"
                     fill="var(--accent)"
                     fillOpacity={0.25}
                   />
-                  <Tooltip formatter={(value: number) => [`${value}`, '能力得分']} />
+                  <Tooltip formatter={(value: number) => [`${value}`, t('capabilityScore')]} />
                 </RadarChart>
               </ResponsiveContainer>
             )}
@@ -170,11 +173,11 @@ export default function Home({ posts }) {
           <div>
             <SectionLabel>Latest notes</SectionLabel>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-[var(--ink)]">
-              最新研究笔记
+              {t('latestNotes')}
             </h2>
           </div>
           <Link href="/blog" className="text-sm font-semibold text-[var(--accent)] hover:underline">
-            完整归档 →
+            {t('archive')}
           </Link>
         </div>
         <div className="mt-7 grid gap-4">

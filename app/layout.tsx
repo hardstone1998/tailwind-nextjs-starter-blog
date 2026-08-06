@@ -9,6 +9,7 @@ import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
+import { LanguageProvider } from '@/components/LanguageProvider'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -85,14 +86,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="min-h-screen bg-[var(--surface)] pl-[calc(100vw-100%)] text-[var(--ink)] antialiased">
         <ThemeProviders>
-          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-          <SectionContainer>
-            <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-              <Header />
-              <main className="mb-auto">{children}</main>
-            </SearchProvider>
-            <Footer />
-          </SectionContainer>
+          <LanguageProvider>
+            <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+            <SectionContainer>
+              <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+                <Header />
+                <main className="mb-auto">{children}</main>
+              </SearchProvider>
+              <Footer />
+            </SectionContainer>
+          </LanguageProvider>
         </ThemeProviders>
       </body>
     </html>

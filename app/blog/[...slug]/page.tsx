@@ -56,7 +56,7 @@ export async function generateMetadata(props: {
       title: post.title,
       description: post.summary,
       siteName: siteMetadata.title,
-      locale: 'en_US',
+      locale: post.language === 'en' ? 'en_US' : 'zh_CN',
       type: 'article',
       publishedTime: publishedAt,
       modifiedTime: modifiedAt,
@@ -112,9 +112,11 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
-        <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
-      </Layout>
+      <div lang={post.language === 'en' ? 'en' : 'zh-CN'}>
+        <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
+          <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
+        </Layout>
+      </div>
     </>
   )
 }

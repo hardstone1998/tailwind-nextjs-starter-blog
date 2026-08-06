@@ -391,9 +391,9 @@ export function getDomainBySkillPath(skillPath: string) {
 }
 
 export const siteNavigation = [
-  { href: '/', title: '首页' },
-  { href: '/blog', title: '研究笔记' },
-  { href: '/tags', title: '主题索引' },
-  { href: '/projects', title: '实验室' },
-  { href: '/about', title: '关于' },
+  { href: '/', title: { zh: '首页', en: 'Home' } },
+  { href: '/blog', title: { zh: '研究笔记', en: 'Notes' } },
+  { href: '/tags', title: { zh: '主题索引', en: 'Topics' } },
+  { href: '/projects', title: { zh: '实验室', en: 'Labs' } },
+  { href: '/about', title: { zh: '关于', en: 'About' } },
 ]
