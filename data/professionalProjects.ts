@@ -35,7 +35,7 @@ const professionalProjects: ProfessionalProject[] = [
   {
     id: 'video-creation-agent',
     title: '视频创作 Agent',
-    period: '2026—至今',
+    period: '2026',
     sortOrder: 202603,
     status: 'exploring',
     role: 'Agent 工作流设计与开发',
@@ -51,7 +51,7 @@ const professionalProjects: ProfessionalProject[] = [
   {
     id: 'video-redraw-pipeline',
     title: '视频重绘流水线',
-    period: '2026—至今',
+    period: '2026',
     sortOrder: 202602,
     status: 'in-progress',
     role: '生成式视频流程开发',
@@ -67,7 +67,7 @@ const professionalProjects: ProfessionalProject[] = [
   {
     id: 'translation-quality-system',
     title: '多语言翻译质量系统',
-    period: '2025—至今',
+    period: '2025',
     sortOrder: 202601,
     status: 'iterating',
     role: '翻译 Agent 与质量闭环建设',
@@ -104,7 +104,7 @@ const professionalProjects: ProfessionalProject[] = [
   {
     id: 'asr-platform-engineering',
     title: 'ASR 性能优化与统一 AI 中台',
-    period: '2025 年中—2026 年初',
+    period: '2025',
     sortOrder: 202512,
     status: 'completed',
     role: '语音系统与 AI 平台建设',
@@ -135,7 +135,7 @@ const professionalProjects: ProfessionalProject[] = [
   {
     id: 'multimodal-platform-capabilities',
     title: '行业智能化平台能力建设',
-    period: '2024 年中—2025 年中',
+    period: '2024',
     sortOrder: 202412,
     status: 'completed',
     role: '平台子能力研发',
@@ -151,7 +151,7 @@ const professionalProjects: ProfessionalProject[] = [
   {
     id: 'intelligent-customer-service',
     title: '文化服务智能客服',
-    period: '2023 年初—2024 年中',
+    period: '2023',
     sortOrder: 202306,
     status: 'completed',
     role: '项目 Owner / 全流程开发',

@@ -65,13 +65,13 @@ export default function ProfessionalProjectTimeline() {
       className="mt-12 border-t border-[var(--rule)] pt-10"
       aria-labelledby="career-projects-title"
     >
-      <p className="section-label">Career projects</p>
+      <p className="section-label">Career Archive</p>
       <div className="mt-3 max-w-3xl">
         <h2
           id="career-projects-title"
           className="text-3xl font-bold tracking-tight text-[var(--ink)]"
         >
-          职业项目经历
+          职业经历归档
         </h2>
         <p className="mt-3 leading-7 text-[var(--muted)]">
           以下内容聚焦可公开的职责、方法与结果；业务名称和实现细节已按保密要求做抽象处理。

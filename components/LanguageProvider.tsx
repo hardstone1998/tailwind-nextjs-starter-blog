@@ -8,8 +8,8 @@ const messages = {
   zh: {
     languageName: '中文',
     switchLanguage: '切换为英文界面',
-    homeHero: '把模型、系统与实验，变成可复现的成果。',
-    homeIntro: '这里记录 NLP、LLM 与 AI 系统工程中的问题、方法、结果和下一步，而不只是结论。',
+    homeHero: '多模态 / 视频模型工程师',
+    homeIntro: 'Multimodal · Video · LLM Systems · Model Engineering。把 AI 能力做成可用的系统。',
     activeLabs: '查看活跃实验室',
     readNotes: '阅读研究笔记',
     currentLabs: '正在推进的实验',
@@ -22,7 +22,7 @@ const messages = {
     blogTitle: '研究笔记',
     allNotes: '全部笔记',
     language: '语言',
-    publicNotes: '公开研究笔记 · AI 系统与实验实践',
+    publicNotes: '公开作品集与研究笔记 · 多模态、视频与 AI 系统工程',
     light: '浅色',
     dark: '深色',
     system: '跟随系统',
@@ -33,9 +33,9 @@ const messages = {
   en: {
     languageName: 'English',
     switchLanguage: 'Switch to Chinese interface',
-    homeHero: 'Turn models, systems, and experiments into reproducible work.',
+    homeHero: 'Multimodal / Video Model Engineer',
     homeIntro:
-      'Notes on questions, methods, results, and next steps in NLP, LLMs, and AI systems engineering—not just conclusions.',
+      'Multimodal · Video · LLM Systems · Model Engineering. Turning AI capabilities into usable systems.',
     activeLabs: 'Explore active labs',
     readNotes: 'Read research notes',
     currentLabs: 'Labs in progress',
@@ -48,7 +48,8 @@ const messages = {
     blogTitle: 'Research notes',
     allNotes: 'All notes',
     language: 'Language',
-    publicNotes: 'Public research notes · AI systems and experimental practice',
+    publicNotes:
+      'Public portfolio and research notes · multimodal, video, and AI systems engineering',
     light: 'Light',
     dark: 'Dark',
     system: 'System',

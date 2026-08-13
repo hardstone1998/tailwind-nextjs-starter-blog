@@ -1,10 +1,10 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'NLP Journey',
+  title: 'Multimodal & Video Systems',
   author: 'qiaoshilei',
-  headerTitle: 'NLP Journey',
+  headerTitle: 'Multimodal & Video Systems',
   description:
-    'AI 算法工程师的公开研究笔记：记录大模型、系统工程与可复现实验，持续把复杂技术转化为可落地的产品。',
+    '多模态 / 视频模型工程师的作品集与研究笔记：聚焦视频理解与生成、LLM 系统、模型工程，以及可落地的 AI 系统。',
   language: 'zh',
   theme: 'system', // system, dark or light
   siteUrl: 'https://tailwind-nextjs-starter-blog-six-theta.vercel.app',
