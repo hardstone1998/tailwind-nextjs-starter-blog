@@ -21,7 +21,6 @@ export interface ProfessionalProject {
   confidentialityNotice?: string
   relatedBlogs?: ProfessionalProjectLink[]
   relatedLabs?: ProfessionalProjectLink[]
-  relatedProjectIds?: string[]
 }
 
 export const professionalProjectStatusLabels: Record<ProfessionalProjectStatus, string> = {
@@ -48,7 +47,6 @@ const professionalProjects: ProfessionalProject[] = [
     ],
     methods: ['Agent', '创作工作流', '剧本生成', '资产规划', '分镜视频'],
     confidentialityNotice,
-    relatedProjectIds: ['video-redraw-pipeline'],
   },
   {
     id: 'video-redraw-pipeline',
@@ -64,7 +62,6 @@ const professionalProjects: ProfessionalProject[] = [
     ],
     methods: ['视频解析', '分镜脚本', '图像生成', '视频生成', '成片合成'],
     confidentialityNotice,
-    relatedProjectIds: ['video-creation-agent'],
   },
   {
     id: 'translation-quality-system',

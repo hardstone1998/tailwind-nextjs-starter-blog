@@ -1,7 +1,6 @@
 import Link from '@/components/Link'
 import {
   orderedProfessionalProjects,
-  professionalProjectsById,
   professionalProjectStatusLabels,
   type ProfessionalProject,
 } from '@/data/professionalProjects'
@@ -14,12 +13,7 @@ const statusClassNames = {
 } as const
 
 function RelatedLinks({ project }: { project: ProfessionalProject }) {
-  const relatedProjects = (project.relatedProjectIds ?? [])
-    .map((id) => professionalProjectsById[id])
-    .filter((relatedProject): relatedProject is ProfessionalProject => Boolean(relatedProject))
-
-  const hasRelatedContent =
-    project.relatedBlogs?.length || project.relatedLabs?.length || relatedProjects.length
+  const hasRelatedContent = project.relatedBlogs?.length || project.relatedLabs?.length
 
   if (!hasRelatedContent) return null
 
@@ -36,22 +30,27 @@ function RelatedLinks({ project }: { project: ProfessionalProject }) {
             博客：{link.title} →
           </Link>
         ))}
-        {project.relatedLabs?.map((link) => (
+      </div>
+    </div>
+  )
+}
+
+function PublicLabs({ project }: { project: ProfessionalProject }) {
+  if (!project.relatedLabs?.length) return null
+
+  return (
+    <div className="mt-6 rounded-lg border border-violet-500/30 bg-violet-500/10 p-4 dark:bg-violet-500/15">
+      <p className="text-xs font-bold tracking-[0.16em] text-violet-800 dark:text-violet-200">
+        公开实验
+      </p>
+      <div className="mt-3 flex flex-col gap-2">
+        {project.relatedLabs.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className="font-medium text-[var(--accent)] hover:underline"
+            className="font-semibold text-[var(--ink)] hover:text-[var(--accent)] hover:underline"
           >
-            公开实验：{link.title} →
-          </Link>
-        ))}
-        {relatedProjects.map((relatedProject) => (
-          <Link
-            key={relatedProject.id}
-            href={`#${relatedProject.id}`}
-            className="font-medium text-[var(--accent)] hover:underline"
-          >
-            关联项目：{relatedProject.title} →
+            {link.title} →
           </Link>
         ))}
       </div>
@@ -116,35 +115,20 @@ export default function ProfessionalProjectTimeline() {
                   </span>
                 ))}
               </div>
+              <PublicLabs project={project} />
               <details className="group mt-6">
                 <summary className="cursor-pointer list-none font-semibold text-[var(--ink)] marker:hidden">
-                  <span className="group-open:hidden">查看职责与项目说明 +</span>
-                  <span className="hidden group-open:inline">收起职责与项目说明 −</span>
+                  <span className="group-open:hidden">查看职责摘要 +</span>
+                  <span className="hidden group-open:inline">收起职责摘要 −</span>
                 </summary>
-                <div className="mt-5 space-y-6 text-[var(--muted)]">
+                <div className="mt-4 text-[var(--muted)]">
                   <div>
-                    <h4 className="text-sm font-semibold text-[var(--ink)]">我的负责范围</h4>
                     <ul className="mt-3 list-disc space-y-2 pl-5 leading-7">
                       {project.responsibilities.map((responsibility) => (
                         <li key={responsibility}>{responsibility}</li>
                       ))}
                     </ul>
                   </div>
-                  {project.outcomes && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-[var(--ink)]">可公开结果</h4>
-                      <ul className="mt-3 list-disc space-y-2 pl-5 leading-7">
-                        {project.outcomes.map((outcome) => (
-                          <li key={outcome}>{outcome}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {project.confidentialityNotice && (
-                    <p className="rounded-md border border-[var(--rule)] bg-[var(--surface)] px-4 py-3 text-sm leading-6">
-                      {project.confidentialityNotice}
-                    </p>
-                  )}
                   <RelatedLinks project={project} />
                 </div>
               </details>
