@@ -13,6 +13,8 @@ export interface ProfessionalProject {
   status: ProfessionalProjectStatus
   role: string
   summary: string
+  background?: string
+  architecture?: string[]
   responsibilities: string[]
   methods: string[]
   outcomes?: string[]
@@ -134,18 +136,41 @@ const professionalProjects: ProfessionalProject[] = [
   },
   {
     id: 'multimodal-platform-capabilities',
-    title: '行业智能化平台能力建设',
+    title: '行业多模态平台',
     period: '2024',
     sortOrder: 202412,
     status: 'completed',
     role: '平台子能力研发',
-    summary: '面向复杂行业场景，持续交付语音、视觉、多模态检索与文档生成等平台型能力。',
-    responsibilities: [
-      '完成 ASR 微调训练、定制 OCR 开发与部署。',
-      '建设以图搜图、文字搜图以及视频人物与物体识别能力。',
-      '推进 TTS 声纹克隆和 Agent 驱动的文档、报告生成等功能。',
+    summary:
+      '面向复杂行业场景，交付多语种文档解析、语音识别、视觉向量检索与 LLM 文本理解等可复用平台能力。',
+    background:
+      '面向需要处理多语种文档、音视频与图像资料的行业用户，统一提供文档解析、内容检索、语音转写和文本理解能力，以提升信息处理效率与可访问性。',
+    architecture: [
+      '文档侧：多 OCR 引擎路由 → 语种识别与版面还原 → 结构化抽取 / DocVQA。',
+      '语音侧：Whisper large-v3 → LoRA 小语种与行业术语适配 → 流式分段与端点检测 → 服务化推理。',
+      '视觉侧：ResNetV2-50 / CLIP 特征提取 → Milvus GPU 索引 → 倒排与向量混合检索。',
+      '应用侧：Qwen / GPT Prompt-based 分类 → FastAPI 服务封装 → 容器化、灰度发布、监控与异常降级。',
     ],
-    methods: ['ASR 微调', 'OCR', '以图搜图', '文字搜图', '视频理解', 'TTS', 'Agent'],
+    responsibilities: [
+      '整合 PP-OCR、EasyOCR 与 MinerU，构建多语种 OCR 路由、版面还原、结构化抽取与 DocVQA 能力。',
+      '使用 Whisper large-v3 与 LoRA 完成小语种、行业术语适配，并实现流式分段与端点检测的服务化部署。',
+      '基于 ResNetV2-50 / CLIP 提取视觉特征并接入 Milvus，支持以图搜图、文字搜图及文档封面等视觉检索场景。',
+      '探索以 Qwen / GPT 为核心的 Prompt-based 文本分类，支持无标签冷启动场景；完成容器化、灰度发布、监控与异常降级。',
+    ],
+    methods: [
+      'OCR / DocVQA',
+      'Whisper + LoRA',
+      'CTranslate2',
+      'CLIP / ResNet',
+      'Milvus',
+      'LLM 分类',
+      'FastAPI',
+    ],
+    outcomes: [
+      '统一多语种识别与版面还原后，结构化字段准确率提升 9.8%。',
+      '小语种 ASR 服务端到端 P95 降低 28%，QPS 提升 1.4×。',
+      '千万级视觉向量检索 P99 小于 120ms，并通过倒排与向量混检降低误召。',
+    ],
     confidentialityNotice,
   },
   {
@@ -155,13 +180,38 @@ const professionalProjects: ProfessionalProject[] = [
     sortOrder: 202306,
     status: 'completed',
     role: '项目 Owner / 全流程开发',
-    summary: '独立负责从语音输入到语音回复的智能客服全流程，完成模型、数据与标注工具的协同建设。',
-    responsibilities: [
-      '搭建 ASR → RAG → LLM → TTS 的端到端服务流程。',
-      '完成 RAG 系统搭建，以及 ASR、LLM 训练数据的组织与标注。',
-      '开展 LoRA 微调训练，并开发支持数据生产的标注平台。',
+    summary:
+      '独立负责 ASR、RAG/Agent、LLM 与 TTS 的智能客服闭环，并完成话务接入、模型服务、评测与数据生产工具建设。',
+    background:
+      '面向文化服务场景的高频咨询，建设替代部分人工坐席的智能语音问答系统。系统需支持从电话语音输入到语音回复的完整闭环，并为知识更新、模型迭代和服务质量评估提供数据基础。',
+    architecture: [
+      '话务接入：FreeSWITCH → WebSocket 流式传输 → ASR 转写与 VAD 分段。',
+      '问答决策：意图识别 → LlamaIndex / Milvus 检索与工具路由 → Qwen / ChatGLM 生成回复。',
+      '语音反馈：Edge-TTS / VITS 合成 → 话务系统返回；3D-Speaker 支持身份核验与多说话人处理。',
+      '质量闭环：链路追踪与回放 → ASR / QA 标注平台 → 训练数据、实验配置与 Prompt 版本管理。',
     ],
-    methods: ['ASR', 'RAG', 'LLM', 'TTS', 'LoRA', '数据标注', '标注平台'],
+    responsibilities: [
+      '基于 LlamaIndex 与 Milvus 构建知识库检索、工具路由与多轮问答，设计 System Prompt 与 Few-shot 模板，并建立召回率、覆盖率与幻觉率评测。',
+      '完成 Whisper large-v2 LoRA 领域微调、CTranslate2 INT8 推理优化，以及 ChatGLM LoRA 意图识别和 Qwen 服务部署。',
+      '使用 3D-Speaker 与 VAD 实现自动分段、多说话人分离、身份核验与黑名单能力；结合 Edge-TTS 和 VITS 支持语音反馈与音色迁移。',
+      '对接 FreeSWITCH，打通 WebSocket 流式 ASR → RAG/Agent → LLM → TTS 链路；建设链路追踪、回放、ASR/QA 标注与 Prompt 版本管理工具。',
+    ],
+    methods: [
+      'Whisper + LoRA',
+      'RAG / Agent',
+      'LlamaIndex',
+      'Milvus',
+      'Qwen / ChatGLM',
+      '3D-Speaker + VAD',
+      'FreeSWITCH',
+      'Edge-TTS / VITS',
+    ],
+    outcomes: [
+      'RAG 检索召回@20 提升 12%，幻觉率降低 18%。',
+      'Whisper 领域识别准确率从 87% 提升至 93%；推理 P95 降低 37%，显存降低 30%，吞吐提升 1.6×。',
+      '多说话人混叠场景误检降低 22%，语音合成 MOS 盲测提升 0.3。',
+      '端到端服务峰值 QPS 达 120，P99 为 850ms。',
+    ],
     confidentialityNotice,
   },
 ]
