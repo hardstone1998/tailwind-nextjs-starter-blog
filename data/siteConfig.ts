@@ -395,6 +395,5 @@ export const siteNavigation = [
   { href: '/blog', title: { zh: '研究笔记', en: 'Notes' } },
   { href: '/tags', title: { zh: '主题索引', en: 'Topics' } },
   { href: '/projects', title: { zh: '实验室', en: 'Labs' } },
-  { href: '/resume', title: { zh: '在线简历', en: 'Resume' } },
   { href: '/about', title: { zh: '关于', en: 'About' } },
 ]

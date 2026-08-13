@@ -97,7 +97,12 @@ export default function ProfessionalProjectTimeline() {
                 </span>
               </div>
               <h3 className="mt-4 text-2xl font-bold tracking-tight text-[var(--ink)]">
-                {project.title}
+                <Link
+                  href={`/about/projects/${project.id}`}
+                  className="hover:text-[var(--accent)] hover:underline"
+                >
+                  {project.title}
+                </Link>
               </h3>
               <p className="mt-2 text-sm font-semibold text-[var(--accent)]">{project.role}</p>
               <p className="mt-4 leading-7 text-[var(--muted)]">{project.summary}</p>

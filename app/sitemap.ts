@@ -15,15 +15,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: post.lastmod || post.date,
     }))
 
-  const routes = ['', 'blog', 'projects', 'tags', 'about', 'resume'].map((route) => ({
+  const routes = ['', 'blog', 'projects', 'tags', 'about'].map((route) => ({
     url: `${siteUrl}/${route}`,
     lastModified: new Date().toISOString().split('T')[0],
   }))
 
-  const resumeProjectRoutes = orderedProfessionalProjects.map((project) => ({
-    url: `${siteUrl}/resume/projects/${project.id}`,
+  const projectDetailRoutes = orderedProfessionalProjects.map((project) => ({
+    url: `${siteUrl}/about/projects/${project.id}`,
     lastModified: new Date().toISOString().split('T')[0],
   }))
 
-  return [...routes, ...resumeProjectRoutes, ...blogRoutes]
+  return [...routes, ...projectDetailRoutes, ...blogRoutes]
 }

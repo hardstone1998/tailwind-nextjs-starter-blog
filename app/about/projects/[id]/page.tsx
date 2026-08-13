@@ -21,7 +21,7 @@ export async function generateMetadata(props: {
   if (!project) return
 
   return genPageMetadata({
-    title: `${project.title} · Resume`,
+    title: `${project.title} · 项目详情`,
     description: project.summary,
   })
 }
@@ -39,7 +39,7 @@ function DetailSection({ title, children }: { title: string; children: React.Rea
   )
 }
 
-export default async function ResumeProjectPage(props: { params: Promise<{ id: string }> }) {
+export default async function ProjectDetailPage(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params
   const project = getProject(id)
 
@@ -47,8 +47,8 @@ export default async function ResumeProjectPage(props: { params: Promise<{ id: s
 
   return (
     <article className="py-12 sm:py-16">
-      <Link href="/resume" className="text-sm font-semibold text-[var(--accent)] hover:underline">
-        ← 返回在线简历
+      <Link href="/about" className="text-sm font-semibold text-[var(--accent)] hover:underline">
+        ← 返回关于
       </Link>
       <header className="mt-8 border-b border-[var(--rule)] pb-10">
         <div className="flex flex-wrap items-center justify-between gap-3">
