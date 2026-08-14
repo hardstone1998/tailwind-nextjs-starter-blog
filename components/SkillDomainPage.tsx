@@ -1,5 +1,5 @@
 import { allBlogs } from 'contentlayer/generated'
-import { domainById, DomainId } from '@/data/siteConfig'
+import { domainById, type DomainId } from '@/data/siteConfig'
 import { getRelatedPosts } from '@/lib/research-content'
 import SkillDomainPageClient from './SkillDomainPageClient'
 

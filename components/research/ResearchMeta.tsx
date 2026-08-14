@@ -1,5 +1,8 @@
+'use client'
+
 import DomainChip from './DomainChip'
 import LabStatusBadge from './LabStatusBadge'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface ResearchMetaProps {
   domains?: string[]
@@ -18,6 +21,7 @@ export default function ResearchMeta({
   outcome,
   compact = false,
 }: ResearchMetaProps) {
+  const { t } = useLanguage()
   const hasContext = domains.length || lab || status || methods.length || outcome
   if (!hasContext) return null
 
@@ -37,10 +41,14 @@ export default function ResearchMeta({
         </div>
       )}
       {!compact && methods.length > 0 && (
-        <p className="text-sm leading-6 text-[var(--muted)]">方法：{methods.join(' · ')}</p>
+        <p className="text-sm leading-6 text-[var(--muted)]">
+          {t('methods')}: {methods.join(' · ')}
+        </p>
       )}
       {!compact && outcome && (
-        <p className="text-sm leading-6 text-[var(--muted)]">结果：{outcome}</p>
+        <p className="text-sm leading-6 text-[var(--muted)]">
+          {t('outcome')}: {outcome}
+        </p>
       )}
     </div>
   )

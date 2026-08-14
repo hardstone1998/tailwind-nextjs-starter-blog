@@ -1,3 +1,5 @@
+'use client'
+
 import { ReactNode } from 'react'
 import { CoreContent } from 'pliny/utils/contentlayer'
 import type { Blog, Authors } from 'contentlayer/generated'
@@ -11,6 +13,7 @@ import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import ResearchMeta from '@/components/research/ResearchMeta'
 import SectionLabel from '@/components/research/SectionLabel'
+import { useLanguage } from '@/components/LanguageProvider'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const postDateTemplate: Intl.DateTimeFormatOptions = {
@@ -29,6 +32,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
+  const { language, t } = useLanguage()
   const { filePath, path, slug, date, title, tags, domains, lab, status, methods, outcome } =
     content
   const basePath = path.split('/')[0]
@@ -40,13 +44,16 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
         <div className="xl:divide-y xl:divide-[var(--rule)]">
           <header className="py-10 xl:py-14">
             <div className="space-y-4 text-center">
-              <SectionLabel>Research note</SectionLabel>
+              <SectionLabel>{language === 'zh' ? '研究笔记' : 'Research note'}</SectionLabel>
               <dl>
                 <div>
                   <dt className="sr-only">Published on</dt>
                   <dd className="text-sm font-medium text-[var(--muted)]">
                     <time dateTime={date}>
-                      {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
+                      {new Date(date).toLocaleDateString(
+                        language === 'en' ? 'en-US' : siteMetadata.locale,
+                        postDateTemplate
+                      )}
                     </time>
                   </dd>
                 </div>
@@ -113,7 +120,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             <div className="divide-y divide-gray-200 xl:col-span-3 xl:row-span-2 xl:pb-0 dark:divide-gray-700">
               <div className="prose dark:prose-invert max-w-none pt-10 pb-8">{children}</div>
               <div className="pt-6 pb-6 text-sm text-[var(--muted)]">
-                <Link href={editUrl(filePath)}>View on GitHub</Link>
+                <Link href={editUrl(filePath)}>{t('viewOnGitHub')}</Link>
               </div>
               {siteMetadata.comments && (
                 <div className="pt-6 pb-6 text-center text-[var(--muted)]" id="comment">
@@ -126,7 +133,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 {tags && (
                   <div className="py-4 xl:py-8">
                     <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
-                      Tags
+                      {t('tags')}
                     </h2>
                     <div className="flex flex-wrap">
                       {tags.map((tag) => (
@@ -140,7 +147,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                     {prev && prev.path && (
                       <div>
                         <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
-                          Previous Article
+                          {t('previousArticle')}
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                           <Link href={`/${prev.path}`}>{prev.title}</Link>
@@ -150,7 +157,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                     {next && next.path && (
                       <div>
                         <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
-                          Next Article
+                          {t('nextArticle')}
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                           <Link href={`/${next.path}`}>{next.title}</Link>
@@ -166,7 +173,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                   aria-label="Back to the blog"
                 >
-                  &larr; Back to the blog
+                  &larr; {t('backToBlog')}
                 </Link>
               </div>
             </footer>
