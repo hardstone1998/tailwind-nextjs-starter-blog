@@ -8,9 +8,9 @@ import type { Blog } from 'contentlayer/generated'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
-import tagData from 'app/tag-data.json'
 import ResearchMeta from '@/components/research/ResearchMeta'
 import { useLanguage } from '@/components/LanguageProvider'
+import { getVisiblePosts, getVisibleTagCounts } from '@/lib/blog-language'
 
 interface PaginationProps {
   totalPages: number
@@ -21,6 +21,7 @@ interface ListLayoutProps {
   title: string
   initialDisplayPosts?: CoreContent<Blog>[]
   pagination?: PaginationProps
+  tag?: string
 }
 
 function Pagination({ totalPages, currentPage }: PaginationProps) {
@@ -73,20 +74,32 @@ export default function ListLayoutWithTags({
   title,
   initialDisplayPosts = [],
   pagination,
+  tag,
 }: ListLayoutProps) {
   const { language, t } = useLanguage()
   const pathname = usePathname()
-  const tagCounts = tagData as Record<string, number>
+  const tagCounts = getVisibleTagCounts(posts, language)
   const tagKeys = Object.keys(tagCounts)
   const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
-
-  const displayPosts = initialDisplayPosts.length > 0 ? initialDisplayPosts : posts
+  const visiblePosts = getVisiblePosts(posts, language)
+  const matchingPosts = tag
+    ? visiblePosts.filter((post) => post.tags?.map((item) => slug(item)).includes(tag))
+    : visiblePosts
+  const pageMatch = pathname.match(/\/page\/(\d+)/)
+  const currentPage = pageMatch ? Number(pageMatch[1]) : 1
+  const pageSize = 5
+  const displayPosts = pagination
+    ? matchingPosts.slice(pageSize * (currentPage - 1), pageSize * currentPage)
+    : initialDisplayPosts.length > 0
+      ? initialDisplayPosts
+      : matchingPosts
+  const totalPages = pagination ? Math.ceil(matchingPosts.length / pageSize) : 0
 
   return (
     <>
       <div className="py-10 sm:py-14">
         <div className="pb-8">
-          <p className="section-label">{language === 'zh' ? '研究归档' : 'Research archive'}</p>
+          <p className="section-label">{t('researchArchive')}</p>
           <h1 className="mt-3 text-4xl leading-tight font-extrabold tracking-tight text-[var(--ink)] sm:hidden sm:text-5xl">
             {t('blogTitle')}
           </h1>
@@ -177,8 +190,11 @@ export default function ListLayoutWithTags({
                 )
               })}
             </ul>
-            {pagination && pagination.totalPages > 1 && (
-              <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+            {displayPosts.length === 0 && (
+              <p className="py-8 text-[var(--muted)]">{t('noContent')}</p>
+            )}
+            {pagination && totalPages > 1 && (
+              <Pagination currentPage={currentPage} totalPages={totalPages} />
             )}
           </div>
         </div>

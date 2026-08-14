@@ -18,6 +18,7 @@ import SectionLabel from '@/components/research/SectionLabel'
 import { capabilityDomains } from '@/data/siteConfig'
 import projectsData from '@/data/projectsData'
 import { useLanguage } from '@/components/LanguageProvider'
+import { getVisiblePosts } from '@/lib/blog-language'
 
 const MAX_DISPLAY = 5
 
@@ -53,7 +54,7 @@ function renderRadarAngleAxis({ x, y, payload }: RadarAngleTickProps) {
 }
 
 export default function Home({ posts }) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [showRadar, setShowRadar] = useState(false)
   const activeLabs = projectsData.filter(
     (project) => project.status === 'active' || project.status === 'iterating'
@@ -181,20 +182,22 @@ export default function Home({ posts }) {
           </Link>
         </div>
         <div className="mt-7 grid gap-4">
-          {posts.slice(0, MAX_DISPLAY).map((post) => (
-            <NotebookCard
-              key={post.slug}
-              path={`blog/${post.slug}`}
-              date={post.date}
-              title={post.title}
-              summary={post.summary}
-              domains={post.domains}
-              lab={post.lab}
-              status={post.status}
-              methods={post.methods}
-              outcome={post.outcome}
-            />
-          ))}
+          {getVisiblePosts(posts, language)
+            .slice(0, MAX_DISPLAY)
+            .map((post) => (
+              <NotebookCard
+                key={post.slug}
+                path={`blog/${post.slug}`}
+                date={post.date}
+                title={post.title}
+                summary={post.summary}
+                domains={post.domains}
+                lab={post.lab}
+                status={post.status}
+                methods={post.methods}
+                outcome={post.outcome}
+              />
+            ))}
         </div>
       </section>
     </div>

@@ -13,6 +13,8 @@ import PostBanner from '@/layouts/PostBanner'
 import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { notFound } from 'next/navigation'
+import ArticleLanguageRegistration from '@/components/ArticleLanguageRegistration'
+import { getTranslationPath } from '@/lib/blog-language'
 
 const defaultLayout = 'PostLayout'
 const layouts = {
@@ -105,6 +107,10 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
   })
 
   const Layout = layouts[post.layout || defaultLayout]
+  const articlePaths = {
+    zh: getTranslationPath(allBlogs, post, 'zh'),
+    en: getTranslationPath(allBlogs, post, 'en'),
+  }
 
   return (
     <>
@@ -113,6 +119,7 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div lang={post.language === 'en' ? 'en' : 'zh-CN'}>
+        <ArticleLanguageRegistration paths={articlePaths} />
         <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
           <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
         </Layout>
