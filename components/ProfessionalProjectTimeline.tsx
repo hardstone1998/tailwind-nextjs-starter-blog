@@ -39,18 +39,22 @@ function PublicLabs({ project }: { project: ProfessionalProject }) {
   if (!project.relatedLabs?.length) return null
 
   return (
-    <div className="mt-6 rounded-lg border border-violet-500/30 bg-violet-500/10 p-4 dark:bg-violet-500/15">
-      <p className="text-xs font-bold tracking-[0.16em] text-violet-800 dark:text-violet-200">
-        公开实验
-      </p>
+    <div className="mt-6 border-t border-[var(--rule)] pt-5">
+      <p className="section-label">公开实验</p>
       <div className="mt-3 flex flex-col gap-2">
         {project.relatedLabs.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className="font-semibold text-[var(--ink)] hover:text-[var(--accent)] hover:underline"
+            className="group inline-flex w-fit items-baseline gap-2 font-semibold text-[var(--ink)] transition-colors hover:text-[var(--accent)] hover:underline"
           >
-            {link.title} →
+            <span
+              aria-hidden="true"
+              className="font-mono text-[var(--accent)] transition-transform group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+            {link.title}
           </Link>
         ))}
       </div>
