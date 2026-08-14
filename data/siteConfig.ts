@@ -14,7 +14,7 @@ interface CapabilityEvidence {
   title: string
   type: EvidenceType
   summary: string
-  href?: `/${string}`
+  href: `/${string}`
 }
 
 interface ScoreRationale {

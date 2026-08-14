@@ -2,7 +2,22 @@ import type { Blog } from 'contentlayer/generated'
 
 export type ContentLanguage = 'zh' | 'en'
 
-type LanguageAwarePost = Pick<Blog, 'path' | 'language' | 'translationKey' | 'tags'>
+type LanguageAwarePost = Pick<
+  Blog,
+  | 'path'
+  | 'slug'
+  | 'date'
+  | 'title'
+  | 'summary'
+  | 'domains'
+  | 'lab'
+  | 'status'
+  | 'methods'
+  | 'outcome'
+  | 'language'
+  | 'translationKey'
+  | 'tags'
+>
 
 function languageOf(post: LanguageAwarePost): ContentLanguage {
   return post.language === 'en' ? 'en' : 'zh'
