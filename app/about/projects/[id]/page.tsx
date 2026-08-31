@@ -106,11 +106,38 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
         </ul>
       </DetailSection>
 
+      {project.detailSections?.map((section) => (
+        <DetailSection key={section.title} title={section.title}>
+          <div className="max-w-3xl space-y-4 leading-7">
+            {section.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </DetailSection>
+      ))}
+
       {project.outcomes && (
         <DetailSection title="可公开结果">
           <ul className="max-w-3xl list-disc space-y-3 pl-5 leading-7">
             {project.outcomes.map((outcome) => (
               <li key={outcome}>{outcome}</li>
+            ))}
+          </ul>
+        </DetailSection>
+      )}
+
+      {!!project.relatedBlogs?.length && (
+        <DetailSection title="相关技术文章">
+          <ul className="space-y-3">
+            {project.relatedBlogs.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="font-semibold text-[var(--accent)] hover:underline"
+                >
+                  {link.title} →
+                </Link>
+              </li>
             ))}
           </ul>
         </DetailSection>
