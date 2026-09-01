@@ -13,7 +13,7 @@ import { useLanguage } from './LanguageProvider'
 const Header = () => {
   const { language } = useLanguage()
   let headerClass =
-    'flex w-full items-center justify-between border-b border-[var(--rule)] py-6 sm:py-8'
+    'flex w-full items-center justify-between gap-4 border-b border-[var(--rule)] py-5 sm:py-6'
   if (siteMetadata.stickyNav) {
     headerClass += ' sticky top-0 z-50'
   }
@@ -22,11 +22,11 @@ const Header = () => {
     <header className={headerClass}>
       <Link href="/" aria-label={siteMetadata.headerTitle}>
         <div className="flex items-center justify-between">
-          <div className="mr-3">
+          <div className="mr-2 shrink-0">
             <Logo />
           </div>
           {typeof siteMetadata.headerTitle === 'string' ? (
-            <div className="hidden text-xl font-bold tracking-tight text-[var(--ink)] sm:block">
+            <div className="hidden max-w-48 text-base leading-5 font-bold tracking-tight text-[var(--ink)] sm:block">
               {siteMetadata.headerTitle}
             </div>
           ) : (
@@ -34,20 +34,23 @@ const Header = () => {
           )}
         </div>
       </Link>
-      <div className="flex items-center space-x-4 leading-5 sm:space-x-6">
-        <div className="no-scrollbar hidden max-w-40 items-center gap-x-4 overflow-x-auto sm:flex md:max-w-72 lg:max-w-96">
+      <div className="flex shrink-0 items-center gap-1 leading-5 lg:gap-3">
+        <nav
+          aria-label={language === 'zh' ? '主导航' : 'Main navigation'}
+          className="hidden items-center gap-3 xl:flex"
+        >
           {headerNavLinks
             .filter((link) => link.href !== '/')
             .map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="m-1 font-medium text-[var(--muted)] transition-colors hover:text-[var(--accent)]"
+                className="px-1 py-3 text-sm font-medium whitespace-nowrap text-[var(--muted)] transition-colors hover:text-[var(--accent)]"
               >
                 {link.title[language]}
               </Link>
             ))}
-        </div>
+        </nav>
         <SearchButton />
         <LanguageSwitch />
         <ThemeSwitch />

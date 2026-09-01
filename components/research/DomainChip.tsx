@@ -1,7 +1,7 @@
 'use client'
 
 import Link from '@/components/Link'
-import { domainById, DomainId } from '@/data/siteConfig'
+import { domainById, DomainId, localizeDomain } from '@/data/siteConfig'
 import { useLanguage } from '@/components/LanguageProvider'
 
 const accentClasses = {
@@ -29,7 +29,7 @@ export function isDomainId(value: string): value is DomainId {
 export default function DomainChip({ domainId }: { domainId: string }) {
   const { language } = useLanguage()
   if (!isDomainId(domainId)) return null
-  const domain = domainById[domainId]
+  const domain = localizeDomain(domainById[domainId], language)
   return (
     <Link
       href={domain.route}

@@ -6,6 +6,64 @@ export type SiteLanguage = 'zh' | 'en'
 
 const messages = {
   zh: {
+    featuredProjects: '代表项目',
+    featuredIntro: '从真实任务、负责范围与可公开结果了解我的工作。',
+    viewProject: '查看项目',
+    pendingReview: 'AI 辅助初评，待人工复核',
+    pendingAssessment: '待评估',
+    provisionalScore: '暂定总分',
+    evidenceCoverage: '证据覆盖率',
+    evidenceCount: '项代表证据',
+    rubricVersion: '规则版本',
+    materialCutoff: '材料截止日期',
+    nextLevelGap: '下一等级所缺证据',
+    ratingRationale: '等级依据',
+    evidenceType: '材料类型',
+    evidenceLimit: '验证限制',
+    authorAccount: '作者陈述',
+    codeExperiment: '代码／实验材料',
+    independentlyVerified: '独立验证',
+    reviewScope: '仅评估现有公开材料所支持的表现，不代表完整职业能力或行业排名。',
+    scoringFormula: '总分 = Σ（权重 × 等级 ÷ 4）。任一项缺证据时不发布总分；覆盖率不计入能力分。',
+    levelZero: 'L0 表示材料明确显示未达到 L1；缺少材料记为待评估，不等于零分。',
+    reviewNext: '人工复核需检查引用、等级匹配及缺项；尚无独立复现的材料不得视为独立认证。',
+    assessmentHistory: '旧版手写分数已归档，缺少可复算记录，不能与本版直接比较。',
+    nextAction: '下一步',
+    evidenceOverview: '用证据了解能力',
+    evidenceOverviewIntro: '查看材料、初评依据与尚缺的证据；缺少公开材料不等于没有能力。',
+    previous: '上一页',
+    next: '下一页',
+    page: '页',
+    of: '/',
+    originalLanguage: '原文语言',
+    untranslated: '本文暂无所选界面的译文，以下保留原文。',
+    toc: '文章目录',
+    readingMinutes: '分钟阅读',
+    copyCode: '复制代码',
+    copied: '已复制',
+    copyFailed: '复制失败，请选择代码手动复制',
+    skipContent: '跳转到正文',
+    themeLabel: '选择主题',
+    searchPlaceholder: '搜索标题或摘要…',
+    searchLoading: '正在加载搜索索引…',
+    searchError: '搜索索引加载失败，请重试。',
+    retry: '重试',
+    close: '关闭',
+    loadComments: '加载评论',
+    commentsUnavailable: '评论尚未配置。',
+    scrollTop: '回到顶部',
+    scrollComment: '前往评论',
+    notFoundTitle: '页面未找到',
+    notFoundBody: '这个地址没有对应内容，可以返回首页继续浏览。',
+    backHome: '返回首页',
+    allTopics: '主题索引',
+    noTopics: '暂无主题。',
+    confidential: '业务名称、数据和实现细节均已做抽象与脱敏处理。',
+    projectAccount: '以下为作者提供的脱敏项目记录，结果尚未经独立复核。',
+    completed: '已完成',
+    iterating: '持续迭代',
+    inProgress: '开发中',
+    exploring: '探索中',
     languageName: '中文',
     switchLanguage: '切换为英文界面',
     homeHero: '多模态 / 视频模型工程师',
@@ -65,6 +123,73 @@ const messages = {
     noContent: '暂无该语言内容。',
   },
   en: {
+    featuredProjects: 'Selected work',
+    featuredIntro: 'Explore real tasks, my responsibilities and publicly shareable outcomes.',
+    viewProject: 'View project',
+    pendingReview: 'AI-assisted preliminary review · Human review pending',
+    pendingAssessment: 'Not assessed',
+    provisionalScore: 'Provisional total',
+    evidenceCoverage: 'Evidence coverage',
+    evidenceCount: 'evidence records',
+    rubricVersion: 'Rubric version',
+    materialCutoff: 'Material cutoff',
+    nextLevelGap: 'Evidence needed for the next level',
+    ratingRationale: 'Rating rationale',
+    evidenceType: 'Material type',
+    evidenceLimit: 'Verification limits',
+    authorAccount: 'Author account',
+    codeExperiment: 'Code / experimental material',
+    independentlyVerified: 'Independent verification',
+    reviewScope:
+      'Assessment of performance supported by available public material, not overall professional ability or industry ranking.',
+    scoringFormula:
+      'Total = Σ(weight × level ÷ 4). No total is published with missing evidence; coverage is separate from ability.',
+    levelZero:
+      'L0 requires evidence of not meeting L1. Missing material is not assessed, not zero.',
+    reviewNext:
+      'Human review must check citations, level matches and gaps. Material without independent reproduction is not independent certification.',
+    assessmentHistory:
+      'Legacy handwritten scores are archived without reproducible records and cannot be compared directly with this version.',
+    nextAction: 'Next action',
+    evidenceOverview: 'Explore capabilities through evidence',
+    evidenceOverviewIntro:
+      'Inspect material, preliminary judgments and missing evidence. Limited public material does not mean limited ability.',
+    previous: 'Previous',
+    next: 'Next',
+    page: 'Page',
+    of: 'of',
+    originalLanguage: 'Original language',
+    untranslated:
+      'No translation is available for the selected interface language; the original text is shown below.',
+    toc: 'On this page',
+    readingMinutes: 'min read',
+    copyCode: 'Copy code',
+    copied: 'Copied',
+    copyFailed: 'Copy failed. Select the code and copy it manually.',
+    skipContent: 'Skip to content',
+    themeLabel: 'Choose theme',
+    searchPlaceholder: 'Search titles or summaries…',
+    searchLoading: 'Loading search index…',
+    searchError: 'Search index could not be loaded. Please retry.',
+    retry: 'Retry',
+    close: 'Close',
+    loadComments: 'Load comments',
+    commentsUnavailable: 'Comments are not configured yet.',
+    scrollTop: 'Back to top',
+    scrollComment: 'Go to comments',
+    notFoundTitle: 'Page not found',
+    notFoundBody: 'There is no content at this address. Return home to keep exploring.',
+    backHome: 'Back to homepage',
+    allTopics: 'Topics',
+    noTopics: 'No topics yet.',
+    confidential:
+      'Business names, data and implementation details have been abstracted and redacted.',
+    projectAccount:
+      'These are redacted project records provided by the author. Outcomes have not been independently verified.',
+    completed: 'Completed',
+    iterating: 'Iterating',
+    inProgress: 'In progress',
+    exploring: 'Exploring',
     languageName: 'English',
     switchLanguage: 'Switch to Chinese interface',
     homeHero: 'Multimodal / Video Model Engineer',
@@ -132,6 +257,7 @@ type MessageKey = keyof (typeof messages)['zh']
 
 interface LanguageContextValue {
   language: SiteLanguage
+  isLanguageReady: boolean
   setLanguage: (language: SiteLanguage) => void
   t: (key: MessageKey) => string
   articlePaths: Partial<Record<SiteLanguage, string>>
@@ -142,29 +268,40 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<SiteLanguage>('zh')
+  const [initialized, setInitialized] = useState(false)
   const [articlePaths, setArticlePaths] = useState<Partial<Record<SiteLanguage, string>>>({})
 
   useEffect(() => {
-    const savedLanguage = window.localStorage.getItem('site-language')
-    if (savedLanguage === 'en' || savedLanguage === 'zh') {
-      setLanguage(savedLanguage)
+    try {
+      const savedLanguage = window.localStorage.getItem('site-language')
+      if (savedLanguage === 'en' || savedLanguage === 'zh') setLanguage(savedLanguage)
+    } catch {
+      /* Storage is optional. */
     }
+    setInitialized(true)
   }, [])
 
   useEffect(() => {
     document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en'
-    window.localStorage.setItem('site-language', language)
-  }, [language])
+    if (initialized) {
+      try {
+        window.localStorage.setItem('site-language', language)
+      } catch {
+        /* Storage is optional. */
+      }
+    }
+  }, [language, initialized])
 
   const value = useMemo(
     () => ({
       language,
+      isLanguageReady: initialized,
       setLanguage,
       t: (key: MessageKey) => messages[language][key],
       articlePaths,
       setArticlePaths,
     }),
-    [articlePaths, language]
+    [articlePaths, language, initialized]
   )
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>

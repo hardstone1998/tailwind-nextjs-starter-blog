@@ -1,9 +1,9 @@
 import 'css/tailwind.css'
-import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
-import { SearchProvider, SearchConfig } from 'pliny/search'
+import { LocalSearchProvider } from '@/components/SearchProvider'
+import SkipContent from '@/components/SkipContent'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
@@ -89,10 +89,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <LanguageProvider>
             <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
             <SectionContainer>
-              <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+              <LocalSearchProvider>
+                <SkipContent />
                 <Header />
-                <main className="mb-auto">{children}</main>
-              </SearchProvider>
+                <main id="main-content" tabIndex={-1} className="mb-auto">
+                  {children}
+                </main>
+              </LocalSearchProvider>
               <Footer />
             </SectionContainer>
           </LanguageProvider>

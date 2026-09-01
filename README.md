@@ -1,6 +1,8 @@
-# NLP Journey
+# Multimodal & Video Systems
 
-一个面向 NLP、LLM 与 AI 系统工程的公开研究笔记站点。内容聚焦模型理解、生产部署、评估方法和产品实验，优先记录可复现的过程、结果与后续迭代。
+一个面向多模态、视频与 AI 系统工程的公开研究笔记站点。内容聚焦模型理解、生产部署、评估方法和产品实验，优先记录可复现的过程、结果与后续迭代。
+
+六域评分规则与内容维护见 [Rubric 维护说明](docs/rubric-maintenance.md)，新增材料、证据和维度评分的具体步骤见 [内容与评分证据录入指南](docs/evidence-entry-guide.md)，本轮修复和验证结果见 [实施验证报告](docs/implementation-verification-2026-09-01.md)。当前能力评估均为 AI 辅助初评，待人工复核。
 
 ## 本地运行
 

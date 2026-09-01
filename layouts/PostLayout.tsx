@@ -14,8 +14,9 @@ import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import ResearchMeta from '@/components/research/ResearchMeta'
 import SectionLabel from '@/components/research/SectionLabel'
 import { useLanguage } from '@/components/LanguageProvider'
+import ArticleReadingTools, { DesktopToc, type TocItem } from '@/components/ArticleReadingTools'
 
-const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
+const editUrl = (path: string) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
   year: 'numeric',
@@ -47,7 +48,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <SectionLabel>{language === 'zh' ? '研究笔记' : 'Research note'}</SectionLabel>
               <dl>
                 <div>
-                  <dt className="sr-only">Published on</dt>
+                  <dt className="sr-only">{t('publishedOn')}</dt>
                   <dd className="text-sm font-medium text-[var(--muted)]">
                     <time dateTime={date}>
                       {new Date(date).toLocaleDateString(
@@ -58,9 +59,19 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   </dd>
                 </div>
               </dl>
-              <div>
+              <div lang={content.language === 'en' ? 'en' : 'zh-CN'}>
                 <PageTitle>{title}</PageTitle>
               </div>
+              <p className="text-sm text-[var(--muted)]">
+                {t('originalLanguage')}: {content.language === 'en' ? 'English' : '中文'}
+              </p>
+              {language !== (content.language === 'en' ? 'en' : 'zh') && (
+                <p className="text-sm text-[var(--muted)]">{t('untranslated')}</p>
+              )}
+              <ArticleReadingTools
+                toc={content.toc as TocItem[]}
+                minutes={content.readingTime.minutes}
+              />
               <ResearchMeta
                 domains={domains}
                 lab={lab}
@@ -72,8 +83,8 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             </div>
           </header>
           <div className="grid-rows-[auto_1fr] divide-y divide-[var(--rule)] pb-8 xl:grid xl:grid-cols-4 xl:gap-x-8 xl:divide-y-0">
-            <dl className="pt-6 pb-10 xl:border-b xl:border-[var(--rule)] xl:pt-11">
-              <dt className="sr-only">Authors</dt>
+            <dl className="min-w-0 pt-6 pb-10 xl:row-span-2 xl:border-b xl:border-[var(--rule)] xl:pt-11">
+              <dt className="sr-only">{language === 'zh' ? '作者' : 'Authors'}</dt>
               <dd>
                 <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-y-8 xl:space-x-0">
                   {authorDetails.map((author) => (
@@ -88,7 +99,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                         />
                       )}
                       <dl className="text-sm leading-5 font-medium whitespace-nowrap">
-                        <dt className="sr-only">Name</dt>
+                        <dt className="sr-only">{language === 'zh' ? '姓名' : 'Name'}</dt>
                         <dd className="text-[var(--ink)]">{author.name}</dd>
                         {(author.github || author.email) && (
                           <dd className="text-primary-500 space-x-2">
@@ -116,9 +127,17 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   ))}
                 </ul>
               </dd>
+              <dd className="mt-8 xl:sticky xl:top-6">
+                <DesktopToc toc={content.toc as TocItem[]} />
+              </dd>
             </dl>
-            <div className="divide-y divide-gray-200 xl:col-span-3 xl:row-span-2 xl:pb-0 dark:divide-gray-700">
-              <div className="prose dark:prose-invert max-w-none pt-10 pb-8">{children}</div>
+            <div className="min-w-0 divide-y divide-gray-200 xl:col-span-3 xl:pb-0 dark:divide-gray-700">
+              <div
+                lang={content.language === 'en' ? 'en' : 'zh-CN'}
+                className="prose dark:prose-invert max-w-none pt-10 pb-8"
+              >
+                {children}
+              </div>
               <div className="pt-6 pb-6 text-sm text-[var(--muted)]">
                 <Link href={editUrl(filePath)}>{t('viewOnGitHub')}</Link>
               </div>
@@ -128,7 +147,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 </div>
               )}
             </div>
-            <footer>
+            <footer className="min-w-0 xl:col-span-3 xl:col-start-2">
               <div className="divide-[var(--rule)] text-sm leading-5 font-medium xl:col-start-1 xl:row-start-2 xl:divide-y">
                 {tags && (
                   <div className="py-4 xl:py-8">
@@ -171,7 +190,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 <Link
                   href={`/${basePath}`}
                   className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                  aria-label="Back to the blog"
+                  aria-label={t('backToBlog')}
                 >
                   &larr; {t('backToBlog')}
                 </Link>

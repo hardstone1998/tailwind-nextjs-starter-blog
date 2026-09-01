@@ -1,0 +1,14 @@
+{
+  "status": "archived-unverifiable",
+  "archivedAt": "2026-09-01",
+  "notice": "Historical hand-maintained values. No reproducible evaluation records are available. Do not compare with Rubric v1 or attribute these to a verified model run.",
+  "historicalModelLabel": "GPT-4 / Claude-3.5",
+  "scores": {
+    "model-research": 72,
+    "systems-engineering": 71.5,
+    "multimodal-intelligence": 68.5,
+    "learning-practice": 72,
+    "product-thinking": 73,
+    "open-source-writing": 57.5
+  }
+}

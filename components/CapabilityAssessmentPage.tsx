@@ -1,83 +1,129 @@
+'use client'
 import Link from '@/components/Link'
-import SectionLabel from '@/components/research/SectionLabel'
-import { CapabilityDomain } from '@/data/siteConfig'
-
-export default function CapabilityAssessmentPage({ domain }: { domain: CapabilityDomain }) {
-  const { criteria, modelContext, scoreRange } = domain.assessmentDetails
-
+import { useLanguage } from './LanguageProvider'
+import { localizeDomain, type CapabilityDomain } from '@/data/siteConfig'
+import type { AssessmentView } from '@/lib/capability-view'
+export default function CapabilityAssessmentPage({
+  domain: source,
+  view,
+}: {
+  domain: CapabilityDomain
+  view: AssessmentView
+}) {
+  const { language, t } = useLanguage()
+  const domain = localizeDomain(source, language)
+  const { rubric, assessment, evidence, result } = view
   return (
     <div className="py-10 sm:py-14">
-      <Link
-        href={domain.route}
-        className="text-sm font-semibold text-[var(--accent)] hover:underline"
-      >
-        ← 返回{domain.label}
+      <Link href={domain.route} className="text-sm font-semibold text-[var(--accent)]">
+        ← {t('backTo')} {domain.label}
       </Link>
-
-      <div className="mt-8 max-w-3xl">
-        <SectionLabel>Assessment details</SectionLabel>
-        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
-          <h1 className="text-4xl font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl">
-            {domain.label} · 评估说明
-          </h1>
-          <span className="font-mono text-2xl font-semibold text-[var(--accent)]">
-            {domain.score}/100
-          </span>
-        </div>
-        <p className="mt-5 text-lg leading-8 text-[var(--muted)]">
-          {domain.scoreRationale.disclosure}
-        </p>
-      </div>
-
-      <section className="mt-14 border-t border-[var(--rule)] pt-8">
-        <SectionLabel>Scoring rubric</SectionLabel>
-        <h2 className="mt-2 text-2xl font-bold text-[var(--ink)]">评分提示词</h2>
-        <p className="mt-4 max-w-3xl leading-7 font-semibold text-[var(--ink)]">评分标准：</p>
-        <ol className="mt-6 grid gap-3 md:grid-cols-2">
-          {criteria.map((criterion, index) => (
-            <li key={criterion} className="notebook-card flex gap-3">
-              <span className="font-mono text-sm font-semibold text-[var(--accent)]">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <span className="text-sm leading-6 text-[var(--muted)]">{criterion}</span>
-            </li>
-          ))}
-        </ol>
-        <p className="mt-6 font-semibold text-[var(--ink)]">评分范围：{scoreRange}</p>
-        <p className="mt-2 text-[var(--muted)]">当前得分：{domain.score || 'N/A'}</p>
-      </section>
-
-      <section className="mt-14 border-t border-[var(--rule)] pt-8">
-        <SectionLabel>Historical context</SectionLabel>
-        <h2 className="mt-2 text-2xl font-bold text-[var(--ink)]">调用模型</h2>
-        <div className="notebook-card mt-6 max-w-3xl">
-          <p className="leading-7 text-[var(--muted)]">{modelContext.introduction}</p>
-          <ul className="mt-4 list-disc space-y-2 pl-6 leading-7 text-[var(--muted)]">
-            <li>
-              <strong className="text-[var(--ink)]">评估模型：</strong>
-              {modelContext.models}
-            </li>
-            <li>
-              <strong className="text-[var(--ink)]">评估依据：</strong>
-              {modelContext.evidenceBasis}
-            </li>
-            <li>
-              <strong className="text-[var(--ink)]">评估维度：</strong>
-              {modelContext.dimensions}
-            </li>
-            <li>
-              <strong className="text-[var(--ink)]">更新频率：</strong>
-              {modelContext.updateFrequency}
-            </li>
-          </ul>
-          <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>提示：</strong>
-              {modelContext.notice}
-            </p>
+      <header className="mt-8 max-w-3xl">
+        <p className="section-label">Rubric · {rubric.version}</p>
+        <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          {domain.label} · {t('assessmentDetails')}
+        </h1>
+        <p className="mt-5 font-semibold text-[var(--accent)]">{t('pendingReview')}</p>
+        <p className="mt-4 leading-7 text-[var(--muted)]">{t('reviewScope')}</p>
+        <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="notebook-card">
+            <dt>{t('provisionalScore')}</dt>
+            <dd className="mt-2 font-mono text-3xl">
+              {result.total === null ? t('pendingAssessment') : `${result.total}/100`}
+            </dd>
           </div>
+          <div className="notebook-card">
+            <dt>{t('evidenceCoverage')}</dt>
+            <dd className="mt-2 font-mono text-3xl">{result.coverage}%</dd>
+          </div>
+        </dl>
+        <p className="mt-4 text-sm text-[var(--muted)]">
+          {t('materialCutoff')}: {assessment.materialCutoff}
+        </p>
+        <p className="mt-5 leading-7 text-[var(--muted)]">{t('scoringFormula')}</p>
+        <p className="mt-2 leading-7 text-[var(--muted)]">{t('levelZero')}</p>
+      </header>
+      <section className="mt-12 space-y-6" aria-label={t('assessment')}>
+        {rubric.dimensions.map((d) => {
+          const rating = assessment.ratings.find((r) => r.dimensionId === d.id)!
+          return (
+            <article className="notebook-card" key={d.id}>
+              <h2 className="text-xl font-bold">
+                {d.label[language]}{' '}
+                <span className="font-mono text-[var(--accent)]">{d.weight}%</span>
+              </h2>
+              <p className="mt-4 font-semibold">
+                {t('ratingRationale')} ·{' '}
+                {rating.level === null ? t('pendingAssessment') : `L${rating.level}`}
+              </p>
+              <p className="mt-2 leading-7 text-[var(--muted)]">{rating.rationale[language]}</p>
+              <ul className="mt-3 flex flex-wrap gap-3 text-sm">
+                {rating.evidenceIds.map((id) => (
+                  <li key={id}>
+                    <a href={`#evidence-${id}`} className="text-[var(--accent)] underline">
+                      {evidence.find((e) => e.id === id)!.title[language]}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-sm leading-6">
+                <strong>{t('nextLevelGap')}: </strong>
+                {rating.nextLevelGap[language]}
+              </p>
+              <ol className="mt-6 grid gap-3 md:grid-cols-2">
+                {d.levels.map((level, index) => (
+                  <li
+                    key={index}
+                    className={`rounded-md border p-4 text-sm leading-6 ${rating.level === index + 1 ? 'border-[var(--accent)] bg-[var(--surface)]' : 'border-[var(--rule)]'}`}
+                  >
+                    <strong className="mr-2 font-mono">L{index + 1}</strong>
+                    {level[language]}
+                  </li>
+                ))}
+              </ol>
+            </article>
+          )
+        })}
+      </section>
+      <section className="mt-12" aria-labelledby="assessment-evidence">
+        <h2 id="assessment-evidence" className="text-2xl font-bold">
+          {t('evidence')}
+        </h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {evidence.map((e) => (
+            <article key={e.id} id={`evidence-${e.id}`} className="notebook-card scroll-mt-8">
+              <h3 className="font-bold">
+                <Link href={e.href} className="text-[var(--accent)] underline">
+                  {e.title[language]} →
+                </Link>
+              </h3>
+              <p className="mt-3 text-sm">{e.section[language]}</p>
+              <p className="mt-3 text-sm font-semibold">
+                {t('evidenceType')}:{' '}
+                {t(
+                  e.kind === 'author-account'
+                    ? 'authorAccount'
+                    : e.kind === 'code-and-experiment'
+                      ? 'codeExperiment'
+                      : 'independentlyVerified'
+                )}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                {e.responsibility[language]}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                <strong>{t('evidenceLimit')}: </strong>
+                {e.limitation[language]}
+              </p>
+              <p className="mt-3 font-mono text-xs text-[var(--muted)]">{e.sourceVersion}</p>
+            </article>
+          ))}
         </div>
       </section>
+      <aside className="mt-10 space-y-3 border-t border-[var(--rule)] pt-6 text-sm leading-6 text-[var(--muted)]">
+        <p>{t('reviewNext')}</p>
+        <p>{t('assessmentHistory')}</p>
+      </aside>
     </div>
   )
 }

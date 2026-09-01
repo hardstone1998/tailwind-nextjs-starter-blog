@@ -1,4 +1,6 @@
+'use client'
 import { ReactNode } from 'react'
+import { useLanguage } from '@/components/LanguageProvider'
 import type { Authors } from 'contentlayer/generated'
 import SocialIcon from '@/components/social-icons'
 import Image from '@/components/Image'
@@ -9,6 +11,7 @@ interface Props {
 }
 
 export default function AuthorLayout({ children, content }: Props) {
+  const { t, language } = useLanguage()
   const { name, avatar, occupation, company, email, twitter, bluesky, linkedin, github } = content
 
   return (
@@ -17,7 +20,7 @@ export default function AuthorLayout({ children, content }: Props) {
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">
           <p className="section-label">Researcher profile</p>
           <h1 className="mt-3 text-4xl leading-tight font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl">
-            关于
+            {language === 'zh' ? '关于' : 'About'}
           </h1>
         </div>
         <div className="items-start space-y-2 xl:grid xl:grid-cols-3 xl:space-y-0 xl:gap-x-8">
@@ -32,7 +35,7 @@ export default function AuthorLayout({ children, content }: Props) {
               />
             )}
             <h3 className="pt-4 pb-2 text-2xl leading-8 font-bold tracking-tight">{name}</h3>
-            <div className="text-[var(--muted)]">{occupation}</div>
+            <div className="text-[var(--muted)]">{t('homeHero')}</div>
             <div className="text-[var(--muted)]">{company}</div>
             <div className="flex space-x-3 pt-6">
               <SocialIcon kind="mail" href={`mailto:${email}`} />

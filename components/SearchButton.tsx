@@ -1,36 +1,27 @@
-import { AlgoliaButton } from 'pliny/search/AlgoliaButton'
-import { KBarButton } from 'pliny/search/KBarButton'
-import siteMetadata from '@/data/siteMetadata'
+'use client'
 import { useLanguage } from './LanguageProvider'
-
-const SearchButton = () => {
+import { useLocalSearch } from './SearchProvider'
+export default function SearchButton() {
   const { t } = useLanguage()
-  if (
-    siteMetadata.search &&
-    (siteMetadata.search.provider === 'algolia' || siteMetadata.search.provider === 'kbar')
-  ) {
-    const SearchButtonWrapper =
-      siteMetadata.search.provider === 'algolia' ? AlgoliaButton : KBarButton
-
-    return (
-      <SearchButtonWrapper aria-label={t('search')}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="h-5 w-5 text-[var(--muted)] transition-colors hover:text-[var(--accent)]"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-          />
-        </svg>
-      </SearchButtonWrapper>
-    )
-  }
+  const { openSearch } = useLocalSearch()
+  return (
+    <button
+      type="button"
+      onClick={openSearch}
+      aria-label={t('search')}
+      className="flex h-11 w-11 items-center justify-center rounded text-[var(--muted)]"
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        className="h-5 w-5"
+      >
+        <circle cx="10" cy="10" r="6" />
+        <path d="m15 15 6 6" />
+      </svg>
+    </button>
+  )
 }
-
-export default SearchButton

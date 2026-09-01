@@ -1,30 +1,32 @@
+'use client'
 import Link from '@/components/Link'
-import { capabilityDomains } from '@/data/siteConfig'
-
-export default function CapabilityMap() {
+import { localizeDomain } from '@/data/siteConfig'
+import { useLanguage } from '@/components/LanguageProvider'
+import type { CapabilitySummary } from '@/lib/capability-view'
+export default function CapabilityMap({ summaries }: { summaries: CapabilitySummary[] }) {
+  const { language, t } = useLanguage()
   return (
-    <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {capabilityDomains.map((domain, index) => (
-        <li key={domain.id}>
-          <Link
-            href={domain.route}
-            aria-label={`查看${domain.label}能力域详情`}
-            className="notebook-card block h-full p-5 transition-transform hover:-translate-y-0.5"
-          >
-            <span className="font-mono text-xs tracking-[0.16em] text-[var(--muted)]">
-              0{index + 1}
-            </span>
-            <div className="mt-3 flex items-baseline justify-between gap-3">
-              <h3 className="font-bold text-[var(--ink)]">{domain.label}</h3>
-              <span className="font-mono text-sm text-[var(--accent)]">{domain.score}</span>
-            </div>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{domain.description}</p>
-            <span className="mt-4 block text-sm font-semibold text-[var(--accent)]">
-              查看能力域 →
-            </span>
-          </Link>
-        </li>
-      ))}
+    <ol className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {summaries.map(({ domain: source, evidenceCount, coverage }, index) => {
+        const domain = localizeDomain(source, language)
+        return (
+          <li key={domain.id}>
+            <Link
+              href={domain.route}
+              className="notebook-card block h-full transition-colors hover:border-[var(--accent)]"
+            >
+              <span className="font-mono text-xs text-[var(--muted)]">0{index + 1}</span>
+              <h3 className="mt-3 text-lg font-bold text-[var(--ink)]">{domain.label}</h3>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{domain.description}</p>
+              <p className="mt-5 text-sm font-semibold text-[var(--accent)]">
+                {evidenceCount} {t('evidenceCount')} · {t('evidenceCoverage')} {coverage}%
+              </p>
+              <p className="mt-2 text-xs leading-5 text-[var(--muted)]">{t('pendingReview')}</p>
+              <span className="mt-4 block text-sm font-semibold">{t('viewCapability')} →</span>
+            </Link>
+          </li>
+        )
+      })}
     </ol>
   )
 }

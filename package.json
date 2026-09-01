@@ -9,7 +9,12 @@
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "eslint app components lib layouts scripts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "node scripts/test.mjs",
+    "typecheck": "tsc --noEmit --incremental false --composite false",
+    "check:content": "node scripts/check-content.mjs",
+    "check:build": "node scripts/check-build.mjs",
+    "check": "npm run lint && npm run typecheck && npm test && npm run check:content"
   },
   "dependencies": {
     "@headlessui/react": "2.2.0",

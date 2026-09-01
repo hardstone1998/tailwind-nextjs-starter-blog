@@ -1,0 +1,29 @@
+name: Validate research notebook
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn check:content
+      - run: yarn test
+      - run: yarn build
+      - run: yarn check:build
+      - run: yarn typecheck
+      - run: yarn lint
+      - name: Verify static export
+        run: yarn build
+        env:
+          EXPORT: '1'
+          UNOPTIMIZED: '1'
+          BASE_PATH: '/review-preview'
+      - run: yarn check:build --export --base-path=/review-preview

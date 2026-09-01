@@ -5,391 +5,242 @@ export type DomainId =
   | 'learning-practice'
   | 'product-thinking'
   | 'open-source-writing'
-
 export type LabStatus = 'active' | 'iterating' | 'archived'
-
-type EvidenceType = 'project' | 'research-note' | 'practice'
-
-interface CapabilityEvidence {
-  title: string
-  type: EvidenceType
-  summary: string
-  href: `/${string}`
-}
-
-interface ScoreRationale {
-  disclosure: string
-  dimensions: string[]
-  evidenceBasis: string
-  reviewCadence: string
-}
-
-interface NextAction {
-  title: string
-  description: string
-}
-
-interface AssessmentModelContext {
-  models: string
-  introduction: string
-  evidenceBasis: string
-  dimensions: string
-  updateFrequency: string
-  notice: string
-}
-
-interface AssessmentDetails {
-  criteria: string[]
-  scoreRange: string
-  modelContext: AssessmentModelContext
-}
-
-export interface CapabilityDomain {
-  id: DomainId
+export interface DomainCopy {
   label: string
   shortLabel: string
   description: string
   claim: string
+  introduction: string[]
+  nextAction: { title: string; description: string }
+}
+export interface CapabilityDomain extends DomainCopy {
+  id: DomainId
   route: `/skills/${string}`
-  score: number
   accent: 'blue' | 'emerald' | 'violet' | 'amber' | 'rose' | 'cyan'
   keywords: string[]
-  evidence: CapabilityEvidence[]
-  scoreRationale: ScoreRationale
-  nextAction: NextAction
-  introduction: string[]
-  assessmentDetails: AssessmentDetails
+  assessmentId: string
+  en: DomainCopy
 }
-
 export const labStatusLabels: Record<LabStatus, string> = {
   active: '进行中',
   iterating: '持续迭代',
   archived: '已归档',
 }
-
-const legacyModelContext: AssessmentModelContext = {
-  models: 'GPT-4 / Claude-3.5',
-  introduction: '本技能评分通过AI模型评估生成，评估模型综合考虑了以下因素：',
-  evidenceBasis: '项目经验、技术博客、代码仓库、技术分享等',
-  dimensions: '理论深度、实践经验、项目复杂度、技术影响力',
-  updateFrequency: '根据最新项目和技术输出定期更新',
-  notice: '评分仅供参考，实际能力会随着项目经验和技术学习持续提升。',
-}
-
 export const capabilityDomains: CapabilityDomain[] = [
   {
     id: 'model-research',
+    route: '/skills/code',
+    accent: 'blue',
+    assessmentId: 'model-research-v1',
     label: '模型理解与微调',
     shortLabel: '模型研究',
-    description: '从模型机理、训练策略到高效微调，理解并改进模型行为。',
-    claim: '围绕候选生成、评估与排序等模型决策环节，重点把可比较的实验设计转化为可审计的模型选择。',
-    route: '/skills/code',
-    score: 72,
-    accent: 'blue',
-    keywords: ['微调', '模型', 'fine-tuning', '训练', 'pretrain', 'lora', 'qlora'],
-    evidence: [
-      {
-        title: 'WebNovel Title Localization Lab',
-        type: 'project',
-        summary: '以冻结候选集和八维评估比较规则、LLM 与学习排序方法，保留可复核的模型选择过程。',
-        href: '/blog/webnovel-title-localization-lab',
-      },
-      {
-        title: '推荐系统从召回到精排的分析',
-        type: 'research-note',
-        summary: '梳理候选生成、粗排与精排之间的目标差异和优化链路。',
-        href: '/blog/recommendation-system-analysis-from-recall-to-ranking-optimization',
-      },
-    ],
-    scoreRationale: {
-      disclosure: '72/100 为基于已公开研究与项目记录维护的自评，不代表第三方认证。',
-      dimensions: ['实验设计与可比性', '模型与排序方法选择', '训练和评估闭环', '结果可审计性'],
-      evidenceBasis: '当前依据包括标题本地化实验和推荐系统分析等公开材料。',
-      reviewCadence: '在新增可复核的模型实验或方法复盘后更新。',
-    },
-    nextAction: {
-      title: '补充微调与误差分析记录',
-      description: '把训练配置、失败实验和误差归因整理为可复现的公开笔记。',
-    },
+    description: '从任务约束、模型适配到候选评估，检验模型选择。',
+    claim: '公开材料支持模型选型和评估设计的讨论；微调效果还需要配置、数据划分和实验记录支持。',
     introduction: [
-      '在模型理解与微调能力方面，我深入理解Transformer架构、注意力机制等核心原理，能够从底层理解大模型的工作机制。我具备丰富的模型微调实践经验，熟悉LoRA、QLoRA、Adapter等参数高效微调方法。',
-      '我擅长根据具体任务需求选择合适的预训练模型，设计微调策略，优化训练流程。在模型理解方面，我能够分析模型的内部表示、注意力模式，理解模型的行为机制。我具备从零开始训练模型的能力，也擅长基于预训练模型进行领域适配和任务微调。',
+      '围绕字幕翻译、语音适配和标题排序开展模型实践。职业案例记录了 LoRA 与奖励模型相关职责，公开笔记提供评估流程；这些材料不等于已独立复核的训练结果。',
     ],
-    assessmentDetails: {
-      criteria: [
-        '模型架构理解：对Transformer、BERT、GPT等模型架构的深入理解',
-        '微调技术：LoRA、QLoRA、Adapter等参数高效微调方法的应用',
-        '训练优化：训练策略设计、超参数调优、训练稳定性控制',
-        '模型分析：模型内部机制分析、注意力可视化、表示学习理解',
-        '实践项目：实际微调项目的复杂度和效果',
-        '理论基础：对深度学习、自然语言处理理论的掌握',
+    nextAction: {
+      title: '补齐训练实验',
+      description: '公开脱敏配置、同数据基线、消融和误差分析，明确本人负责范围。',
+    },
+    keywords: ['微调', '模型', 'fine-tuning', 'lora', 'qlora', 'ranking'],
+    en: {
+      label: 'Model understanding & adaptation',
+      shortLabel: 'Model research',
+      description:
+        'Examine model choices through task constraints, adaptation and candidate evaluation.',
+      claim:
+        'Public material supports discussion of model selection and evaluation design; adaptation results still need configurations, data splits and experiment records.',
+      introduction: [
+        'My work spans subtitle translation, speech adaptation and title ranking. Career accounts describe LoRA and reward-model responsibilities, while public notes explain evaluation workflows. These are not independently verified training results.',
       ],
-      scoreRange: '0-100分',
-      modelContext: legacyModelContext,
+      nextAction: {
+        title: 'Publish training experiments',
+        description:
+          'Add redacted configurations, matched-data baselines, ablations and error analysis, with a clear statement of my contribution.',
+      },
     },
   },
   {
     id: 'systems-engineering',
+    route: '/skills/model',
+    accent: 'emerald',
+    assessmentId: 'systems-engineering-v1',
     label: '系统工程与部署',
     shortLabel: '系统工程',
-    description: '把模型带入生产：并发、性能、部署与可靠性。',
-    claim: '以推理服务的并发、内存和吞吐量约束为起点，持续验证模型系统从原型到稳定运行的工程取舍。',
-    route: '/skills/model',
-    score: 71.5,
-    accent: 'emerald',
-    keywords: [
-      '部署',
-      '系统',
-      '工程',
-      'devops',
-      'docker',
-      'kubernetes',
-      'ci/cd',
-      'infrastructure',
-      '性能',
-      '并发',
-      'asyncio',
-      'sharedmemory',
-    ],
-    evidence: [
-      {
-        title: 'FunASR SharedMemory 与并发控制优化',
-        type: 'research-note',
-        summary: '记录 SharedMemory、AnyIO 和 Asyncio 锁在 50 路并发下的性能优化与量化结果。',
-        href: '/blog/2025-12-14-funasr-performance-optimization-shared-memory',
-      },
-      {
-        title: 'FunASR 多进程部署故障排查',
-        type: 'practice',
-        summary: '定位多进程推理中的 CPU 线程膨胀和内存溢出，并沉淀排查与修复路径。',
-        href: '/blog/funasr-deployment-pitfall-guide-cpu-thread-explosion-memory-overflow',
-      },
-    ],
-    scoreRationale: {
-      disclosure: '71.5/100 为基于已公开系统实践维护的自评，不代表第三方认证。',
-      dimensions: ['并发与资源管理', '性能测量与优化', '故障定位与恢复', '部署可维护性'],
-      evidenceBasis: '当前依据包括 FunASR 的多进程排障、共享内存和并发控制实践。',
-      reviewCadence: '在新增性能基准、部署复盘或可靠性改进后更新。',
-    },
-    nextAction: {
-      title: '补齐端到端部署基线',
-      description: '公开服务监控、容量规划和持续部署的最小可复现实验。',
-    },
+    description: '把模型带入服务：并发、资源管理、部署与恢复。',
+    claim:
+      '通过多进程排障、共享内存和有界队列记录工程取舍；历史压测包含硬件扩容，不能视为单项软件收益。',
     introduction: [
-      '在系统工程与部署能力方面，我专注于将AI模型和算法转化为可生产部署的系统。我具备丰富的DevOps实践经验，熟悉Docker容器化、Kubernetes编排、CI/CD流程设计等。能够从零到一构建完整的AI服务基础设施，确保系统的可扩展性、稳定性和高性能。',
-      '我擅长设计微服务架构，优化模型推理性能，处理高并发场景。在部署过程中，我注重监控、日志、容错机制等运维最佳实践，确保AI系统能够稳定运行并持续迭代优化。',
+      '主要实践集中在 ASR 服务、异步处理与统一 AI 平台。公开代码片段和排障记录可说明实现思路，生产运行稳定性及独立复现仍需补充证据。',
     ],
-    assessmentDetails: {
-      criteria: [
-        '系统架构设计能力：能否设计可扩展、高可用的系统架构',
-        '容器化与编排：Docker、Kubernetes等容器技术的掌握程度',
-        'CI/CD流程：自动化部署流程的设计与实施能力',
-        '性能优化：系统性能调优、资源管理能力',
-        '监控与运维：日志、监控、告警等运维实践',
-        '故障处理：问题定位、容错机制设计能力',
+    nextAction: {
+      title: '建立公平压测基线',
+      description: '固定设备与音频集，补充重复压测、尾延迟和故障恢复记录。',
+    },
+    keywords: ['部署', '系统', 'devops', 'docker', '性能', '并发', 'asyncio', 'sharedmemory'],
+    en: {
+      label: 'Systems engineering & deployment',
+      shortLabel: 'Systems',
+      description: 'Bring models into services: concurrency, resources, deployment and recovery.',
+      claim:
+        'Multiprocess debugging, shared memory and bounded queues document engineering trade-offs. Historical benchmarks include hardware expansion, not isolated software gains.',
+      introduction: [
+        'My practice focuses on ASR serving, asynchronous processing and a shared AI platform. Public snippets and debugging notes illustrate implementation choices; sustained production reliability and independent reproduction need further evidence.',
       ],
-      scoreRange: '0-100分',
-      modelContext: legacyModelContext,
+      nextAction: {
+        title: 'Establish a matched benchmark',
+        description:
+          'Fix hardware and audio inputs; add repeated measurements, tail latency and recovery records.',
+      },
     },
   },
   {
     id: 'multimodal-intelligence',
+    route: '/skills/deploy',
+    accent: 'violet',
+    assessmentId: 'multimodal-intelligence-v1',
     label: '跨模态与多任务融合',
     shortLabel: '多模态',
-    description: '连接语言、语音、视觉与跨任务智能。',
-    claim:
-      '面向语言、语音与视觉之间的任务连接持续积累方法判断，但目前公开材料尚不足以形成完整的证据链。',
-    route: '/skills/deploy',
-    score: 68.5,
-    accent: 'violet',
-    keywords: ['跨模态', '多模态', 'multimodal', '多任务', 'fusion', '视觉', '语音', '图像'],
-    evidence: [],
-    scoreRationale: {
-      disclosure: '68.5/100 为基于当前学习与实践积累维护的自评，不代表第三方认证。',
-      dimensions: ['跨模态任务拆解', '模态间信息对齐', '评测设计', '工程可行性'],
-      evidenceBasis: '当前公开材料正在整理，分数将在可复核实验发布后补充证据。',
-      reviewCadence: '在发布跨模态实验、评测或技术复盘后更新。',
-    },
-    nextAction: {
-      title: '发布首个跨模态基准实验',
-      description: '以明确任务、数据和评测指标建立可公开复核的多模态实践记录。',
-    },
+    description: '连接文档、语言、语音与视觉任务。',
+    claim: '职业案例描述了 OCR、语音适配和视觉检索；多组件集成不自动证明跨模态融合效果。',
     introduction: [
-      '在跨模态与多任务融合方面，我专注于将不同模态（文本、图像、语音等）的信息进行有效融合，并设计能够同时处理多个相关任务的统一模型架构。我深入研究视觉-语言理解、多模态预训练、跨模态检索等前沿技术。',
-      '我具备设计和实现多任务学习框架的能力，能够通过共享表示学习提升模型效率。在跨模态融合方面，我熟悉注意力机制、特征对齐、模态转换等关键技术，能够构建端到端的跨模态理解系统。',
+      '参与文档解析、语音转写和视觉向量检索等平台能力建设，并探索视频生产流程。当前证据主要是脱敏职责说明，尚缺公开的分模态对照和失败样例。',
     ],
-    assessmentDetails: {
-      criteria: [
-        '跨模态理解能力：文本-图像、文本-语音等跨模态理解技术掌握',
-        '多任务学习：设计统一架构处理多个相关任务的能力',
-        '特征融合技术：不同模态特征的融合与对齐方法',
-        '预训练模型应用：CLIP、ALIGN等跨模态预训练模型的使用',
-        '实际项目经验：跨模态应用场景的落地实践',
-        '技术创新：在跨模态融合方面的创新与优化',
+    nextAction: {
+      title: '发布跨模态评测',
+      description: '提供明确任务、可公开样例、单模态基线以及缺失模态测试。',
+    },
+    keywords: ['跨模态', '多模态', 'multimodal', '视觉', '语音', '图像'],
+    en: {
+      label: 'Multimodal & multitask integration',
+      shortLabel: 'Multimodal',
+      description: 'Connect document, language, speech and visual tasks.',
+      claim:
+        'Career accounts describe OCR, speech adaptation and visual retrieval. Integrating components does not itself demonstrate effective multimodal fusion.',
+      introduction: [
+        'I have worked on document parsing, transcription and visual retrieval, and am exploring video production workflows. Current evidence is mainly redacted responsibility statements, without public per-modality comparisons or failure cases.',
       ],
-      scoreRange: '0-100分',
-      modelContext: legacyModelContext,
+      nextAction: {
+        title: 'Publish multimodal evaluation',
+        description:
+          'Define a task with shareable examples, unimodal baselines and missing-modality tests.',
+      },
     },
   },
   {
     id: 'learning-practice',
+    route: '/skills/engineering',
+    accent: 'amber',
+    assessmentId: 'learning-practice-v1',
     label: '快速学习与技术更新',
     shortLabel: '学习实践',
-    description: '用实践和复盘保持技术判断持续更新。',
-    claim: '通过把新方法拆成小规模实验、复盘结果并沉淀为研究记录，维持对技术选型和问题边界的更新。',
-    route: '/skills/engineering',
-    score: 72,
-    accent: 'amber',
-    keywords: ['学习', '技术', '更新', '新技术', '学习能力', '快速', '适应'],
-    evidence: [],
-    scoreRationale: {
-      disclosure: '72/100 为基于公开复盘与持续实践维护的自评，不代表第三方认证。',
-      dimensions: ['问题拆解速度', '实验与复盘质量', '技术选型判断', '知识沉淀与迁移'],
-      evidenceBasis: '当前以研究笔记和项目复盘作为积累线索，专题证据正在整理。',
-      reviewCadence: '在完成一次有公开输出的学习专题或项目复盘后更新。',
-    },
-    nextAction: {
-      title: '建立学习专题复盘索引',
-      description: '把技术调研、试验结论和后续修正串成可追溯的专题记录。',
-    },
+    description: '以问题、实验和修正记录学习过程。',
+    claim: '项目时间线提供学习线索，但不能仅凭输出数量或“两个周末”判断学习速度。',
     introduction: [
-      '在快速学习与技术更新能力方面，我具备强烈的学习驱动力和快速适应新技术的能力。我始终保持对AI领域最新技术趋势的敏感度，能够快速理解并掌握新的模型架构、算法和工具。',
-      '我建立了系统化的学习体系，通过阅读论文、实践项目、技术分享等方式持续提升。我擅长从零开始快速上手新技术栈，能够在短时间内将理论知识转化为实际应用能力。面对技术快速迭代的AI领域，我能够保持持续学习的状态，不断更新知识体系。',
+      '把技术问题转化为小规模实验，并通过公开笔记记录实现与取舍。当前材料尚不足以控制既有经验和任务难度，因此首评不宣称学习速度或跨任务迁移已得到验证。',
     ],
-    assessmentDetails: {
-      criteria: [
-        '学习速度：快速理解新技术、新概念的能力',
-        '技术跟踪：对前沿技术的关注度和跟踪能力',
-        '知识更新：知识体系的持续更新频率和深度',
-        '实践转化：将理论知识快速转化为实践的能力',
-        '学习系统：是否有系统化的学习方法论',
-        '适应能力：面对新技术栈的适应速度',
+    nextAction: {
+      title: '记录迁移与修正',
+      description: '补充初始知识边界、失败假设及在新任务中应用后的调整。',
+    },
+    keywords: ['学习', '复盘', '试验', '实验', '适应'],
+    en: {
+      label: 'Learning & technical renewal',
+      shortLabel: 'Learning',
+      description: 'Document learning through questions, experiments and revisions.',
+      claim:
+        'Project timelines provide learning traces, but output volume or “two weekends” cannot establish learning speed.',
+      introduction: [
+        'I turn technical questions into small experiments and document implementation choices. Current material does not control for prior experience or task difficulty, so the assessment does not claim verified learning speed or transfer.',
       ],
-      scoreRange: '0-100分',
-      modelContext: legacyModelContext,
+      nextAction: {
+        title: 'Document transfer and revision',
+        description:
+          'Record initial knowledge gaps, failed hypotheses and adaptations in a new task.',
+      },
     },
   },
   {
     id: 'product-thinking',
+    route: '/skills/nlp',
+    accent: 'rose',
+    assessmentId: 'product-thinking-v1',
     label: '产品导向与场景思维',
     shortLabel: '产品思维',
-    description: '把算法能力放回真实用户、场景与产品决策。',
+    description: '从用户约束和成功标准反推技术方案。',
     claim:
-      '从真实决策场景反推模型与工作流：先明确用户价值和可比较标准，再把技术方案收敛为可执行选择。',
-    route: '/skills/nlp',
-    score: 73,
-    accent: 'rose',
-    keywords: [
-      '产品',
-      '场景',
-      '应用',
-      '落地',
-      'nlp',
-      '自然语言处理',
-      '推荐系统',
-      'ranking',
-      '本地化',
-    ],
-    evidence: [
-      {
-        title: 'Project Parliament',
-        type: 'project',
-        summary: '将开放式开源方向通过多模型辩论收敛为面向开发者的主路线与备选路线。',
-        href: '/blog/project-parliament',
-      },
-      {
-        title: 'WebNovel Title Localization Lab',
-        type: 'project',
-        summary: '以英语读者和作品语境为约束，比较标题候选的可用性与排序结果。',
-        href: '/blog/webnovel-title-localization-lab',
-      },
-    ],
-    scoreRationale: {
-      disclosure: '73/100 为基于已公开产品实验与研究记录维护的自评，不代表第三方认证。',
-      dimensions: ['场景与用户约束定义', '评价标准设计', '方案取舍与收敛', '结果可执行性'],
-      evidenceBasis: '当前依据包括 Project Parliament 和标题本地化实验的决策过程。',
-      reviewCadence: '在完成新的用户场景验证或决策复盘后更新。',
-    },
-    nextAction: {
-      title: '补充用户反馈与结果追踪',
-      description: '把方案被采用后的反馈、偏差和下一轮决策纳入公开复盘。',
-    },
+      '标题本地化与多模型工作流展示了问题界定和方案取舍；采用率等作者陈述仍需定义、样本和反馈记录支持。',
     introduction: [
-      '在产品导向与场景思维方面，我始终将技术能力与业务需求紧密结合。我具备从用户场景出发，设计AI解决方案的能力，能够将复杂的AI技术转化为解决实际问题的产品功能。',
-      '我擅长分析业务场景，理解用户痛点，设计符合产品定位的AI功能。在NLP领域，我深入理解文本理解、信息抽取、对话系统等技术的应用场景，能够根据不同的业务需求选择合适的技术方案，并考虑性能、成本、用户体验等因素。',
+      '围绕翻译质量、候选选择和开发者决策设计工作流，关注什么结果可被采用以及如何处理失败。公开材料可说明设计思路，但不替代独立用户验证。',
     ],
-    assessmentDetails: {
-      criteria: [
-        '场景理解：对业务场景和用户需求的理解深度',
-        '产品思维：将技术转化为产品功能的能力',
-        '技术选型：根据场景选择合适技术方案的能力',
-        '落地实践：技术在实际产品中的落地经验',
-        '用户体验：考虑用户体验和产品体验的能力',
-        '业务价值：技术方案带来的业务价值评估',
+    nextAction: {
+      title: '补充用户验证',
+      description: '公开脱敏成功标准、样本范围、反馈方法和结果追踪。',
+    },
+    keywords: ['产品', '场景', 'nlp', '自然语言处理', '推荐系统', 'ranking', '本地化'],
+    en: {
+      label: 'Product & scenario thinking',
+      shortLabel: 'Product',
+      description: 'Work backwards from user constraints and success criteria.',
+      claim:
+        'Title localization and multi-model workflows illustrate framing and trade-offs. Reported adoption rates still need definitions, samples and feedback records.',
+      introduction: [
+        'I design workflows for translation quality, candidate selection and developer decisions, focusing on usable outcomes and failure handling. Public material explains design choices but does not replace independent user validation.',
       ],
-      scoreRange: '0-100分',
-      modelContext: legacyModelContext,
+      nextAction: {
+        title: 'Add user validation',
+        description:
+          'Publish redacted success criteria, sample scope, feedback methods and outcome tracking.',
+      },
     },
   },
   {
     id: 'open-source-writing',
+    route: '/skills/open-source',
+    accent: 'cyan',
+    assessmentId: 'open-source-writing-v1',
     label: '技术影响力与表达',
     shortLabel: '开源表达',
-    description: '通过开源、写作与可复现材料让技术产生外部价值。',
-    claim: '把实验过程、技术取舍和可执行结论组织成可阅读、可复核、可继续协作的公开材料。',
-    route: '/skills/open-source',
-    score: 57.5,
-    accent: 'cyan',
-    keywords: ['开源', '分享', '技术', '影响力', '表达', 'open source', 'github', 'markdown'],
-    evidence: [
-      {
-        title: 'Project Parliament 的公开实验记录',
-        type: 'project',
-        summary: '公开多模型工作流和结构化辩论过程，将模糊灵感转化为可讨论的开发者方向。',
-        href: '/blog/project-parliament',
-      },
-    ],
-    scoreRationale: {
-      disclosure: '57.5/100 为基于当前公开项目与写作积累维护的自评，不代表第三方认证。',
-      dimensions: ['技术叙事清晰度', '材料可复现性', '开源协作可用性', '持续输出'],
-      evidenceBasis: '当前依据包括 Project Parliament 等公开项目说明和持续更新的研究笔记。',
-      reviewCadence: '在发布可复现项目材料、系列技术文章或获得可验证反馈后更新。',
-    },
-    nextAction: {
-      title: '完善项目复现入口',
-      description: '为公开实验补齐运行说明、决策记录和可参与的后续任务。',
-    },
+    description: '把技术过程组织成可理解、可验证的公开材料。',
+    claim: '公开笔记和项目说明展示技术表达；是否被复用、社区影响和持续维护需要单独证据。',
     introduction: [
-      '在技术影响力与表达力方面，我致力于通过技术分享、开源贡献、博客写作等方式传播技术知识，与社区共同成长。我具备将复杂技术概念清晰表达的能力，能够通过文字、代码、演示等多种形式分享技术见解。',
-      '我积极参与开源社区，贡献代码、文档和技术方案。通过技术博客记录学习过程和实践经验，帮助他人少走弯路。我注重技术表达的准确性和可理解性，能够将深奥的技术原理转化为易于理解的内容，提升技术影响力。',
+      '以博客、代码片段和实验截图解释实现路径与取舍。首评关注实际材料的清晰度及局限，不以文章数量或自述推断社区认可。',
     ],
-    assessmentDetails: {
-      criteria: [
-        '技术写作：技术博客、文档的质量和数量',
-        '开源贡献：GitHub等平台的开源项目贡献',
-        '技术分享：技术会议、社区分享的参与度',
-        '表达能力：将复杂技术清晰表达的能力',
-        '社区影响：在技术社区的影响力和认可度',
-        '知识传播：帮助他人学习和成长的能力',
+    nextAction: {
+      title: '补齐复现与反馈',
+      description: '提供版本化运行说明、已解决问题和有记录的外部复现或协作反馈。',
+    },
+    keywords: ['开源', '分享', '表达', 'open source', 'github'],
+    en: {
+      label: 'Technical communication & impact',
+      shortLabel: 'Open source',
+      description: 'Organize technical work into understandable, verifiable public material.',
+      claim:
+        'Notes and project descriptions show communication. Reuse, community impact and sustained maintenance require separate evidence.',
+      introduction: [
+        'I explain implementation and trade-offs through notes, code snippets and screenshots. This assessment examines the material itself, without inferring community recognition from publication counts or self-description.',
       ],
-      scoreRange: '0-100分',
-      modelContext: legacyModelContext,
+      nextAction: {
+        title: 'Add reproduction and feedback',
+        description:
+          'Provide versioned run instructions, resolved issues and recorded external reproduction or collaboration.',
+      },
     },
   },
 ]
-
-export const domainById = Object.fromEntries(
-  capabilityDomains.map((domain) => [domain.id, domain])
-) as Record<DomainId, CapabilityDomain>
-
-export function getAssessmentRoute(domain: CapabilityDomain) {
-  return `${domain.route}/assessment` as `/skills/${string}/assessment`
+export const domainById = Object.fromEntries(capabilityDomains.map((d) => [d.id, d])) as Record<
+  DomainId,
+  CapabilityDomain
+>
+export function localizeDomain(domain: CapabilityDomain, language: 'zh' | 'en'): CapabilityDomain {
+  return language === 'en' ? { ...domain, ...domain.en } : domain
 }
-
-export function getDomainBySkillPath(skillPath: string) {
-  return capabilityDomains.find((domain) => domain.route === `/skills/${skillPath}`)
-}
-
+export const getAssessmentRoute = (domain: CapabilityDomain) =>
+  `${domain.route}/assessment` as `/skills/${string}/assessment`
+export const getDomainBySkillPath = (path: string) =>
+  capabilityDomains.find((d) => d.route === `/skills/${path}`)
 export const siteNavigation = [
   { href: '/', title: { zh: '首页', en: 'Home' } },
   { href: '/blog', title: { zh: '研究笔记', en: 'Notes' } },

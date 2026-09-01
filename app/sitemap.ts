@@ -1,29 +1,34 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from 'next'
 import { allBlogs } from 'contentlayer/generated'
 import siteMetadata from '@/data/siteMetadata'
 import { orderedProfessionalProjects } from '@/data/professionalProjects'
-
+import { capabilityDomains } from '@/data/siteConfig'
+import { getTranslationPath } from '@/lib/blog-language'
 export const dynamic = 'force-static'
-
+const reviewDate = '2026-09-01'
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = siteMetadata.siteUrl
-
-  const blogRoutes = allBlogs
-    .filter((post) => !post.draft)
-    .map((post) => ({
-      url: `${siteUrl}/${post.path}`,
-      lastModified: post.lastmod || post.date,
-    }))
-
-  const routes = ['', 'blog', 'projects', 'tags', 'about'].map((route) => ({
-    url: `${siteUrl}/${route}`,
-    lastModified: new Date().toISOString().split('T')[0],
-  }))
-
-  const projectDetailRoutes = orderedProfessionalProjects.map((project) => ({
-    url: `${siteUrl}/about/projects/${project.id}`,
-    lastModified: new Date().toISOString().split('T')[0],
-  }))
-
-  return [...routes, ...projectDetailRoutes, ...blogRoutes]
+  const url = (path: string) => new URL(path, siteMetadata.siteUrl).href
+  const routes = [
+    '/',
+    '/blog',
+    '/projects',
+    '/tags',
+    '/about',
+    ...orderedProfessionalProjects.map((p) => `/about/projects/${p.id}`),
+    ...capabilityDomains.flatMap((d) => [d.route, `${d.route}/assessment`]),
+  ].map((path) => ({ url: url(path), lastModified: reviewDate }))
+  const blogs = allBlogs
+    .filter((p) => !p.draft)
+    .map((p) => {
+      const zh = getTranslationPath(allBlogs, p, 'zh')
+      const en = getTranslationPath(allBlogs, p, 'en')
+      return {
+        url: url(`/${p.path}`),
+        lastModified: p.lastmod || p.date,
+        ...(zh && en
+          ? { alternates: { languages: { 'zh-CN': url(`/${zh}`), en: url(`/${en}`) } } }
+          : {}),
+      }
+    })
+  return [...routes, ...blogs]
 }

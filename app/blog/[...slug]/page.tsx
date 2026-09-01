@@ -14,7 +14,7 @@ import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { notFound } from 'next/navigation'
 import ArticleLanguageRegistration from '@/components/ArticleLanguageRegistration'
-import { getTranslationPath } from '@/lib/blog-language'
+import { getTranslationPath, getVisiblePosts, languageOf } from '@/lib/blog-language'
 
 const defaultLayout = 'PostLayout'
 const layouts = {
@@ -28,7 +28,7 @@ export async function generateMetadata(props: {
 }): Promise<Metadata | undefined> {
   const params = await props.params
   const slug = decodeURI(params.slug.join('/'))
-  const post = allBlogs.find((p) => p.slug === slug)
+  const post = allBlogs.find((p) => !p.draft && p.slug === slug)
   const authorList = post?.authors || ['qsl']
   const authorDetails = authorList.map((author) => {
     const authorResults = allAuthors.find((p) => p.slug === author)
@@ -54,6 +54,17 @@ export async function generateMetadata(props: {
   return {
     title: post.title,
     description: post.summary,
+    alternates: {
+      canonical: `/${post.path}`,
+      ...(getTranslationPath(allBlogs, post, 'zh') && getTranslationPath(allBlogs, post, 'en')
+        ? {
+            languages: {
+              'zh-CN': `/${getTranslationPath(allBlogs, post, 'zh')}`,
+              en: `/${getTranslationPath(allBlogs, post, 'en')}`,
+            },
+          }
+        : {}),
+    },
     openGraph: {
       title: post.title,
       description: post.summary,
@@ -62,7 +73,7 @@ export async function generateMetadata(props: {
       type: 'article',
       publishedTime: publishedAt,
       modifiedTime: modifiedAt,
-      url: './',
+      url: `/${post.path}`,
       images: ogImages,
       authors: authors.length > 0 ? authors : [siteMetadata.author],
     },
@@ -76,14 +87,18 @@ export async function generateMetadata(props: {
 }
 
 export const generateStaticParams = async () => {
-  return allBlogs.map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
+  return allBlogs
+    .filter((p) => !p.draft)
+    .map((p) => ({ slug: p.slug.split('/').map((name) => decodeURI(name)) }))
 }
+export const dynamicParams = false
 
 export default async function Page(props: { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = decodeURI(params.slug.join('/'))
-  // Filter out drafts in production
-  const sortedCoreContents = allCoreContent(sortPosts(allBlogs))
+  const post = allBlogs.find((p) => !p.draft && p.slug === slug)
+  if (!post) return notFound()
+  const sortedCoreContents = allCoreContent(getVisiblePosts(allBlogs, languageOf(post)))
   const postIndex = sortedCoreContents.findIndex((p) => p.slug === slug)
   if (postIndex === -1) {
     return notFound()
@@ -91,14 +106,13 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
 
   const prev = sortedCoreContents[postIndex + 1]
   const next = sortedCoreContents[postIndex - 1]
-  const post = allBlogs.find((p) => p.slug === slug) as Blog
   const authorList = post?.authors || ['qsl']
   const authorDetails = authorList.map((author) => {
     const authorResults = allAuthors.find((p) => p.slug === author)
     return coreContent(authorResults as Authors)
   })
   const mainContent = coreContent(post)
-  const jsonLd = post.structuredData
+  const jsonLd = { ...post.structuredData }
   jsonLd['author'] = authorDetails.map((author) => {
     return {
       '@type': 'Person',
@@ -118,7 +132,7 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div lang={post.language === 'en' ? 'en' : 'zh-CN'}>
+      <div>
         <ArticleLanguageRegistration paths={articlePaths} />
         <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
           <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />

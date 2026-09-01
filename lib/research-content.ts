@@ -22,7 +22,7 @@ export function getContentDomains(content: ResearchContent): DomainId[] {
     .map((domain) => domain.id)
 }
 
-export function getRelatedPosts(posts: Blog[], domainId: DomainId, limit = 10) {
+export function getRelatedPosts(posts: Blog[], domainId: DomainId, limit = Infinity) {
   return posts
     .filter((post) => !post.draft && getContentDomains(post).includes(domainId))
     .sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))

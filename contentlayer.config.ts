@@ -65,7 +65,7 @@ const computedFields: ComputedFields = {
 async function createTagCount(allBlogs) {
   const tagCount: Record<string, number> = {}
   allBlogs.forEach((file) => {
-    if (file.tags && (!isProduction || file.draft !== true)) {
+    if (file.tags && file.draft !== true) {
       file.tags.forEach((tag) => {
         const formattedTag = slug(tag)
         if (formattedTag in tagCount) {
@@ -76,7 +76,14 @@ async function createTagCount(allBlogs) {
       })
     }
   })
-  const formatted = await prettier.format(JSON.stringify(tagCount, null, 2), { parser: 'json' })
+  const formatted = await prettier.format(
+    JSON.stringify(
+      Object.fromEntries(Object.entries(tagCount).sort(([a], [b]) => a.localeCompare(b))),
+      null,
+      2
+    ),
+    { parser: 'json' }
+  )
   writeFileSync('./app/tag-data.json', formatted)
 }
 
@@ -87,7 +94,7 @@ function createSearchIndex(allBlogs) {
   ) {
     writeFileSync(
       `public/${path.basename(siteMetadata.search.kbarConfig.searchDocumentsPath)}`,
-      JSON.stringify(allCoreContent(sortPosts(allBlogs)))
+      JSON.stringify(allCoreContent(sortPosts(allBlogs.filter((post) => !post.draft))))
     )
     console.log('Local search index generated...')
   }
@@ -156,6 +163,7 @@ export const Authors = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'data',
+  contentDirInclude: ['blog', 'authors'],
   documentTypes: [Blog, Authors],
   mdx: {
     cwd: process.cwd(),

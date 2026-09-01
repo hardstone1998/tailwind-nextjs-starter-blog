@@ -1,5 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { withContentlayer } = require('next-contentlayer2')
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -11,7 +13,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src *.s3.amazonaws.com;
-  connect-src *;
+  connect-src 'self' https://giscus.app https://analytics.umami.is https://cloud.umami.is https://api-gateway.umami.dev ${process.env.NODE_ENV === 'development' ? 'ws://localhost:* ws://127.0.0.1:*' : ''};
   font-src 'self';
   frame-src giscus.app
 `
@@ -66,6 +68,7 @@ module.exports = () => {
   return plugins.reduce((acc, next) => next(acc), {
     output,
     basePath,
+    env: { BASE_PATH: basePath || '' },
     reactStrictMode: true,
     trailingSlash: false,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
@@ -81,14 +84,13 @@ module.exports = () => {
       ],
       unoptimized,
     },
-    async headers() {
-      return [
-        {
-          source: '/(.*)',
-          headers: securityHeaders,
-        },
-      ]
-    },
+    ...(output === 'export'
+      ? {}
+      : {
+          async headers() {
+            return [{ source: '/(.*)', headers: securityHeaders }]
+          },
+        }),
     webpack: (config, options) => {
       config.module.rules.push({
         test: /\.svg$/,

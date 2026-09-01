@@ -1,8 +1,7 @@
 'use client'
 
-import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
-import { Fragment, useState, useEffect, useRef } from 'react'
+import { Dialog, DialogTitle, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
+import { Fragment, useState } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
 import { useLanguage } from './LanguageProvider'
@@ -10,30 +9,18 @@ import { useLanguage } from './LanguageProvider'
 const MobileNav = () => {
   const { language, t } = useLanguage()
   const [navShow, setNavShow] = useState(false)
-  const navRef = useRef(null)
 
   const onToggleNav = () => {
-    setNavShow((status) => {
-      if (status) {
-        enableBodyScroll(navRef.current)
-      } else {
-        // Prevent scrolling
-        disableBodyScroll(navRef.current)
-      }
-      return !status
-    })
+    setNavShow((status) => !status)
   }
-
-  useEffect(() => {
-    return clearAllBodyScrollLocks
-  })
 
   return (
     <>
       <button
         aria-label={t('openMenu')}
         onClick={onToggleNav}
-        className="text-[var(--muted)] sm:hidden"
+        aria-expanded={navShow}
+        className="flex h-11 w-11 items-center justify-center text-[var(--muted)] xl:hidden"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +36,7 @@ const MobileNav = () => {
         </svg>
       </button>
       <Transition appear show={navShow} as={Fragment} unmount={false}>
-        <Dialog as="div" onClose={onToggleNav} unmount={false}>
+        <Dialog as="div" onClose={() => setNavShow(false)} unmount={false}>
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
@@ -74,16 +61,14 @@ const MobileNav = () => {
             unmount={false}
           >
             <DialogPanel className="fixed top-0 left-0 z-70 h-full w-full bg-[var(--surface)]/98 duration-300">
-              <nav
-                ref={navRef}
-                className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pt-2 pl-12 text-left"
-              >
+              <DialogTitle className="sr-only">{t('openMenu')}</DialogTitle>
+              <nav className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pt-2 pl-12 text-left">
                 {headerNavLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-[var(--ink)] outline outline-0 hover:text-[var(--accent)]"
-                    onClick={onToggleNav}
+                    className="mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-[var(--ink)] hover:text-[var(--accent)]"
+                    onClick={() => setNavShow(false)}
                   >
                     {link.title[language]}
                   </Link>
