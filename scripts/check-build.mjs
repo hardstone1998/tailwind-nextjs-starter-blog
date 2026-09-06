@@ -21,7 +21,7 @@ async function rscRoutes(directory, prefix = '') {
   ).flat()
 }
 const lists = (await rscRoutes('.next/server/app')).filter((route) =>
-  /^(index|blog|blog\/page\/\d+|tags(?:\/.*)?|skills\/[^/]+)$/.test(route)
+  /^(index|research|blog|blog\/page\/\d+|tags(?:\/.*)?|skills\/[^/]+)$/.test(route)
 )
 for (const route of lists) {
   const rsc = await read(`.next/server/app/${route}.rsc`)
@@ -31,6 +31,14 @@ for (const route of lists) {
   )
 }
 const sitemap = await read('.next/server/app/sitemap.xml.body')
+for (const route of ['research', 'journal', 'collection', 'achievements']) {
+  assert.ok(sitemap.includes(`/${route}</loc>`), `Missing adventure route: ${route}`)
+  const html = await read(`.next/server/app/${route}.html`)
+  assert.match(html, new RegExp(`rel="canonical" href="[^"]+/${route}"`))
+}
+const home = await read('.next/server/app/index.html')
+assert.ok(home.includes('character-name'), 'Character homepage missing')
+assert.ok(!home.includes('career-projects-title'), 'Homepage should not render the career archive')
 for (const d of source.capabilityDomains) {
   assert.ok(sitemap.includes(`${d.route}</loc>`), `Missing capability sitemap entry: ${d.id}`)
   assert.ok(
@@ -65,6 +73,10 @@ if (process.argv.includes('--export')) {
     'blog',
     'projects',
     'about',
+    'research',
+    'journal',
+    'collection',
+    'achievements',
     ...source.capabilityDomains.flatMap((d) => [
       d.route.slice(1),
       `${d.route.slice(1)}/assessment`,

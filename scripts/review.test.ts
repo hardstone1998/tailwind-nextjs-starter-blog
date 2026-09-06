@@ -1,4 +1,5 @@
 import test from 'node:test'
+import './adventure.test'
 import assert from 'node:assert/strict'
 import { copyCode } from '../lib/copy-code'
 import { calculateAssessment, type Level } from '../lib/assessment'

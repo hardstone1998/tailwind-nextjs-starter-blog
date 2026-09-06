@@ -1,36 +1,20 @@
-import { sortPosts, allCoreContent } from 'pliny/utils/contentlayer'
 import { allBlogs } from 'contentlayer/generated'
-import Main from './Main'
-import { getCapabilitySummaries } from '@/lib/capability-view'
 import projectsData from '@/data/projectsData'
-import { professionalProjectsById } from '@/data/professionalProjects'
-import { localizeProject } from '@/data/professionalProjects.en'
+import { getVisiblePosts } from '@/lib/blog-language'
+import AdventureHome from '@/components/adventure/Home'
+import { adventureMetadata } from '@/lib/adventure-metadata'
 
-export default async function Page() {
-  const sortedPosts = sortPosts(allBlogs)
-  const posts = allCoreContent(sortedPosts)
-  const featured = [
-    'video-redraw-pipeline',
-    'translation-quality-system',
-    'asr-platform-engineering',
-  ].map((id) => {
-    const p = professionalProjectsById[id]
-    const en = localizeProject(p, 'en')
-    const pick = ({ id, title, summary, role, status }: typeof p) => ({
-      id,
-      title,
-      summary,
-      role,
-      status,
-    })
-    return { zh: pick(p), en: pick(en) }
-  })
+export const metadata = adventureMetadata(
+  '角色主页',
+  '/',
+  '记录生活，研究技术，制造一点有趣的东西。qiaoshilei 的个人冒险存档。'
+)
+
+export default function Page() {
   return (
-    <Main
-      posts={posts}
-      summaries={getCapabilitySummaries()}
-      labs={projectsData}
-      featured={featured}
+    <AdventureHome
+      noteCount={getVisiblePosts(allBlogs, 'zh').length}
+      labCount={projectsData.length}
     />
   )
 }

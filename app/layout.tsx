@@ -1,4 +1,5 @@
 import 'css/tailwind.css'
+import 'css/adventure.css'
 import 'remark-github-blockquote-alert/alert.css'
 
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
@@ -11,6 +12,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { LanguageProvider } from '@/components/LanguageProvider'
 import { Metadata } from 'next'
+import SiteShell from '@/components/SiteShell'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -88,16 +90,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProviders>
           <LanguageProvider>
             <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-            <SectionContainer>
-              <LocalSearchProvider>
-                <SkipContent />
-                <Header />
-                <main id="main-content" tabIndex={-1} className="mb-auto">
-                  {children}
-                </main>
-              </LocalSearchProvider>
-              <Footer />
-            </SectionContainer>
+            <SiteShell
+              legacy={
+                <SectionContainer>
+                  <LocalSearchProvider>
+                    <SkipContent />
+                    <Header />
+                    <main id="main-content" tabIndex={-1} className="mb-auto">
+                      {children}
+                    </main>
+                  </LocalSearchProvider>
+                  <Footer />
+                </SectionContainer>
+              }
+            >
+              {children}
+            </SiteShell>
           </LanguageProvider>
         </ThemeProviders>
       </body>
