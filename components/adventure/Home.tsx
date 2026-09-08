@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from '@/components/Link'
 import { profile } from '@/data/adventure/profile'
 import { journalEntries } from '@/data/adventure/journal'
-import { personalRecords } from '@/data/adventure/records'
+import { personalRecords, strengthScore } from '@/data/adventure/records'
 import { collectionItems } from '@/data/adventure/collection'
 import { latestFirst } from '@/lib/adventure'
 import type { LifeIcon } from '@/data/adventure/types'
@@ -40,10 +40,8 @@ export default function AdventureHome({
       icon: 'strength',
       code: 'STR',
       title: say('力量', 'Strength'),
-      value: fitnessRecords[0] ? `${fitnessRecords[0].value} ${fitnessRecords[0].unit}` : unknown,
-      detail: fitnessRecords[0]
-        ? text(fitnessRecords[0].title)
-        : say('训练与个人最好成绩', 'Training & personal bests'),
+      value: `${strengthScore} / 100`,
+      detail: say('稳步进阶 · 趣味评分', 'Getting stronger · Just-for-fun score'),
       href: '#personal-records',
     },
     {
