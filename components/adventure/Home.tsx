@@ -4,12 +4,13 @@ import { useState } from 'react'
 import Link from '@/components/Link'
 import { profile } from '@/data/adventure/profile'
 import { journalEntries } from '@/data/adventure/journal'
-import { personalRecords, strengthScore } from '@/data/adventure/records'
+import { personalRecords } from '@/data/adventure/records'
 import { collectionItems } from '@/data/adventure/collection'
 import { latestFirst } from '@/lib/adventure'
 import type { LifeIcon } from '@/data/adventure/types'
 import { useAdventure } from './useAdventure'
 import PixelPortrait from './PixelPortrait'
+import StrengthGym from './StrengthGym'
 import Icon from './Icon'
 import { EmptyState, SectionHeading } from './Primitives'
 import { JournalList } from './Journal'
@@ -40,9 +41,9 @@ export default function AdventureHome({
       icon: 'strength',
       code: 'STR',
       title: say('力量', 'Strength'),
-      value: `${strengthScore} / 100`,
-      detail: say('稳步进阶 · 趣味评分', 'Getting stronger · Just-for-fun score'),
-      href: '#personal-records',
+      value: `${fitnessRecords.length} ${say('项动作已存档', 'moves saved')}`,
+      detail: say('进入训练馆 →', 'Enter the training room →'),
+      href: '#strength-gym',
     },
     {
       icon: 'bike',
@@ -193,8 +194,9 @@ export default function AdventureHome({
           code="PERSONAL BESTS"
           title={say('和昨天的自己，比一比', 'A little further than yesterday')}
         />
-        <div className="quest-two-columns">
-          {(['fitness', 'cycling'] as const).map((category) => {
+        <StrengthGym records={fitnessRecords} />
+        <div>
+          {(['cycling'] as ('fitness' | 'cycling')[]).map((category) => {
             const records = category === 'fitness' ? fitnessRecords : cyclingRecords
             return (
               <article
