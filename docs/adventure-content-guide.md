@@ -31,6 +31,7 @@
 可选 `image: { src: '/static/images/life/你的文件.jpg', alt: { zh: '图片描述' } }`。
 图片文件自行放入 `public/static/images/life/`。日志按日期倒序展示，全文在列表内展开。
 多张配图可使用 `images: [{ src: '/static/images/life/你的文件.jpg', alt: { zh: '图片描述' }, width: 1206, height: 2622 }]`，宽高填写原图尺寸，页面会按比例缩放。`image` 单图字段仍然可用。
+可选 `cover: { src, alt, width, height, caption: { zh: '封面图注' }, position: '50% 36%' }`，在列表直接展示配图；`position` 控制图片的显示焦点，不修改原图。长截图可把地图部分作为封面，完整图片仍放在 `images` 中，每张可填写 `caption`。前 3 项 `metrics` 会显示在卡片上，其余数据、手记和原图附件在展开后显示；点击附件可放大查看，按 Esc 或关闭按钮返回。
 
 ## 添加个人纪录
 

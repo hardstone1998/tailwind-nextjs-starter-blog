@@ -112,10 +112,11 @@ test('published life data has valid dates, distinct IDs, original text and local
       validImage(entry.image.src)
       validText(entry.image.alt)
     }
-    for (const image of entry.images ?? []) {
+    for (const image of [...(entry.images ?? []), ...(entry.cover ? [entry.cover] : [])]) {
       validImage(image.src)
       validText(image.alt)
       assert.ok(image.width > 0 && image.height > 0)
+      if (image.caption) validText(image.caption)
     }
     for (const metric of entry.metrics ?? []) {
       validText(metric.label)

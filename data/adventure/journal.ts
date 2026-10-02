@@ -6,6 +6,14 @@ export const journalEntries: JournalEntry[] = [
     date: '2025-01-19',
     category: 'cycling',
     title: { zh: '125.93 公里：我最远的一次骑行' },
+    cover: {
+      src: '/static/images/life/beijing-cycling-2025-01-19-route.jpg',
+      alt: { zh: '环绕北京城区的红色骑行轨迹，终点位于石景山区' },
+      caption: { zh: '北京 · 125.93 公里的足迹' },
+      width: 1206,
+      height: 2622,
+      position: '50% 36%',
+    },
     text: {
       zh: '2025 年 1 月 19 日上午，在北京完成了我单次距离最远的一次骑行：125.93 公里，运动时间 7 小时 49 分 25 秒。\n\n地图上的红色轨迹绕北京城区画出了一大圈，终点标记落在石景山区。把这条路线和当天的数据存下来，留作自己的骑行里程碑。\n\n以下数据来自当天的骑行记录；两张截图分别保留了成绩总览，以及路线和海拔变化。',
     },
@@ -22,12 +30,14 @@ export const journalEntries: JournalEntry[] = [
     images: [
       {
         src: '/static/images/life/beijing-cycling-2025-01-19-summary.jpg',
+        caption: { zh: '成绩总览' },
         alt: { zh: '2025 年 1 月 19 日北京骑行成绩：125.93 公里，用时 7:49:25，均速 16.1 km/h' },
         width: 1206,
         height: 2622,
       },
       {
         src: '/static/images/life/beijing-cycling-2025-01-19-route.jpg',
+        caption: { zh: '路线与海拔' },
         alt: { zh: '北京 125.93 公里骑行路线全图与海拔变化，终点标记位于石景山区' },
         width: 1206,
         height: 2622,

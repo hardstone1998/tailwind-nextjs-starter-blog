@@ -15,6 +15,13 @@ export interface Metric {
   value: string
   unit?: string
 }
+export interface JournalImage {
+  src: string
+  alt: LifeText
+  width: number
+  height: number
+  caption?: LifeText
+}
 export interface JournalEntry {
   id: string
   date: string
@@ -22,7 +29,8 @@ export interface JournalEntry {
   title: LifeText
   text: LifeText
   image?: { src: string; alt: LifeText }
-  images?: { src: string; alt: LifeText; width: number; height: number }[]
+  images?: JournalImage[]
+  cover?: JournalImage & { position?: string }
   metrics?: Metric[]
   exploration?: boolean
 }

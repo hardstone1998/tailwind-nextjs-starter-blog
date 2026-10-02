@@ -728,28 +728,6 @@ body:has(.adventure-shell) {
   border-color: var(--quest-gold);
   background: var(--quest-panel-deep);
 }
-.adventure-shell .quest-journal-entry {
-  display: grid;
-  grid-template-columns: 140px minmax(0, 1fr);
-  gap: 30px;
-  padding: 28px;
-  border-bottom: 1px solid var(--quest-line);
-}
-.adventure-shell .quest-journal-entry:last-child {
-  border-bottom: 0;
-}
-.adventure-shell .quest-entry-meta {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 10px;
-}
-.adventure-shell .quest-entry-meta time {
-  font:
-    11px/1.7 ui-monospace,
-    monospace;
-  color: var(--quest-muted);
-}
 .adventure-shell .quest-chip {
   display: inline-block;
   padding: 3px 8px;
@@ -758,41 +736,287 @@ body:has(.adventure-shell) {
   color: var(--quest-gold);
   border: 1px solid var(--quest-line);
 }
-.adventure-shell .quest-journal-entry h3 {
-  font-size: 18px;
-  font-weight: 600;
+.adventure-shell .quest-journal-card + .quest-journal-card {
+  border-top: 1px solid var(--quest-line);
 }
-.adventure-shell .quest-journal-entry summary {
-  padding: 14px 0;
+.adventure-shell .quest-journal-overview {
+  display: grid;
+  padding: 24px;
+  gap: 36px;
+}
+.adventure-shell .quest-journal-card-illustrated .quest-journal-overview {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+.adventure-shell .quest-journal-cover {
+  margin: 0;
+  align-self: start;
+  border: 1px solid var(--quest-line);
+  padding: 8px;
+  background: var(--quest-panel-deep);
+  box-shadow: 4px 4px 0 var(--quest-line);
+}
+.adventure-shell .quest-journal-cover-image {
+  position: relative;
+  aspect-ratio: 1.12;
+  overflow: hidden;
+  background: #e5eddf;
+}
+.adventure-shell .quest-journal-cover figcaption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 4px 4px;
+  font-size: 11px;
+  color: var(--quest-muted);
+}
+.adventure-shell .quest-journal-cover svg,
+.adventure-shell .quest-journal-stamp svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.adventure-shell .quest-journal-intro {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 12px 12px 0;
+}
+.adventure-shell .quest-journal-dateline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.adventure-shell .quest-journal-dateline time {
+  color: var(--quest-muted);
+  font:
+    11px ui-monospace,
+    monospace;
+  letter-spacing: 0.06em;
+}
+.adventure-shell .quest-journal-intro h3 {
+  max-width: 19em;
+  font-size: clamp(23px, 2.5vw, 34px);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+.adventure-shell .quest-journal-lead {
+  margin-top: 18px;
+  color: var(--quest-muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.adventure-shell .quest-journal-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+}
+.adventure-shell .quest-journal-metrics-primary {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--quest-line);
+}
+.adventure-shell .quest-journal-metrics dt {
+  color: var(--quest-muted);
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+.adventure-shell .quest-journal-metrics dd {
+  margin: 0;
+  font:
+    600 clamp(19px, 2vw, 27px)/1.3 ui-monospace,
+    monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.06em;
+  overflow-wrap: anywhere;
+}
+.adventure-shell .quest-journal-metrics dd span {
+  font:
+    11px ui-monospace,
+    monospace;
+  color: var(--quest-muted);
+  letter-spacing: 0;
+}
+.adventure-shell .quest-journal-metrics-primary > :first-child dd {
+  color: var(--quest-gold);
+}
+.adventure-shell .quest-journal-stamp {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 28px;
+  color: var(--quest-gold);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+.adventure-shell .quest-journal-details {
+  border-top: 1px solid var(--quest-line);
+}
+.adventure-shell .quest-journal-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  color: var(--quest-gold);
   cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+}
+.adventure-shell .quest-journal-details summary::-webkit-details-marker {
+  display: none;
+}
+.adventure-shell .quest-journal-details summary:hover {
+  background: var(--quest-panel-deep);
+}
+.adventure-shell .quest-journal-expand {
+  font-size: 20px;
+  line-height: 1;
+}
+.adventure-shell .quest-journal-details[open] .quest-journal-expand {
+  transform: rotate(45deg);
+}
+.adventure-shell .quest-journal-detail-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  padding: 12px 28px 28px;
+}
+.adventure-shell .quest-journal-notes > p + p {
+  margin-top: 12px;
+  color: var(--quest-muted);
+  font-size: 13px;
+  line-height: 1.95;
+  white-space: pre-wrap;
+}
+.adventure-shell .quest-journal-detail-content > img {
+  width: 100%;
+  height: auto;
+  grid-column: 1 / -1;
+}
+.adventure-shell .quest-journal-gallery {
+  grid-column: 1 / -1;
+  border-top: 1px dashed var(--quest-line);
+  padding-top: 24px;
+}
+.adventure-shell .quest-journal-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+.adventure-shell .quest-journal-thumbnails button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 16px;
+  padding: 12px;
+  border: 1px solid var(--quest-line);
+  background: var(--quest-panel-deep);
+  color: var(--quest-text);
+}
+.adventure-shell .quest-journal-thumbnails button:hover {
+  border-color: var(--quest-gold);
+}
+.adventure-shell .quest-journal-thumbnails img {
+  width: 48px;
+  height: 72px;
+  object-fit: cover;
+  object-position: center;
+}
+.adventure-shell .quest-journal-thumbnails button > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.adventure-shell .quest-journal-thumbnails small {
+  display: block;
+  color: var(--quest-muted);
+  font:
+    10px ui-monospace,
+    monospace;
+  margin-bottom: 6px;
+}
+.adventure-shell .quest-journal-thumbnails strong {
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.adventure-shell .quest-image-dialog {
+  margin: auto;
+  width: min(640px, 94vw);
+  max-height: 92dvh;
+  padding: 18px;
+  background: var(--quest-panel);
+  color: var(--quest-text);
+  border: 1px solid var(--quest-gold-soft);
+}
+.adventure-shell .quest-image-dialog::backdrop {
+  background: #080e16cc;
+}
+.adventure-shell .quest-image-dialog-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.adventure-shell .quest-image-dialog-toolbar button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--quest-line);
+}
+.adventure-shell .quest-image-dialog > img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 68dvh;
+  margin: 0 auto;
+  object-fit: contain;
+}
+.adventure-shell .quest-image-dialog > a {
+  display: block;
+  padding: 16px 0 0;
+  text-align: center;
   color: var(--quest-gold);
   font-size: 12px;
 }
-.adventure-shell .quest-entry-body > p {
-  white-space: pre-wrap;
-  line-height: 1.95;
-  overflow-wrap: anywhere;
+@media (max-width: 760px) {
+  .adventure-shell .quest-journal-card-illustrated .quest-journal-overview,
+  .adventure-shell .quest-journal-detail-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .adventure-shell .quest-journal-overview {
+    gap: 24px;
+    padding: 16px;
+  }
+  .adventure-shell .quest-journal-cover {
+    max-width: 480px;
+    width: 100%;
+    justify-self: center;
+  }
+  .adventure-shell .quest-journal-intro {
+    padding: 4px;
+  }
+  .adventure-shell .quest-journal-details summary {
+    padding: 16px 20px;
+  }
+  .adventure-shell .quest-journal-detail-content {
+    padding: 8px 20px 24px;
+    gap: 24px;
+  }
+  .adventure-shell .quest-journal-metrics {
+    gap: 16px 10px;
+  }
 }
-.adventure-shell .quest-entry-body img {
-  width: 100%;
-  height: auto;
-  margin-top: 20px;
-}
-.adventure-shell .quest-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--quest-line);
-}
-.adventure-shell .quest-metrics dt {
-  color: var(--quest-muted);
-  font-size: 11px;
-}
-.adventure-shell .quest-metrics dd {
-  color: var(--quest-gold);
-  font-size: 20px;
+@media (max-width: 420px) {
+  .adventure-shell .quest-journal-thumbnails {
+    grid-template-columns: 1fr;
+  }
 }
 .adventure-shell .quest-collection-panel {
   padding: 26px;
@@ -1093,15 +1317,6 @@ body:has(.adventure-shell) {
   }
   .adventure-shell .quest-archive h2 {
     font-size: 16px;
-  }
-  .adventure-shell .quest-journal-entry {
-    grid-template-columns: minmax(0, 1fr);
-    padding: 22px;
-    gap: 13px;
-  }
-  .adventure-shell .quest-entry-meta {
-    flex-direction: row;
-    align-items: center;
   }
   .adventure-shell .quest-collection-grid,
   .adventure-shell .quest-achievement-grid {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Image from '@/components/Image'
+import JournalCard from './JournalCard'
 import type { JournalCategory, JournalEntry } from '@/data/adventure/types'
 import { filterJournal } from '@/lib/adventure'
 import { useAdventure } from './useAdventure'
@@ -16,66 +16,16 @@ const categories = [
 ] as const
 
 export function JournalList({ entries }: { entries: JournalEntry[] }) {
-  const { say, text } = useAdventure()
+  const { say } = useAdventure()
   return (
     <div className="quest-journal-list">
       {entries.map((entry) => {
         const category = categories.find(([id]) => id === entry.category)!
-        return (
-          <article key={entry.id} className="quest-journal-entry">
-            <div className="quest-entry-meta">
-              <time dateTime={entry.date}>{entry.date}</time>
-              <span className="quest-chip">{say(category[1], category[2])}</span>
-            </div>
-            <div>
-              <h3>{text(entry.title)}</h3>
-              <details>
-                <summary>
-                  {say('展开这次存档', 'Read this entry')} <span aria-hidden="true">＋</span>
-                </summary>
-                <div className="quest-entry-body">
-                  <p>{text(entry.text)}</p>
-                  {entry.image && (
-                    <Image
-                      src={entry.image.src}
-                      alt={text(entry.image.alt)}
-                      width={960}
-                      height={640}
-                      sizes="(max-width: 700px) 90vw, 800px"
-                    />
-                  )}
-                  {!!entry.metrics?.length && (
-                    <dl className="quest-metrics">
-                      {entry.metrics.map((metric, index) => (
-                        <div key={index}>
-                          <dt>{text(metric.label)}</dt>
-                          <dd>
-                            {metric.value} {metric.unit}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                  )}
-                  {entry.images?.map((image) => (
-                    <Image
-                      key={image.src}
-                      src={image.src}
-                      alt={text(image.alt)}
-                      width={image.width}
-                      height={image.height}
-                      sizes="(max-width: 700px) 90vw, 800px"
-                    />
-                  ))}
-                </div>
-              </details>
-            </div>
-          </article>
-        )
+        return <JournalCard key={entry.id} entry={entry} category={say(category[1], category[2])} />
       })}
     </div>
   )
 }
-
 export default function Journal({ entries }: { entries: JournalEntry[] }) {
   const [category, setCategory] = useState<JournalCategory | 'all'>('all')
   const { say } = useAdventure()
