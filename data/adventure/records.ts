@@ -7,6 +7,15 @@ export const strengthScore = 65
 
 export const personalRecords: PersonalRecord[] = [
   {
+    id: 'cycling-longest-distance',
+    category: 'cycling',
+    title: { zh: '单次最远骑行' },
+    value: '125.93',
+    unit: 'km',
+    date: '2025-01-19',
+    note: { zh: '北京骑行，运动时间 7:49:25，均速 16.1 km/h，累计爬升 318 m。' },
+  },
+  {
     id: 'barbell-back-squat',
     category: 'fitness',
     title: { zh: '杠铃深蹲' },

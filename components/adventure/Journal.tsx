@@ -56,6 +56,16 @@ export function JournalList({ entries }: { entries: JournalEntry[] }) {
                       ))}
                     </dl>
                   )}
+                  {entry.images?.map((image) => (
+                    <Image
+                      key={image.src}
+                      src={image.src}
+                      alt={text(image.alt)}
+                      width={image.width}
+                      height={image.height}
+                      sizes="(max-width: 700px) 90vw, 800px"
+                    />
+                  ))}
                 </div>
               </details>
             </div>

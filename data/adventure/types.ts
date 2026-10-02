@@ -22,6 +22,7 @@ export interface JournalEntry {
   title: LifeText
   text: LifeText
   image?: { src: string; alt: LifeText }
+  images?: { src: string; alt: LifeText; width: number; height: number }[]
   metrics?: Metric[]
   exploration?: boolean
 }

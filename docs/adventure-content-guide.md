@@ -30,6 +30,7 @@
 可选 `metrics: [{ label: { zh: '指标名称' }, value: '实际数值', unit: '单位' }]`。
 可选 `image: { src: '/static/images/life/你的文件.jpg', alt: { zh: '图片描述' } }`。
 图片文件自行放入 `public/static/images/life/`。日志按日期倒序展示，全文在列表内展开。
+多张配图可使用 `images: [{ src: '/static/images/life/你的文件.jpg', alt: { zh: '图片描述' }, width: 1206, height: 2622 }]`，宽高填写原图尺寸，页面会按比例缩放。`image` 单图字段仍然可用。
 
 ## 添加个人纪录
 
