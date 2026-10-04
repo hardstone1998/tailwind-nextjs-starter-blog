@@ -24,7 +24,7 @@ const projectsData: Project[] = [
     },
     description:
       'Lab #01 · 持续迭代 · 两个周末完成。一个面向开发者的多模型开源项目方向评估实验：让模型先发散、再辩论，最后收敛出可执行的主路线与备选路线。\n\nFastAPI / OpenRouter / Multi-model workflow',
-    imgSrc: '/static/images/projects/project-parliament-homepage.png',
+    imgSrc: '/static/images/projects/project-parliament-homepage.webp',
     href: '/blog/project-parliament',
     domains: ['product-thinking', 'open-source-writing'],
     lab: 'Lab #01',

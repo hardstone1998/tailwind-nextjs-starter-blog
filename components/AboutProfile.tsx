@@ -94,10 +94,10 @@ export default function AboutProfile() {
           <div className="relative order-1 border-b border-[var(--rule)] bg-[#162127] p-3 sm:p-5 lg:order-2 lg:border-b-0 lg:border-l">
             <div className="overflow-hidden rounded-2xl shadow-2xl shadow-black/30">
               <Image
-                src="/static/images/about-engineer.png"
+                src="/static/images/about-engineer.webp"
                 alt={copy.portrait}
                 width={1122}
-                height={1536}
+                height={1402}
                 priority
                 sizes="(max-width: 1023px) calc(100vw - 3rem), 38vw"
                 className="h-auto w-full"
