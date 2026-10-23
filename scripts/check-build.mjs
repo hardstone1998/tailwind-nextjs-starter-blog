@@ -31,14 +31,25 @@ for (const route of lists) {
   )
 }
 const sitemap = await read('.next/server/app/sitemap.xml.body')
-for (const route of ['research', 'journal', 'collection', 'achievements']) {
-  assert.ok(sitemap.includes(`/${route}</loc>`), `Missing adventure route: ${route}`)
+assert.ok(sitemap.includes('/research</loc>'), 'Missing research route')
+for (const route of ['journal', 'collection', 'achievements', 'about']) {
+  assert.ok(!sitemap.includes(`/${route}</loc>`), `Personal route remains in sitemap: ${route}`)
   const html = await read(`.next/server/app/${route}.html`)
-  assert.match(html, new RegExp(`rel="canonical" href="[^"]+/${route}"`))
+  assert.ok(
+    !html.includes('125.93') && !html.includes('character-name'),
+    `Personal content exposed: ${route}`
+  )
 }
 const home = await read('.next/server/app/index.html')
-assert.ok(home.includes('character-name'), 'Character homepage missing')
-assert.ok(!home.includes('career-projects-title'), 'Homepage should not render the career archive')
+assert.ok(home.includes('Public research notebook'), 'Research homepage missing')
+assert.ok(
+  !home.includes('character-name') && !home.includes('125.93'),
+  'Personal homepage content exposed'
+)
+assert.ok(
+  !/adventure\/|adventure\\\\/.test(clientManifest),
+  'Homepage references personal components'
+)
 for (const d of source.capabilityDomains) {
   assert.ok(sitemap.includes(`${d.route}</loc>`), `Missing capability sitemap entry: ${d.id}`)
   assert.ok(
@@ -72,11 +83,7 @@ if (process.argv.includes('--export')) {
     'index',
     'blog',
     'projects',
-    'about',
     'research',
-    'journal',
-    'collection',
-    'achievements',
     ...source.capabilityDomains.flatMap((d) => [
       d.route.slice(1),
       `${d.route.slice(1)}/assessment`,

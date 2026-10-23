@@ -62,8 +62,8 @@ export function ProjectDetail({ project }: { project: ProjectPair }) {
   const p = project[language]
   return (
     <article className="py-10 sm:py-14">
-      <Link href="/about" className="font-semibold text-[var(--accent)]">
-        ← {t('backToAbout')}
+      <Link href="/projects" className="font-semibold text-[var(--accent)]">
+        ← {language === 'zh' ? '返回项目研究' : 'Back to projects'}
       </Link>
       <header className="mt-8 border-b border-[var(--rule)] pb-8">
         <p className="section-label">

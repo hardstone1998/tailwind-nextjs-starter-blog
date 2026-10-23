@@ -14,7 +14,7 @@ const source = await loadReviewSources()
 const domains = Object.values(source.capabilityDomains)
 const domainIds = new Set(domains.map((d) => d.id))
 const routes = new Map(
-  ['/', '/blog', '/tags', '/projects', '/about'].map((route) => [route, new Set()])
+  ['/', '/research', '/blog', '/tags', '/projects'].map((route) => [route, new Set()])
 )
 for (const domain of domains) {
   routes.set(domain.route, new Set())

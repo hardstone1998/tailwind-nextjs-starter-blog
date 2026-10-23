@@ -13,11 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/blog',
     '/projects',
     '/tags',
-    '/about',
     '/research',
-    '/journal',
-    '/collection',
-    '/achievements',
     ...orderedProfessionalProjects.map((p) => `/about/projects/${p.id}`),
     ...capabilityDomains.flatMap((d) => [d.route, `${d.route}/assessment`]),
   ].map((path) => ({ url: url(path), lastModified: reviewDate }))
