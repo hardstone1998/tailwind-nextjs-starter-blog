@@ -10,7 +10,7 @@ import type { Blog } from 'contentlayer/generated'
 import type { CapabilitySummary } from '@/lib/capability-view'
 import type { Project } from '@/data/projectsData'
 import type { ProfessionalProject } from '@/data/professionalProjects'
-type Featured = Pick<ProfessionalProject, 'id' | 'title' | 'summary' | 'role' | 'status'>
+type Featured = Pick<ProfessionalProject, 'id' | 'title' | 'summary' | 'status' | 'period'>
 export default function Home({
   posts,
   summaries,
@@ -35,10 +35,13 @@ export default function Home({
       <section className="home-hero" aria-labelledby="home-title">
         <div className="min-w-0">
           <h1 id="home-title">{t('homeHero')}</h1>
-          <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--muted)]">{t('homeIntro')}</p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link href="/projects" className="console-button console-button--primary">
-              {t('activeLabs')}
+          <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--muted)]">{t('homeIntro')}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href={`/about/projects/${leadProject?.id ?? 'translation-quality-system'}`}
+              className="console-button console-button--primary"
+            >
+              {t('viewProject')}
             </Link>
             <Link href="/blog" className="console-button">
               {t('readNotes')}
@@ -46,18 +49,40 @@ export default function Home({
           </div>
         </div>
         {leadProject && (
-          <article className="hero-record" aria-label={leadProject.title}>
+          <article className="hero-record" aria-labelledby="lead-project-title">
             <div className="hero-record__top">
+              <span>{t('featuredProjects')}</span>
               <span className="console-status">{t(statusKey[leadProject.status])}</span>
-              <span className="text-sm text-[var(--muted)]">{t('featuredProjects')}</span>
             </div>
             <div className="hero-record__main">
-              <h2>{leadProject.title}</h2>
-              <p className="mt-5 max-w-lg leading-7 text-[var(--muted)]">{leadProject.summary}</p>
+              <h2 id="lead-project-title">{leadProject.title}</h2>
+              <p className="mt-3 max-w-lg leading-7">{leadProject.summary}</p>
+            </div>
+            <div className="hero-record__evidence">
+              <p>
+                {language === 'zh'
+                  ? '项目记录的剧名推荐采用率'
+                  : 'Project-reported title recommendation adoption'}
+              </p>
+              <div className="hero-record__readings">
+                <div>
+                  <strong>42%</strong>
+                  <span>{language === 'zh' ? '初版多候选评估' : 'Initial candidate ranking'}</span>
+                </div>
+                <div>
+                  <strong>70%</strong>
+                  <span>{language === 'zh' ? '引入奖励模型后' : 'After reward model'}</span>
+                </div>
+              </div>
             </div>
             <div className="hero-record__foot">
-              <span className="text-sm text-[var(--muted)]">{leadProject.role}</span>
-              <Link href={`/about/projects/${leadProject.id}`} className="console-link text-sm">
+              <span>
+                {leadProject.period} /{' '}
+                {language === 'zh'
+                  ? '统计口径与样本范围待公开'
+                  : 'Sample scope and methodology not yet public'}
+              </span>
+              <Link href={`/about/projects/${leadProject.id}`} className="hero-record__link">
                 {t('viewProject')}
               </Link>
             </div>

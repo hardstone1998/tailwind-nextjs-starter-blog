@@ -43,6 +43,13 @@
   --color-ok-soft: oklch(92% 0.035 150);
   --color-bad: oklch(49% 0.15 25);
   --color-bad-soft: oklch(93% 0.035 25);
+  --color-console-ground: oklch(17% 0.008 250);
+  --color-console-deep: oklch(13.5% 0.007 250);
+  --color-console-rule: oklch(31% 0.01 250);
+  --color-console-ink: oklch(95% 0.005 250);
+  --color-console-muted: oklch(71% 0.01 250);
+  --color-console-amber: oklch(82% 0.15 80);
+  --color-console-cool: oklch(77% 0.12 245);
   --font-display:
     'Host Grotesk Variable', 'PingFang SC', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif;
   --font-body:

@@ -10,18 +10,18 @@ export default async function Page() {
   const sortedPosts = sortPosts(allBlogs)
   const posts = allCoreContent(sortedPosts)
   const featured = [
-    'video-redraw-pipeline',
     'translation-quality-system',
+    'video-redraw-pipeline',
     'asr-platform-engineering',
   ].map((id) => {
     const p = professionalProjectsById[id]
     const en = localizeProject(p, 'en')
-    const pick = ({ id, title, summary, role, status }: typeof p) => ({
+    const pick = ({ id, title, summary, status, period }: typeof p) => ({
       id,
       title,
       summary,
-      role,
       status,
+      period,
     })
     return { zh: pick(p), en: pick(en) }
   })

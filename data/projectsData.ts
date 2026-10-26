@@ -23,7 +23,7 @@ const projectsData: Project[] = [
       methods: ['Multi-model workflow', 'Structured debate', 'FastAPI'],
     },
     description:
-      'Lab #01 · 持续迭代 · 两个周末完成。一个面向开发者的多模型开源项目方向评估实验：让模型先发散、再辩论，最后收敛出可执行的主路线与备选路线。\n\nFastAPI / OpenRouter / Multi-model workflow',
+      '一个面向开发者的多模型项目方向评估实验：先生成候选，再进行结构化辩论，最后收敛为可执行路线。',
     imgSrc: '/static/images/projects/project-parliament-homepage.webp',
     href: '/blog/project-parliament',
     domains: ['product-thinking', 'open-source-writing'],
@@ -41,8 +41,7 @@ const projectsData: Project[] = [
         'Compare title-selection approaches on frozen candidates with reproducible evaluation.',
       methods: ['Frozen candidates', 'LLM evaluation', 'Learning to rank'],
     },
-    description:
-      'Lab #02 · 持续开发中。一个评估优先的中文网文英文标题本地化研究项目：在冻结候选集上比较规则、LLM 与学习排序器，让标题既忠实原作，也贴近英语读者。\n\nPython / FastAPI / LLM Ranking',
+    description: '比较规则、LLM 评估与学习排序器，探索如何为中文网文选出适合英语读者的英文标题。',
     href: '/blog/webnovel-title-localization-lab',
     domains: ['model-research', 'product-thinking'],
     lab: 'Lab #02',

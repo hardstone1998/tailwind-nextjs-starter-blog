@@ -7,7 +7,7 @@ Hallmark v2 Console is the shared visual system for the research notebook, proje
 - Genre: modern-minimal
 - Homepage shape: research index with a featured project record in the first screen
 - Theme: Console, adapted to a Chinese-first publication
-- Modes: `paper` in light mode, `graphite` in dark mode
+- Modes: `paper` in light mode, `graphite` in dark mode; the featured evidence record keeps a graphite surface in both modes
 - Posture: restrained; no decorative grid, glow, raised shadow or fabricated metric
 
 ## Tokens
@@ -18,12 +18,13 @@ Hallmark v2 Console is the shared visual system for the research notebook, proje
 - `--color-ink`, `--color-muted`, `--color-rule`: reading hierarchy and separators
 - `--color-cool`: links, model output and measured evidence
 - `--color-accent`: primary action, author decisions and live status
+- `--color-console-*`: the graphite evidence record and its readable signal colors
 - Host Grotesk for Latin display and body; the Chinese system stack for Han text; Atkinson Hyperlegible Mono only for measurements, identifiers, versions and code
 - One 10px panel radius, one 6px control radius, hairline borders, no panel shadows
 
 ## Composition
 
-- Homepage: one project record as the signature, then featured work, labs, capability evidence and recent notes.
+- Homepage: the translation quality system is the lead record, using its project-reported 42% and 70% adoption figures with the missing sample scope stated beside them; then featured work, labs, capability evidence and recent notes.
 - Project index: actual project images and descriptions, with status and methods kept beside each project.
 - Notes index: article rows and a compact topic index. Article pages keep a comfortable prose measure.
 - Shared chrome: the existing logo and navigation remain recognizable; the footer ends with the publication identity and contact links.

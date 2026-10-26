@@ -17,7 +17,7 @@ export default function Card({
 }: Project) {
   const { t } = useLanguage()
   return (
-    <article className="notebook-card project-card flex flex-col">
+    <article className={`project-entry ${imgSrc ? 'project-entry--illustrated' : ''}`}>
       {imgSrc && (
         <Image
           alt={title}
@@ -25,19 +25,24 @@ export default function Card({
           sizes="(max-width: 767px) 100vw, 50vw"
           width={544}
           height={306}
-          className="mb-5 w-full rounded object-cover"
+          className="project-entry__image w-full object-cover"
         />
       )}
-      <h2 className="text-2xl font-bold">{href ? <Link href={href}>{title}</Link> : title}</h2>
-      <p className="mt-4 leading-7 text-[var(--muted)]">{description}</p>
-      <div className="mt-5">
-        <ResearchMeta {...{ domains, lab, status, methods, outcome }} />
+      <div className="min-w-0">
+        <ResearchMeta lab={lab} status={status} compact />
+        <h2 className="mt-5 text-2xl font-medium">
+          {href ? <Link href={href}>{title}</Link> : title}
+        </h2>
+        <p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">{description}</p>
+        <div className="mt-5">
+          <ResearchMeta {...{ domains, methods, outcome }} />
+        </div>
+        {href && (
+          <Link href={href} className="console-link mt-6 inline-block text-sm">
+            {t('viewResearchNote')}
+          </Link>
+        )}
       </div>
-      {href && (
-        <Link href={href} className="mt-auto pt-5 font-semibold text-[var(--accent)]">
-          {t('viewResearchNote')}
-        </Link>
-      )}
     </article>
   )
 }

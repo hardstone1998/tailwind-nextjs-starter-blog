@@ -29,7 +29,10 @@ export default function NotebookCard(post: Props) {
           {t('originalLanguage')}: {post.language === 'en' ? 'English' : '中文'}
         </span>
       </div>
-      <h3 lang={contentLanguage} className="mt-3 text-xl font-bold tracking-tight sm:text-2xl">
+      <h3
+        lang={contentLanguage}
+        className="mt-3 text-xl font-medium tracking-tight sm:text-[1.375rem]"
+      >
         <Link href={`/${post.path}`} className="group-hover:text-[var(--accent)]">
           {post.title}
         </Link>

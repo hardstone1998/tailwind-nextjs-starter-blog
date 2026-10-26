@@ -23,6 +23,8 @@ export default function ListLayoutWithTags({ posts, title, tag }: Props) {
   const collection = getCollectionPage(posts, language, tag, page)
   const counts = getVisibleTagCounts(posts, language)
   const tags = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b))
+  const leadingTags = tags.slice(0, 6)
+  if (tag && !leadingTags.includes(tag)) leadingTags[leadingTags.length - 1] = tag
   const base = tag ? `/tags/${tag}` : '/blog'
   useEffect(() => {
     if (isLanguageReady && collection.outOfRange) router.replace(base)
@@ -34,8 +36,8 @@ export default function ListLayoutWithTags({ posts, title, tag }: Props) {
       </h1>
       <div className="mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="min-w-0">
-          <details className="notebook-card min-w-0" open>
-            <summary className="cursor-pointer font-semibold">{t('allTopics')}</summary>
+          <details className="topic-index min-w-0 lg:hidden">
+            <summary className="cursor-pointer font-medium">{t('allTopics')}</summary>
             <Link href="/blog" className="mt-4 block font-semibold text-[var(--accent)]">
               {t('allNotes')}
             </Link>
@@ -53,6 +55,28 @@ export default function ListLayoutWithTags({ posts, title, tag }: Props) {
               ))}
             </ul>
           </details>
+          <nav aria-label={t('allTopics')} className="topic-index hidden lg:block">
+            <p className="font-medium">{t('allTopics')}</p>
+            <Link href="/blog" className="mt-4 block text-sm font-semibold text-[var(--accent)]">
+              {t('allNotes')}
+            </Link>
+            <ul className="mt-3">
+              {leadingTags.map((key) => (
+                <li key={key}>
+                  <Link
+                    href={`/tags/${key}`}
+                    className="block py-1.5 text-sm text-[var(--muted)] hover:text-[var(--accent)]"
+                    aria-current={tag === key ? 'page' : undefined}
+                  >
+                    {key} ({counts[key]})
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link href="/tags" className="console-link mt-4 inline-block text-sm">
+              {language === 'zh' ? '浏览全部主题' : 'Browse all topics'}
+            </Link>
+          </nav>
         </aside>
         <div className="min-w-0">
           <div className="grid">
