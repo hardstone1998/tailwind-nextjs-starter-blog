@@ -1,0 +1,84 @@
+:root {
+  color-scheme: light;
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --space-4xl: 144px;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-display: clamp(2.75rem, 4.5vw + 1rem, 5.25rem);
+  --text-section: clamp(2rem, 2vw + 1rem, 3.25rem);
+  --text-title: clamp(1.25rem, 0.7vw + 0.875rem, 1.625rem);
+  --text-lead: clamp(1.125rem, 0.3vw + 1rem, 1.375rem);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --container: 1360px;
+  --gutter: clamp(16px, 3vw, 48px);
+  --color-paper: oklch(98% 0.006 85);
+  --color-paper-2: oklch(95% 0.008 85);
+  --color-paper-3: oklch(91% 0.009 85);
+  --color-ink: oklch(19% 0.01 60);
+  --color-ink-2: oklch(31% 0.012 60);
+  --color-muted: oklch(43% 0.012 60);
+  --color-rule: oklch(84% 0.01 85);
+  --color-rule-2: oklch(69% 0.012 85);
+  --color-accent: oklch(66% 0.13 80);
+  --color-accent-ink: oklch(19% 0.035 75);
+  --color-accent-label: oklch(35% 0.09 80);
+  --color-accent-soft: oklch(92% 0.045 80);
+  --color-cool: oklch(48% 0.13 245);
+  --color-cool-soft: oklch(92% 0.025 245);
+  --color-focus: oklch(48% 0.13 245);
+  --color-ok: oklch(45% 0.11 150);
+  --color-ok-soft: oklch(92% 0.035 150);
+  --color-bad: oklch(49% 0.15 25);
+  --color-bad-soft: oklch(93% 0.035 25);
+  --font-display:
+    'Host Grotesk Variable', 'PingFang SC', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif;
+  --font-body:
+    'Host Grotesk Variable', 'PingFang SC', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif;
+  --font-outlier:
+    'Atkinson Hyperlegible Mono Variable', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --radius-card: 10px;
+  --radius-control: 6px;
+  --surface: var(--color-paper);
+  --surface-raised: var(--color-paper-2);
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --rule: var(--color-rule);
+  --accent: var(--color-cool);
+  --signal: var(--color-accent);
+}
+
+.dark {
+  color-scheme: dark;
+  --color-paper: oklch(17% 0.008 250);
+  --color-paper-2: oklch(21% 0.009 250);
+  --color-paper-3: oklch(13.5% 0.007 250);
+  --color-ink: oklch(95% 0.005 250);
+  --color-ink-2: oklch(83% 0.008 250);
+  --color-muted: oklch(71% 0.01 250);
+  --color-rule: oklch(31% 0.01 250);
+  --color-rule-2: oklch(42% 0.012 250);
+  --color-accent: oklch(82% 0.15 80);
+  --color-accent-ink: oklch(18% 0.04 75);
+  --color-accent-label: oklch(82% 0.15 80);
+  --color-accent-soft: oklch(29% 0.05 80);
+  --color-cool: oklch(77% 0.12 245);
+  --color-cool-soft: oklch(29% 0.05 245);
+  --color-focus: oklch(82% 0.15 80);
+  --color-ok: oklch(76% 0.15 150);
+  --color-ok-soft: oklch(24.5% 0.03 150);
+  --color-bad: oklch(70% 0.17 25);
+  --color-bad-soft: oklch(24.5% 0.035 25);
+}

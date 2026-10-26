@@ -67,7 +67,7 @@ const MobileNav = () => {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-[var(--ink)] hover:text-[var(--accent)]"
+                    className="mb-4 py-2 pr-4 text-2xl font-medium text-[var(--ink)] hover:text-[var(--accent)]"
                     onClick={() => setNavShow(false)}
                   >
                     {link.title[language]}

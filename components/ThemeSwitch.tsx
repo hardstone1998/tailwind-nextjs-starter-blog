@@ -13,7 +13,7 @@ export default function ThemeSwitch() {
       >
         <span aria-hidden="true">◐</span>
       </MenuButton>
-      <MenuItems className="absolute right-0 z-50 mt-2 w-40 rounded border border-[var(--rule)] bg-[var(--surface-raised)] p-1 shadow-lg">
+      <MenuItems className="absolute right-0 z-50 mt-2 w-40 rounded border border-[var(--rule)] bg-[var(--surface-raised)] p-1">
         {(['light', 'dark', 'system'] as const).map((value) => (
           <MenuItem key={value}>
             <button

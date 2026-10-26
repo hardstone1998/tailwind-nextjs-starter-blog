@@ -8,7 +8,7 @@ const Tag = ({ text }: Props) => {
   return (
     <Link
       href={`/tags/${slug(text)}`}
-      className="mr-2 inline-flex rounded-full border border-[var(--rule)] px-2 py-0.5 text-xs font-semibold tracking-wide text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      className="topic-chip mr-2 inline-flex border px-2 py-0.5 text-xs font-medium transition-colors"
     >
       {text.split(' ').join('-')}
     </Link>

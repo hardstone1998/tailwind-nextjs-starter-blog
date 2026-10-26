@@ -29,18 +29,19 @@ export default function ListLayoutWithTags({ posts, title, tag }: Props) {
   }, [isLanguageReady, collection.outOfRange, base, router])
   return (
     <div className="py-10 sm:py-14">
-      <p className="section-label">{t('researchArchive')}</p>
-      <h1 className="mt-3 text-4xl font-extrabold">{tag ? title : t('blogTitle')}</h1>
-      <div className="mt-8 grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <aside>
-          <details className="notebook-card" open>
+      <h1 className="text-4xl font-medium tracking-tight sm:text-5xl">
+        {tag ? title : t('blogTitle')}
+      </h1>
+      <div className="mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="min-w-0">
+          <details className="notebook-card min-w-0" open>
             <summary className="cursor-pointer font-semibold">{t('allTopics')}</summary>
             <Link href="/blog" className="mt-4 block font-semibold text-[var(--accent)]">
               {t('allNotes')}
             </Link>
-            <ul className="mt-3 flex max-h-72 flex-wrap gap-2 overflow-y-auto lg:block lg:max-h-[70vh]">
+            <ul className="mt-3 flex max-w-full min-w-0 gap-3 overflow-x-auto pb-2 lg:block lg:max-h-[70vh] lg:overflow-y-auto lg:pb-0">
               {tags.map((key) => (
-                <li key={key}>
+                <li key={key} className="shrink-0 lg:shrink">
                   <Link
                     href={`/tags/${key}`}
                     className="inline-block py-2 text-sm text-[var(--muted)] hover:text-[var(--accent)]"
@@ -54,7 +55,7 @@ export default function ListLayoutWithTags({ posts, title, tag }: Props) {
           </details>
         </aside>
         <div className="min-w-0">
-          <div className="grid gap-4">
+          <div className="grid">
             {collection.posts.map((post) => (
               <NotebookCard key={post.path} {...post} />
             ))}

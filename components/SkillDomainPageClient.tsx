@@ -21,14 +21,13 @@ export default function SkillDomainPageClient({
   const visiblePosts = getVisiblePosts(relatedPosts, language).slice(0, 10)
   return (
     <div className="py-10 sm:py-14">
-      <p className="section-label">{t('capabilityDomain')}</p>
-      <h1 className="mt-4 text-4xl font-extrabold tracking-tight">{domain.label}</h1>
+      <h1 className="text-4xl font-medium tracking-tight sm:text-5xl">{domain.label}</h1>
       <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--muted)]">{domain.description}</p>
       <Link
         href={getAssessmentRoute(domain)}
         className="mt-5 inline-block font-semibold text-[var(--accent)]"
       >
-        {t('assessmentDetails')} →
+        {t('assessmentDetails')}
       </Link>
       <section className="mt-10 max-w-3xl border-t border-[var(--rule)] pt-8">
         <h2 className="text-2xl font-bold">{t('profile')}</h2>
@@ -48,7 +47,7 @@ export default function SkillDomainPageClient({
           {view.evidence.map((e) => (
             <li className="notebook-card" key={e.id}>
               <Link href={e.href} className="font-semibold text-[var(--accent)]">
-                {e.title[language]} →
+                {e.title[language]}
               </Link>
               <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{e.limitation[language]}</p>
             </li>
@@ -60,20 +59,22 @@ export default function SkillDomainPageClient({
         <p className="mt-3 font-semibold">{t('pendingReview')}</p>
         <p className="mt-3">
           {t('provisionalScore')}:{' '}
-          {view.result.total === null ? t('pendingAssessment') : `${view.result.total}/100`} ·{' '}
-          {t('evidenceCoverage')}: {view.result.coverage}%
+          {view.result.total === null ? t('pendingAssessment') : `${view.result.total}/100`}
+          <span className="ml-4">
+            {t('evidenceCoverage')}: {view.result.coverage}%
+          </span>
         </p>
         <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{t('reviewScope')}</p>
         <Link
           href={getAssessmentRoute(domain)}
           className="mt-4 inline-block font-semibold text-[var(--accent)]"
         >
-          {t('assessmentDetails')} →
+          {t('assessmentDetails')}
         </Link>
       </section>
       <section className="mt-10 max-w-3xl">
         <h2 className="text-2xl font-bold">
-          {t('nextAction')} · {domain.nextAction.title}
+          {t('nextAction')}: {domain.nextAction.title}
         </h2>
         <p className="mt-4 leading-7 text-[var(--muted)]">{domain.nextAction.description}</p>
       </section>

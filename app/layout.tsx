@@ -1,4 +1,6 @@
 import 'css/tailwind.css'
+import '@fontsource-variable/host-grotesk/wght.css'
+import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css'
 
 import 'remark-github-blockquote-alert/alert.css'
 
@@ -85,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="min-h-screen bg-[var(--surface)] pl-[calc(100vw-100%)] text-[var(--ink)] antialiased">
+      <body className="min-h-screen bg-[var(--surface)] text-[var(--ink)] antialiased">
         <ThemeProviders>
           <LanguageProvider>
             <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />

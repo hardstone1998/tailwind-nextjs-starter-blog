@@ -12,7 +12,6 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import ResearchMeta from '@/components/research/ResearchMeta'
-import SectionLabel from '@/components/research/SectionLabel'
 import { useLanguage } from '@/components/LanguageProvider'
 import ArticleReadingTools, { DesktopToc, type TocItem } from '@/components/ArticleReadingTools'
 
@@ -22,6 +21,7 @@ const postDateTemplate: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
+  timeZone: 'UTC',
 }
 
 interface LayoutProps {
@@ -44,8 +44,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
       <article>
         <div className="xl:divide-y xl:divide-[var(--rule)]">
           <header className="py-10 xl:py-14">
-            <div className="space-y-4 text-center">
-              <SectionLabel>{language === 'zh' ? '研究笔记' : 'Research note'}</SectionLabel>
+            <div className="space-y-4 text-left">
               <dl>
                 <div>
                   <dt className="sr-only">{t('publishedOn')}</dt>
@@ -59,7 +58,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   </dd>
                 </div>
               </dl>
-              <div lang={content.language === 'en' ? 'en' : 'zh-CN'}>
+              <div lang={content.language === 'en' ? 'en' : 'zh-CN'} className="max-w-4xl">
                 <PageTitle>{title}</PageTitle>
               </div>
               <p className="text-sm text-[var(--muted)]">
@@ -98,25 +97,18 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           className="h-10 w-10 rounded-full"
                         />
                       )}
-                      <dl className="text-sm leading-5 font-medium whitespace-nowrap">
+                      <dl className="text-sm leading-5 font-medium">
                         <dt className="sr-only">{language === 'zh' ? '姓名' : 'Name'}</dt>
                         <dd className="text-[var(--ink)]">{author.name}</dd>
                         {(author.github || author.email) && (
-                          <dd className="text-primary-500 space-x-2">
+                          <dd className="flex flex-wrap gap-x-2 text-[var(--accent)]">
                             {author.github && (
-                              <Link
-                                href={author.github}
-                                className="hover:text-primary-600 dark:hover:text-primary-400"
-                              >
+                              <Link href={author.github} className="hover:underline">
                                 GitHub
                               </Link>
                             )}
-                            {author.github && author.email && <span aria-hidden="true">·</span>}
                             {author.email && (
-                              <Link
-                                href={`mailto:${author.email}`}
-                                className="hover:text-primary-600 dark:hover:text-primary-400"
-                              >
+                              <Link href={`mailto:${author.email}`} className="hover:underline">
                                 {author.email}
                               </Link>
                             )}
@@ -131,10 +123,10 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 <DesktopToc toc={content.toc as TocItem[]} />
               </dd>
             </dl>
-            <div className="min-w-0 divide-y divide-gray-200 xl:col-span-3 xl:pb-0 dark:divide-gray-700">
+            <div className="min-w-0 divide-y divide-[var(--rule)] xl:col-span-3 xl:pb-0">
               <div
                 lang={content.language === 'en' ? 'en' : 'zh-CN'}
-                className="prose dark:prose-invert max-w-none pt-10 pb-8"
+                className="prose dark:prose-invert max-w-[75ch] pt-10 pb-8"
               >
                 {children}
               </div>
@@ -151,9 +143,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <div className="divide-[var(--rule)] text-sm leading-5 font-medium xl:col-start-1 xl:row-start-2 xl:divide-y">
                 {tags && (
                   <div className="py-4 xl:py-8">
-                    <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
-                      {t('tags')}
-                    </h2>
+                    <h2 className="text-sm font-medium text-[var(--muted)]">{t('tags')}</h2>
                     <div className="flex flex-wrap">
                       {tags.map((tag) => (
                         <Tag key={tag} text={tag} />
@@ -165,20 +155,20 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   <div className="flex justify-between py-4 xl:block xl:space-y-8 xl:py-8">
                     {prev && prev.path && (
                       <div>
-                        <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                        <h2 className="text-sm font-medium text-[var(--muted)]">
                           {t('previousArticle')}
                         </h2>
-                        <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                        <div className="text-[var(--accent)] hover:underline">
                           <Link href={`/${prev.path}`}>{prev.title}</Link>
                         </div>
                       </div>
                     )}
                     {next && next.path && (
                       <div>
-                        <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                        <h2 className="text-sm font-medium text-[var(--muted)]">
                           {t('nextArticle')}
                         </h2>
-                        <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                        <div className="text-[var(--accent)] hover:underline">
                           <Link href={`/${next.path}`}>{next.title}</Link>
                         </div>
                       </div>
@@ -189,7 +179,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <div className="pt-4 xl:pt-8">
                 <Link
                   href={`/${basePath}`}
-                  className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                  className="text-[var(--accent)] hover:underline"
                   aria-label={t('backToBlog')}
                 >
                   &larr; {t('backToBlog')}

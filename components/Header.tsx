@@ -13,7 +13,7 @@ import { useLanguage } from './LanguageProvider'
 const Header = () => {
   const { language } = useLanguage()
   let headerClass =
-    'flex w-full items-center justify-between gap-4 border-b border-[var(--rule)] py-5 sm:py-6'
+    'site-header flex w-full items-center justify-between gap-4 border-b border-[var(--rule)] py-4 sm:py-5'
   if (siteMetadata.stickyNav) {
     headerClass += ' sticky top-0 z-50'
   }
@@ -26,7 +26,7 @@ const Header = () => {
             <Logo />
           </div>
           {typeof siteMetadata.headerTitle === 'string' ? (
-            <div className="hidden max-w-48 text-base leading-5 font-bold tracking-tight text-[var(--ink)] sm:block">
+            <div className="hidden max-w-48 text-base leading-5 font-semibold tracking-tight text-[var(--ink)] sm:block">
               {siteMetadata.headerTitle}
             </div>
           ) : (

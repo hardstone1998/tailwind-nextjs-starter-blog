@@ -17,7 +17,7 @@ export default function Card({
 }: Project) {
   const { t } = useLanguage()
   return (
-    <article className="notebook-card flex h-full flex-col">
+    <article className="notebook-card project-card flex flex-col">
       {imgSrc && (
         <Image
           alt={title}
@@ -35,7 +35,7 @@ export default function Card({
       </div>
       {href && (
         <Link href={href} className="mt-auto pt-5 font-semibold text-[var(--accent)]">
-          {t('viewResearchNote')} →
+          {t('viewResearchNote')}
         </Link>
       )}
     </article>

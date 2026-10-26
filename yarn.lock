@@ -2110,6 +2110,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource-variable/atkinson-hyperlegible-mono@npm:5.3.0":
+  version: 5.3.0
+  resolution: "@fontsource-variable/atkinson-hyperlegible-mono@npm:5.3.0"
+  checksum: 63fd7bd1508b87f8699a7b4d302cbad776156c243e43ab5e2443743c10bf45867aea96b0361ec2063e803d3718319e000591875de3f5efcc4c9cb5f76a17b1c1
+  languageName: node
+  linkType: hard
+
+"@fontsource-variable/host-grotesk@npm:5.3.0":
+  version: 5.3.0
+  resolution: "@fontsource-variable/host-grotesk@npm:5.3.0"
+  checksum: 378ff16aab597fafc182c612ac678e3921982463dbefe103d2a20d4fd3e2108bbb9eb8d678386ab15202b648854e1e83cb624945ce0f2c7399f907b588bc14f5
+  languageName: node
+  linkType: hard
+
 "@giscus/react@npm:^3.0.0":
   version: 3.1.0
   resolution: "@giscus/react@npm:3.1.0"
@@ -11611,6 +11625,8 @@ __metadata:
   dependencies:
     "@eslint/eslintrc": ^3.3.6
     "@eslint/js": ^9.16.0
+    "@fontsource-variable/atkinson-hyperlegible-mono": 5.3.0
+    "@fontsource-variable/host-grotesk": 5.3.0
     "@headlessui/react": 2.2.0
     "@next/bundle-analyzer": 15.5.21
     "@svgr/webpack": ^8.0.1

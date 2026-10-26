@@ -18,7 +18,7 @@ export default function NotebookCard(post: Props) {
   const { language, t } = useLanguage()
   const contentLanguage = post.language === 'en' ? 'en' : 'zh-CN'
   return (
-    <article className="notebook-card group">
+    <article className="notebook-card note-row group">
       <div className="flex flex-wrap gap-3 text-xs text-[var(--muted)]">
         <time dateTime={post.date}>
           {new Date(post.date).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', {

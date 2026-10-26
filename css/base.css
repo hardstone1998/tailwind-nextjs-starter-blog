@@ -1,0 +1,60 @@
+@layer base {
+  html,
+  body {
+    overflow-x: clip;
+  }
+  html {
+    scroll-padding-top: var(--space-3xl);
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-md);
+    line-height: 1.6;
+  }
+  .dark body {
+    font-weight: 350;
+  }
+  ::selection {
+    background: var(--color-accent-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    overflow-wrap: break-word;
+    min-width: 0;
+    text-wrap: balance;
+  }
+  a,
+  button {
+    transition:
+      color var(--dur-short) var(--ease-out),
+      background-color var(--dur-short) var(--ease-out),
+      border-color var(--dur-short) var(--ease-out);
+  }
+  a:active,
+  button:active {
+    opacity: 0.8;
+  }
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

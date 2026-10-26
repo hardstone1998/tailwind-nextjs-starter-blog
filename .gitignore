@@ -56,7 +56,10 @@ yarn-error.log*
 .gemini/
 .kiro/
 .opencode/
-.agents/
+/.agents/*
+!/.agents/skills/
+/.agents/skills/*
+!/.agents/skills/hallmark/
 
 # Build artifacts
 tsconfig.tsbuildinfo

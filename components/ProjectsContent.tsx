@@ -6,10 +6,9 @@ export default function ProjectsContent({ projects }: { projects: Project[] }) {
   const { language, t } = useLanguage()
   return (
     <div className="py-10 sm:py-14">
-      <p className="section-label">{t('publicLabs')}</p>
-      <h1 className="mt-3 text-4xl font-extrabold">{t('projectsTitle')}</h1>
-      <p className="mt-5 text-lg leading-8 text-[var(--muted)]">{t('projectsIntro')}</p>
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
+      <h1 className="text-4xl font-medium tracking-tight sm:text-5xl">{t('projectsTitle')}</h1>
+      <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--muted)]">{t('projectsIntro')}</p>
+      <div className="mt-10 grid items-start gap-5 md:grid-cols-2">
         {projects.map((p) => (
           <Card key={p.title} {...(language === 'en' ? { ...p, ...p.en } : p)} />
         ))}
